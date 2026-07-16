@@ -29,7 +29,7 @@ class ReceiptScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(Icons.check_circle, color: Colors.green, size: 48),
+                const Icon(Icons.check_circle, color: Colors.green, size: 48),
                 const SizedBox(height: 12),
                 Text('Payment Recorded', style: Theme.of(context).textTheme.titleLarge),
                 Text(payment.receiptNumber, style: Theme.of(context).textTheme.bodyMedium),

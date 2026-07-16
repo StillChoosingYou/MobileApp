@@ -270,25 +270,25 @@ class MockSeedData {
   ];
 
   final List<Enrollment> enrollments = [
-    Enrollment(
+    const Enrollment(
       id: 'enr_001',
       studentId: 'u_stu_001',
       term: term,
-      sectionIds: const ['sec_it201_a', 'sec_it202_a', 'sec_ge105_a', 'sec_it203_a'],
+      sectionIds: ['sec_it201_a', 'sec_it202_a', 'sec_ge105_a', 'sec_it203_a'],
       status: EnrollmentStatus.enrolled,
     ),
-    Enrollment(
+    const Enrollment(
       id: 'enr_002',
       studentId: 'u_stu_002',
       term: term,
-      sectionIds: const ['sec_ba301_a'],
+      sectionIds: ['sec_ba301_a'],
       status: EnrollmentStatus.enrolled,
     ),
-    Enrollment(
+    const Enrollment(
       id: 'enr_003',
       studentId: 'u_stu_003',
       term: term,
-      sectionIds: const ['sec_it201_a'],
+      sectionIds: ['sec_it201_a'],
       status: EnrollmentStatus.pending,
     ),
   ];
