@@ -1,0 +1,95 @@
+name: pgpc_campus_app
+description: "Padre Garcia Polytechnic College — unified campus management app."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management (Notifier/AsyncNotifier API — no code generation required)
+  flutter_riverpod: ^2.4.0
+
+  # Routing
+  go_router: ^13.0.0
+
+  # Firebase (wired but inactive until `AppConfig.useFirebase` is switched on —
+  # see lib/core/firebase/firebase_init.dart)
+  firebase_core: ^2.24.0
+  firebase_auth: ^4.15.0
+  cloud_firestore: ^4.13.0
+  firebase_storage: ^11.5.0
+  firebase_messaging: ^14.7.0
+  firebase_analytics: ^10.7.0
+  firebase_crashlytics: ^3.4.0
+
+  # Local / offline storage
+  hive: ^2.2.0
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.0
+
+  # Device capabilities
+  local_auth: ^2.1.0
+  mobile_scanner: ^3.5.0
+  qr_flutter: ^4.1.0
+  image_picker: ^1.0.0
+  url_launcher: ^6.2.0
+  connectivity_plus: ^5.0.0
+
+  # UI / data
+  google_fonts: ^6.1.0
+  fl_chart: ^0.66.0
+  intl: ^0.18.0
+  uuid: ^4.2.0
+
+  # Payments (GCash / Maya via the PayMongo aggregator — see PaymentGatewayService)
+  paymongo_sdk: ^0.0.6
+
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  # If you have a licensed display typeface for the college, drop the .ttf
+  # files into assets/fonts and register a `fonts:` block here — otherwise
+  # the app uses Google Fonts (Playfair Display + Inter) fetched at build time.
+
+# Generates the native Android/iOS launcher icons from the real PGPC seal.
+# Run once after `flutter create .` (see README): `dart run flutter_launcher_icons`
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/pgpc_logo_icon_source.png"
+  min_sdk_android: 21
+  # The source seal already has a white background baked in, so an adaptive
+  # background color isn't strictly needed — uncomment if you'd rather use a
+  # transparent foreground + solid background instead:
+  # adaptive_icon_background: "#FFFFFF"
+  # adaptive_icon_foreground: "assets/images/pgpc_logo_icon_source.png"
+
+# Generates the native launch splash screen from the same seal. Run after
+# flutter_launcher_icons above: `dart run flutter_native_splash:create`
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/pgpc_logo_icon_source.png
+  color_dark: "#102A6D"
+  image_dark: assets/images/pgpc_logo_icon_source.png
+  android_12:
+    image: assets/images/pgpc_logo_icon_source.png
+    icon_background_color: "#FFFFFF"
+    image_dark: assets/images/pgpc_logo_icon_source.png
+    icon_background_color_dark: "#102A6D"
