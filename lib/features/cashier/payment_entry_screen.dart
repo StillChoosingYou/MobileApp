@@ -50,7 +50,7 @@ class _PaymentEntryScreenState extends ConsumerState<PaymentEntryScreen> {
           recordedBy: cashier?.name ?? 'Cashier',
         );
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() => _submitting = false);
 
     result.when(

@@ -35,7 +35,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final result =
         await ref.read(authRepositoryProvider).requestPasswordReset(_controller.text.trim());
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() {
       _submitting = false;
       _feedbackIsError = !result.isOk;

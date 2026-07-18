@@ -45,7 +45,7 @@ class _GradeEncodingScreenState extends ConsumerState<GradeEncodingScreen> {
           sectionId: _selectedSection!.id,
           numericGrade: grade,
         );
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() {
       _submitting = false;
       _feedbackIsError = !result.isOk;

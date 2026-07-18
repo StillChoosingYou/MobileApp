@@ -150,7 +150,7 @@ class _VisitorPassScreenState extends ConsumerState<VisitorPassScreen> {
           _purposeController.text.trim(),
           _hostController.text.trim(),
         );
-    if (!mounted) return;
+    if (!context.mounted) return;
     result.when(
       ok: (log) {
         setState(() => _issuedPass = log);
