@@ -1,21 +1,35 @@
-/// Central switches for the app. Flip these once your own backend is ready —
-/// nothing else in the codebase needs to change, because every screen talks
-/// to a repository *interface*, never to Firebase or mock data directly.
+/// Which backend every repository provider talks to. See
+/// `lib/providers/repository_providers.dart` — each repository provider
+/// switches on this to pick its concrete implementation. Screens never
+/// check this directly; they only ever see the repository *interface*.
+enum BackendMode {
+  /// In-memory mock data, seeded in
+  /// `lib/data/repositories/mock_seed_data.dart`. Fully interactive with
+  /// zero setup — good for demos, UI review, and offline development.
+  mock,
+
+  /// Firebase (Firestore/Auth). See
+  /// `lib/data/repositories/firebase_repositories_example.dart`. Requires
+  /// `flutterfire configure` and the matching uncomment in
+  /// `lib/core/firebase/firebase_init.dart`.
+  firebase,
+
+  /// Your own Flask + Postgres (Supabase) REST API. See
+  /// `lib/data/repositories/api_repositories.dart` and `api/` at the
+  /// project root. Requires `ApiClient.baseUrl` to point at your running
+  /// Flask server (local or deployed on Vercel) and the Postgres schema in
+  /// `api/schema.sql` to be applied to your Supabase database.
+  restApi,
+}
+
+/// Central switches for the app. Flip [backendMode] once your own backend
+/// is ready — nothing else in the codebase needs to change, because every
+/// screen talks to a repository *interface*, never to Firebase, Postgres,
+/// or mock data directly.
 class AppConfig {
   AppConfig._();
 
-  /// When false (the default), every repository is backed by in-memory mock
-  /// data seeded in `lib/data/repositories/mock_seed_data.dart`. The app is
-  /// fully interactive this way with zero setup — good for demos, UI review,
-  /// and offline development.
-  ///
-  /// When true, repositories that have a Firebase implementation
-  /// (see `lib/data/repositories/firebase_repositories_example.dart`) talk to
-  /// your real Firebase project instead. Requires:
-  ///   1. `flutterfire configure` run in this project (generates
-  ///      lib/firebase_options.dart)
-  ///   2. The matching uncomment in lib/core/firebase/firebase_init.dart
-  static const bool useFirebase = false;
+  static const BackendMode backendMode = BackendMode.mock;
 
   /// Toggles the PayMongo-backed cashier flow. Off by default because it
   /// needs a real PayMongo account + API keys (see PaymentGatewayService).

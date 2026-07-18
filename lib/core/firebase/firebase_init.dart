@@ -4,7 +4,7 @@
 //
 //   1. Uncomment the two imports below.
 //   2. Uncomment the body of initializeFirebase().
-//   3. Flip AppConfig.useFirebase to true.
+//   3. Flip AppConfig.backendMode to BackendMode.firebase.
 //
 // import 'package:firebase_core/firebase_core.dart';
 // import '../../firebase_options.dart';

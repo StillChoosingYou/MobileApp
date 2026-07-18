@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/config/app_config.dart';
 import '../core/error/result.dart';
+import '../core/network/api_client.dart';
 import '../models/app_user.dart';
 import '../models/academic_models.dart';
 import '../models/audit_log.dart';
@@ -39,6 +40,7 @@ class AuthController extends AsyncNotifier<AppUser?> {
   }
 
   void logout() {
+    ApiClient.clearToken();
     state = const AsyncValue.data(null);
   }
 }

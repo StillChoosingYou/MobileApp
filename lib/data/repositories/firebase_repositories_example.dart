@@ -9,7 +9,7 @@ import '../../models/campus_models.dart';
 import '../../models/financial_models.dart';
 import 'repository_interfaces.dart';
 
-/// A real implementation, ready to use once `AppConfig.useFirebase = true`
+/// A real implementation, ready to use once `AppConfig.backendMode = BackendMode.firebase`
 /// and `flutterfire configure` has been run. Firebase Auth signs in by
 /// email, so login-by-student-number/employee-ID first resolves the email
 /// via a Firestore lookup, then authenticates normally.
@@ -112,7 +112,7 @@ class FirebaseAuthRepository implements AuthRepository {
 /// Partial example — `getGrades`, `getAnnouncements`, `getLedger`, and
 /// `getEnrolledSections` show the real Firestore read pattern. The rest
 /// throw [UnimplementedError] with a pointer back to that same pattern;
-/// fill them in the same way before switching `AppConfig.useFirebase` on
+/// fill them in the same way before switching `AppConfig.backendMode` to `BackendMode.firebase`
 /// for the Student module.
 class FirestoreStudentRepository implements StudentRepository {
   FirestoreStudentRepository({FirebaseFirestore? firestore})

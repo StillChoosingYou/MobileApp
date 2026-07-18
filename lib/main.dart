@@ -10,7 +10,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
 
-  if (AppConfig.useFirebase) {
+  if (AppConfig.backendMode == BackendMode.firebase) {
     await initializeFirebase();
   }
 

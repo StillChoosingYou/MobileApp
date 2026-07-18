@@ -40,6 +40,11 @@ dependencies:
   url_launcher: ^6.2.0
   connectivity_plus: ^5.0.0
 
+  # Networking (used by lib/data/repositories/api_repositories.dart when
+  # AppConfig.backendMode == BackendMode.restApi — your own Flask + Postgres
+  # backend, see api/ at the project root)
+  http: ^1.6.0
+
   # UI / data
   google_fonts: ^6.1.0
   fl_chart: ^0.66.0
@@ -47,7 +52,7 @@ dependencies:
   uuid: ^4.2.0
 
   # Payments (GCash / Maya via the PayMongo aggregator — see PaymentGatewayService)
-  paymongo_sdk: ^0.0.6
+  paymongo_sdk: ^1.7.0
 
   cupertino_icons: ^1.0.6
 

@@ -62,6 +62,19 @@ class Payment {
         'status': status.name,
         'gatewayReference': gatewayReference,
       };
+
+  factory Payment.fromJson(Map<String, dynamic> json) => Payment(
+        id: json['id'] as String,
+        studentId: json['studentId'] as String,
+        studentName: json['studentName'] as String,
+        amount: (json['amount'] as num).toDouble(),
+        method: PaymentMethod.values.byName(json['method'] as String),
+        receiptNumber: json['receiptNumber'] as String,
+        timestamp: DateTime.parse(json['timestamp'] as String),
+        recordedBy: json['recordedBy'] as String,
+        status: PaymentStatus.values.byName(json['status'] as String? ?? 'verified'),
+        gatewayReference: json['gatewayReference'] as String?,
+      );
 }
 
 /// The student's tuition standing for a term.
@@ -87,4 +100,14 @@ class TuitionLedger {
   double get totalAssessed => tuitionFee + miscFees + labFees - scholarshipDiscount;
   double get balance => (totalAssessed - totalPaid).clamp(0, double.infinity);
   bool get isFullyPaid => balance <= 0.01;
+
+  factory TuitionLedger.fromJson(Map<String, dynamic> json) => TuitionLedger(
+        studentId: json['studentId'] as String,
+        term: json['term'] as String,
+        tuitionFee: (json['tuitionFee'] as num).toDouble(),
+        miscFees: (json['miscFees'] as num).toDouble(),
+        labFees: (json['labFees'] as num).toDouble(),
+        scholarshipDiscount: (json['scholarshipDiscount'] as num).toDouble(),
+        totalPaid: (json['totalPaid'] as num).toDouble(),
+      );
 }

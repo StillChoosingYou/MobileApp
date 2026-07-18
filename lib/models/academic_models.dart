@@ -135,6 +135,15 @@ class Enrollment {
         status: status ?? this.status,
         remarks: remarks ?? this.remarks,
       );
+
+  factory Enrollment.fromJson(Map<String, dynamic> json) => Enrollment(
+        id: json['id'] as String,
+        studentId: json['studentId'] as String,
+        term: json['term'] as String,
+        sectionIds: List<String>.from(json['sectionIds'] as List? ?? const []),
+        status: EnrollmentStatus.values.byName(json['status'] as String),
+        remarks: json['remarks'] as String?,
+      );
 }
 
 /// A final grade for one subject in one term.
@@ -159,6 +168,15 @@ class Grade {
   final bool isIncomplete;
 
   String get display => isIncomplete ? 'INC' : (numericGrade?.toStringAsFixed(2) ?? '—');
+
+  factory Grade.fromJson(Map<String, dynamic> json) => Grade(
+        subjectCode: json['subjectCode'] as String,
+        subjectTitle: json['subjectTitle'] as String,
+        units: (json['units'] as num).toDouble(),
+        term: json['term'] as String,
+        numericGrade: (json['numericGrade'] as num?)?.toDouble(),
+        isIncomplete: json['isIncomplete'] as bool? ?? false,
+      );
 }
 
 enum AttendanceStatus { present, absent, late, excused }
@@ -197,4 +215,12 @@ class StudentProfile {
 
   /// e.g. "LGU Merit Scholar" — null if not on a scholarship.
   final String? scholarshipLabel;
+
+  factory StudentProfile.fromJson(Map<String, dynamic> json) => StudentProfile(
+        studentId: json['studentId'] as String,
+        program: json['program'] as String,
+        yearLevel: json['yearLevel'] as int,
+        blockSection: json['blockSection'] as String,
+        scholarshipLabel: json['scholarshipLabel'] as String?,
+      );
 }

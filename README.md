@@ -18,20 +18,21 @@ faster than starting from the prompt.
 
 | Area | Status |
 |---|---|
-| Architecture (Clean Architecture, Riverpod, repository pattern, mock ⇄ Firebase toggle) | ✅ Fully built |
+| Architecture (Clean Architecture, Riverpod, repository pattern, mock ⇄ Firebase ⇄ REST toggle) | ✅ Fully built |
 | Branding: real PGPC seal (in-app, app icon, launch splash) + colors sampled from it | ✅ Fully wired in |
-| Auth (ID/password login, role routing, forgot password, 2FA, biometric) | ✅ Fully working (mock backend; Firebase impl included for auth) |
-| Student: dashboard, Digital ID + QR, schedule, grades + GPA, tuition ledger, payment history, announcements | ✅ Fully working |
+| Auth (ID/password login, role routing, forgot password, 2FA, biometric) | ✅ Fully working (mock, Firebase, and Flask+Postgres implementations all included) |
+| Student: dashboard, Digital ID + QR, schedule, grades + GPA, tuition ledger, payment history, announcements | ✅ Fully working (mock + Flask/Postgres) |
 | Student Services: document requests, clearance tracker, digital queue, appointments | ✅ Fully working |
 | AI Academic Assistant | ✅ Working keyword-based FAQ engine — swap for a real LLM call when ready |
 | Smart enrollment conflict/unit-cap check | ✅ Real logic (`RegistrarRepository.checkEnrollmentConflicts`) |
 | Elective recommendation | ✅ Real rule-based logic (prerequisite matching) |
-| Registrar: student search, record view, enrollment approval | ✅ Fully working |
-| Cashier: payment entry, digital receipt + QR, transaction history, daily collection total | ✅ Fully working |
-| Faculty: class list, roster, attendance (manual + real camera QR scan), grade encoding | ✅ Fully working |
-| Admin: user management, analytics dashboard, audit log | ✅ Fully working |
+| Registrar: student search, record view, enrollment approval | ✅ Fully working (mock only so far) |
+| Cashier: payment entry, digital receipt + QR, transaction history, daily collection total | ✅ Fully working (mock + Flask/Postgres, including a real DB transaction) |
+| Faculty: class list, roster, attendance (manual + real camera QR scan), grade encoding | ✅ Fully working (mock only so far) |
+| Admin: user management, analytics dashboard, audit log | ✅ Fully working (mock only so far) |
 | QR attendance (generate + real camera scan) | ✅ Fully working (`mobile_scanner` + `qr_flutter`) |
 | Visitor management, Lost & Found, Emergency contacts | ✅ Fully working |
+| Your own backend: Flask + Postgres (Supabase), deployable to Vercel | ✅ Auth/Student/Cashier fully wired end-to-end; see "Turning on the REST API" below |
 | Accounting / Guidance / Dept Head / Dean dashboards | 🔶 One real screen each (Billing ledger, Appointments); rest are labeled placeholders following the same pattern |
 | GCash / Maya payments | 🔶 Manual entry works today; real online checkout needs PayMongo — see below |
 | Firebase (Firestore/Auth/Storage/FCM/Analytics/Crashlytics) | 🔶 Auth + a partial Student repo included as real examples; rest follow the same pattern |
@@ -42,22 +43,26 @@ faster than starting from the prompt.
 
 ```
 lib/
-  core/            theme, routing, config, error handling, shared widgets, utils
+  core/            theme, routing, config, error handling, shared widgets, utils, network (REST client)
   models/          plain Dart data classes (no code generation)
   data/
-    repositories/  abstract interfaces + mock impl + Firebase example impl
+    repositories/  abstract interfaces + mock impl + Firebase example impl + REST (Flask) impl
     local/         Hive setup
   providers/       Riverpod wiring (repository selection + all screen data)
   features/        one folder per role, screens only — no business logic here
+
+api/               Flask + Postgres backend — a separate Python project living
+                    alongside the Flutter app, deployable to Vercel on its own
 ```
 
 **Every screen depends on a repository *interface*, never on a concrete
-class.** `AppConfig.useFirebase` (in `lib/core/config/app_config.dart`)
-picks which implementation `lib/providers/repository_providers.dart` wires
-up. Today everything routes to the in-memory mock repositories in
+class.** `AppConfig.backendMode` (in `lib/core/config/app_config.dart`) is a
+three-way switch — `mock`, `firebase`, or `restApi` — and picks which
+implementation `lib/providers/repository_providers.dart` wires up for each
+repository. Today everything defaults to the in-memory mock repositories in
 `lib/data/repositories/mock_repositories.dart`, seeded from
-`mock_seed_data.dart`. Flip the flag once your Firebase project is ready —
-see below.
+`mock_seed_data.dart`. Flip the enum once your Firebase project or your own
+Flask/Postgres backend is ready — see the two setup sections below.
 
 State management is Riverpod's **`Notifier` / `AsyncNotifier`** API (no code
 generation, no `build_runner`) — this scaffold intentionally avoids the
@@ -111,7 +116,8 @@ flutter test
    generates `lib/firebase_options.dart`.
 3. In `lib/core/firebase/firebase_init.dart`, uncomment the import and the
    `Firebase.initializeApp(...)` call.
-4. Set `AppConfig.useFirebase = true` in `lib/core/config/app_config.dart`.
+4. Set `AppConfig.backendMode = BackendMode.firebase` in
+   `lib/core/config/app_config.dart`.
 5. In `lib/providers/repository_providers.dart`, uncomment the
    `firebase_repositories_example.dart` import and return
    `FirebaseAuthRepository()` from `authRepositoryProvider`.
@@ -125,12 +131,129 @@ the real read pattern for 4 methods; the rest throw `UnimplementedError`
 with a pointer back to that same pattern — finish those the same way, then
 repeat for Registrar/Cashier/Faculty/Admin/CampusServices repositories.
 
+## Turning on the REST API (Flask + Supabase Postgres)
+
+This is the third `BackendMode` option, alongside Mock and Firebase — a
+Flask API (in `api/` at the project root) backed by a real Postgres
+database (Supabase's hosted Postgres, though any Postgres works). It's a
+genuine alternative architecture to Firebase, not an add-on to it: pick one
+or the other for a given role's data, not both.
+
+**What's implemented today:** Auth, Student, and Cashier are fully wired
+end-to-end (Flask routes ⇄ Postgres ⇄ Dart repositories). Registrar,
+Faculty, Admin, and CampusServices stay mock-only for now — extend them the
+same way (one Flask route per interface method, one matching Dart method in
+a new class in `lib/data/repositories/api_repositories.dart`, following
+`ApiStudentRepository` as the template), then add a case for them in
+`lib/providers/repository_providers.dart`.
+
+### 1. Set up Supabase
+
+1. Create a project at [supabase.com](https://supabase.com) (the free tier
+   is enough for development).
+2. Open the SQL Editor in the Supabase dashboard, paste in the entire
+   contents of `api/schema.sql`, and run it. This creates every table the
+   app needs, plus a small set of seed rows matching the same demo accounts
+   you've already seen in mock mode (Andrea Villanueva, Evelyn Aquino, Bea
+   Fernandez, etc.).
+3. The seeded users' `password_hash` values are placeholders
+   (`REPLACE_WITH_REAL_HASH`) — generate a real one and update them:
+   ```bash
+   python -c "from werkzeug.security import generate_password_hash as g; print(g('password123'))"
+   ```
+   then in the SQL Editor:
+   ```sql
+   UPDATE users SET password_hash = '<paste the hash here>';
+   ```
+   (Updating all rows to the same dev password is fine for testing — give
+   each real account its own password before this touches real students.)
+4. Grab your **Transaction mode (Supavisor)** connection string: Project
+   Settings → Database → Connection string → "Transaction" — it looks like
+   `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres`.
+   Use this one, not the direct connection — see the comment in `api/db.py`
+   for why (serverless functions need the pooled connection or they can
+   exhaust Postgres's connection limit).
+
+### 2. Run the Flask API locally
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env              # then paste in your real DATABASE_URL and a JWT_SECRET
+python api/main.py                # → http://localhost:5000
+```
+
+Generate a `JWT_SECRET` with `python -c "import secrets; print(secrets.token_hex(32))"`
+— any long random string works, this just signs login tokens.
+
+Run the backend's own test suite (mocks the database, so it doesn't need
+your Supabase connection to pass):
+
+```bash
+pip install -r requirements-dev.txt
+pytest api/test_app.py -v
+```
+
+### 3. Point the Flutter app at it
+
+1. Set `AppConfig.backendMode = BackendMode.restApi` in
+   `lib/core/config/app_config.dart`.
+2. `ApiClient.baseUrl` (in `lib/core/network/api_client.dart`) defaults to
+   `http://10.0.2.2:5000/api` — the special address the **Android
+   emulator** uses to reach your computer's `localhost`. Override it for
+   other targets without touching source:
+   ```bash
+   # iOS Simulator / desktop:
+   flutter run --dart-define=PGPC_API_BASE_URL=http://localhost:5000/api
+   # A physical phone on the same Wi-Fi as your computer:
+   flutter run --dart-define=PGPC_API_BASE_URL=http://<your-computer's-LAN-IP>:5000/api
+   ```
+3. Log in with any seeded account (e.g. Student `2023-00147`) and whatever
+   password you hashed into `password_hash` above.
+
+### 4. Deploy the API to Vercel
+
+Vercel auto-detects the Flask `app` object in `api/main.py` — no build
+config beyond what's already in `vercel.json`
+([official docs](https://vercel.com/docs/frameworks/backend/flask)).
+
+1. `vercel link` (or connect the repo through the Vercel dashboard) from
+   the project root.
+2. In the Vercel project's Settings → Environment Variables, add
+   `DATABASE_URL` and `JWT_SECRET` (same values as your local `.env`).
+3. `vercel deploy --prod`.
+4. Hit `https://<your-project>.vercel.app/api/health` — you should get back
+   `{"status": "ok"}`. If you don't, `vercel dev` locally first (it runs
+   the same routing Vercel uses in production) before troubleshooting the
+   live deployment.
+5. Update `PGPC_API_BASE_URL` (step 3 above) to your real
+   `https://<your-project>.vercel.app/api` for production builds.
+
+### Security TODOs before this touches real students
+
+This scaffold authenticates (every protected route needs a valid token) but
+doesn't yet **authorize** by role (nothing stops a logged-in Student from
+calling the Cashier's payment-recording route). Before this goes near real
+money or real student records:
+
+- Add a role check in `routes/cashier.py`'s `record_payment` (and any other
+  role-sensitive route) — the exact one-line check is already commented in
+  that file.
+- Lock down `CORS(app)` in `api/main.py` to your actual app's origin(s)
+  instead of allowing all.
+- Decide whether `/api/announcements` and `/api/subjects` (currently public,
+  no token needed) should require login too.
+- Give every seeded account its own password instead of the one shared dev
+  hash from step 1.3 above.
+
 ## Enabling GCash / Maya payments
 
 Individual developers can't integrate GCash/Maya's APIs directly — those
 require an enterprise partnership. The standard path in the Philippines is a
-payment aggregator; **PayMongo** is the common choice and has an official
-`paymongo_sdk` Dart package (already in `pubspec.yaml`) with GCash and Maya
+payment aggregator; **PayMongo** is the common choice and has a community
+(unofficial) `paymongo_sdk` Dart package (already in `pubspec.yaml`, pinned
+to `^1.7.0`) with GCash and Maya
 "source" support. Xendit is a similar alternative.
 
 1. Register a PayMongo account and complete KYC (their onboarding takes a
@@ -189,7 +312,7 @@ collection to the right role before you go anywhere near production data.
   package)
 - Curriculum builder / subject-section CRUD UI for Registrar
 - Push notifications wired to FCM (the package is in `pubspec.yaml`;
-  `AppConfig.useFirebase` gates the same way as everything else)
+  `AppConfig.backendMode` gates the same way as everything else)
 - Firestore security rules
 - Unit/widget test coverage beyond the two example tests included
 
