@@ -74,7 +74,7 @@ class _ScheduleTab extends ConsumerWidget {
               child: ListTile(
                 contentPadding: const EdgeInsets.all(12),
                 leading: CircleAvatar(
-                  backgroundColor: (_dayColors[s.dayPattern[0]] ?? Colors.blueGrey).withOpacity(0.15),
+                  backgroundColor: (_dayColors[s.dayPattern[0]] ?? Colors.blueGrey).withValues(alpha: 0.15),
                   child: Text(
                     s.dayPattern,
                     style: TextStyle(fontSize: 11, color: _dayColors[s.dayPattern[0]] ?? Colors.blueGrey),
