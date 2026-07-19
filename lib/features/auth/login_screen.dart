@@ -62,11 +62,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Future<void> _tryBiometric() async {
+ Future<void> _tryBiometric() async {
     final auth = LocalAuthentication();
     try {
       final canCheck = await auth.canCheckBiometrics || await auth.isDeviceSupported();
       if (!canCheck) {
+        // ignore: use_build_context_synchronously
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('This device has no biometric hardware enrolled.')),
@@ -78,12 +79,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         localizedReason: 'Sign in to PGPC Campus',
         options: const AuthenticationOptions(biometricOnly: true),
       );
+      // ignore: use_build_context_synchronously
       if (didAuthenticate && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Biometric verified — enter your ID once to link this device.')),
         );
       }
     } catch (_) {
+      // ignore: use_build_context_synchronously
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Biometric authentication is not available right now.')),
