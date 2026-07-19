@@ -67,26 +67,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       final canCheck = await auth.canCheckBiometrics || await auth.isDeviceSupported();
       if (!canCheck) {
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This device has no biometric hardware enrolled.')),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('This device has no biometric hardware enrolled.')),
+          );
+        }
         return;
       }
       final didAuthenticate = await auth.authenticate(
         localizedReason: 'Sign in to PGPC Campus',
         options: const AuthenticationOptions(biometricOnly: true),
       );
-      if (didAuthenticate && mounted) {
+      if (didAuthenticate && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Biometric verified — enter your ID once to link this device.')),
         );
       }
     } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Biometric authentication is not available right now.')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Biometric authentication is not available right now.')),
+        );
+      }
     }
   }
 
