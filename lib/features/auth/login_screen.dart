@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -69,7 +67,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       final canCheck = await auth.canCheckBiometrics || await auth.isDeviceSupported();
       if (!canCheck) {
-        // ignore: use_build_context_synchronously
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('This device has no biometric hardware enrolled.')),
@@ -81,14 +78,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         localizedReason: 'Sign in to PGPC Campus',
         options: const AuthenticationOptions(biometricOnly: true),
       );
-      // ignore: use_build_context_synchronously
       if (didAuthenticate && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Biometric verified — enter your ID once to link this device.')),
         );
       }
     } catch (_) {
-      // ignore: use_build_context_synchronously
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Biometric authentication is not available right now.')),
