@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +64,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
- Future<void> _tryBiometric() async {
+  Future<void> _tryBiometric() async {
     final auth = LocalAuthentication();
     try {
       final canCheck = await auth.canCheckBiometrics || await auth.isDeviceSupported();
