@@ -53,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           password: _passwordController.text,
         );
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() => _submitting = false);
 
     result.when(
@@ -67,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       final canCheck = await auth.canCheckBiometrics || await auth.isDeviceSupported();
       if (!canCheck) {
-        if (!mounted) return;
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('This device has no biometric hardware enrolled.')),
         );
@@ -83,7 +83,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       }
     } catch (_) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Biometric authentication is not available right now.')),
       );

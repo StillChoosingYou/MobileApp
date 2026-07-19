@@ -6,7 +6,7 @@ import '../../core/widgets/shared_widgets.dart';
 import '../../core/utils/date_utils.dart';
 import '../../models/app_user.dart';
 import '../../models/campus_models.dart';
-import '../../models/financial_models.dart'; 
+import '../../models/financial_models.dart';
 import '../../providers/feature_providers.dart';
 
 class _MenuEntry {

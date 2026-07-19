@@ -90,7 +90,8 @@ class _AttendanceSessionScreenState extends ConsumerState<AttendanceSessionScree
                   final value = await Navigator.of(context).push<String>(
                     MaterialPageRoute(builder: (_) => const QrScannerScreen(title: 'Scan Student Digital ID')),
                   );
-                  if (value == null || !mounted) return;
+                  if (!context.mounted) return;
+                  if (value == null) return;
                   final parts = value.split('|');
                   if (parts.length < 3 || parts[0] != 'PGPC-ID') {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -186,7 +187,7 @@ class _AttendanceSessionScreenState extends ConsumerState<AttendanceSessionScree
                                 ))
                             .toList();
                         await ref.read(facultyRepositoryProvider).submitAttendance(records);
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         setState(() => _submitting = false);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Attendance submitted.')),

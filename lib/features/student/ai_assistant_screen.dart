@@ -54,7 +54,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
 
     final reply = await ref.read(studentRepositoryProvider).askAssistant(user.id, text);
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() {
       _messages.add(_ChatMessage(text: reply, fromUser: false));
       _thinking = false;

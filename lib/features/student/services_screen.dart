@@ -241,7 +241,7 @@ class _QueueTabState extends ConsumerState<_QueueTab> {
     final ticket = await ref
         .read(campusServicesRepositoryProvider)
         .issueQueueTicket(widget.studentId, widget.studentName, office);
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() {
       _myTicket = ticket;
       _issuing = false;
