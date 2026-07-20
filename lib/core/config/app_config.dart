@@ -8,10 +8,13 @@ enum BackendMode {
   /// zero setup — good for demos, UI review, and offline development.
   mock,
 
-  /// Firebase (Firestore/Auth). See
-  /// `lib/data/repositories/firebase_repositories_example.dart`. Requires
-  /// `flutterfire configure` and the matching uncomment in
-  /// `lib/core/firebase/firebase_init.dart`.
+  /// Firebase (Firestore/Auth). Currently disabled by default — the
+  /// firebase_* packages are commented out in pubspec.yaml because their
+  /// native plugin code broke both the Windows and Web builds on this
+  /// project's Flutter SDK version. See
+  /// `docs/firebase_repositories_example.dart.txt` for the reference
+  /// implementation and how to reactivate it, and
+  /// `lib/core/firebase/firebase_init.dart` for the rest.
   firebase,
 
   /// Your own Flask + Postgres (Supabase) REST API. See

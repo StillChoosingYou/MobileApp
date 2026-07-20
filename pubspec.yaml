@@ -17,15 +17,31 @@ dependencies:
   # Routing
   go_router: ^13.0.0
 
-  # Firebase (wired but inactive until `AppConfig.useFirebase` is switched on —
-  # see lib/core/firebase/firebase_init.dart)
-  firebase_core: ^2.24.0
-  firebase_auth: ^4.15.0
-  cloud_firestore: ^4.13.0
-  firebase_storage: ^11.5.0
-  firebase_messaging: ^14.7.0
-  firebase_analytics: ^10.7.0
-  firebase_crashlytics: ^3.4.0
+  # Firebase — commented out for now. The firebase_auth/firebase_storage
+  # native plugin code has broken BOTH the Windows desktop build (C++
+  # compile error inside firebase_auth_plugin.cpp — a deprecated-method
+  # warning treated as an error, plus a std::variant conversion error
+  # against this Flutter SDK's encodable_value.h) and the Chrome/Web build
+  # (a similar interop-generation error inside firebase_storage_web) — on
+  # this project's current Flutter SDK version. Since AppConfig.backendMode
+  # defaults to mock (and restApi once you switch to it), these packages
+  # aren't actually used at runtime yet anyway.
+  #
+  # To turn Firebase back on: uncomment the 6 lines below, move
+  # docs/firebase_repositories_example.dart.txt back to
+  # lib/data/repositories/firebase_repositories_example.dart (drop the
+  # .txt extension), then follow "Turning on real Firebase" in the README.
+  # Try `flutter pub get` right after uncommenting, before writing any new
+  # code against it — if these still don't compile on your SDK, that's a
+  # version-pinning problem to solve on its own, separate from anything
+  # else in this project.
+  # firebase_core: ^2.24.0
+  # firebase_auth: ^4.15.0
+  # cloud_firestore: ^4.13.0
+  # firebase_storage: ^11.5.0
+  # firebase_messaging: ^14.7.0
+  # firebase_analytics: ^10.7.0
+  # firebase_crashlytics: ^3.4.0
 
   # Local / offline storage
   hive: ^2.2.0

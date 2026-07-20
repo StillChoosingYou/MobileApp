@@ -1,3 +1,18 @@
+// Reference implementation — not part of the active build. This file used
+// to live at lib/data/repositories/firebase_repositories_example.dart; it
+// was moved here (and the firebase_* packages commented out in
+// pubspec.yaml) because the Firebase native plugins broke both the Windows
+// and Web builds on this project's Flutter SDK version.
+//
+// To bring Firebase back:
+//   1. Uncomment the firebase_* dependencies in pubspec.yaml.
+//   2. Move this file back to
+//      lib/data/repositories/firebase_repositories_example.dart
+//      (drop the .txt extension so Dart treats it as source again).
+//   3. flutter pub get — confirm it resolves cleanly before writing new
+//      code against it.
+//   4. Follow "Turning on real Firebase" in the README from there.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

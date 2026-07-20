@@ -4,9 +4,12 @@ import '../core/config/app_config.dart';
 import '../data/repositories/repository_interfaces.dart';
 import '../data/repositories/mock_repositories.dart';
 import '../data/repositories/api_repositories.dart';
-// Once `flutterfire configure` has been run and AppConfig.backendMode is
-// set to BackendMode.firebase, uncomment this import and the branch it
-// enables below.
+// Firebase is currently disabled — see the note at the top of
+// pubspec.yaml's commented-out firebase_* dependencies for why. To bring
+// it back: uncomment those dependencies, move
+// docs/firebase_repositories_example.dart.txt back to
+// lib/data/repositories/firebase_repositories_example.dart, then uncomment
+// this import and the branch it enables below.
 // import '../data/repositories/firebase_repositories_example.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -33,7 +36,8 @@ final studentRepositoryProvider = Provider<StudentRepository>((ref) {
     case BackendMode.firebase:
       // Swap for FirestoreStudentRepository() once you've finished the
       // remaining methods flagged with UnimplementedError in
-      // firebase_repositories_example.dart.
+      // docs/firebase_repositories_example.dart.txt (see that file's own
+      // header for how to bring it back into the build).
       throw UnimplementedError('Return FirestoreStudentRepository() here.');
   }
 });

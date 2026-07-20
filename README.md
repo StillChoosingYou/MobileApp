@@ -35,7 +35,7 @@ faster than starting from the prompt.
 | Your own backend: Flask + Postgres (Supabase), deployable to Vercel | ✅ Auth/Student/Cashier fully wired end-to-end; see "Turning on the REST API" below |
 | Accounting / Guidance / Dept Head / Dean dashboards | 🔶 One real screen each (Billing ledger, Appointments); rest are labeled placeholders following the same pattern |
 | GCash / Maya payments | 🔶 Manual entry works today; real online checkout needs PayMongo — see below |
-| Firebase (Firestore/Auth/Storage/FCM/Analytics/Crashlytics) | 🔶 Auth + a partial Student repo included as real examples; rest follow the same pattern |
+| Firebase (Firestore/Auth/Storage/FCM/Analytics/Crashlytics) | 🔶 Disabled by default (broke Windows/Web builds on this Flutter SDK — see "Turning on real Firebase"); reference implementation preserved in `docs/` |
 | COR / Transcript / Certificate generation | 🔶 Buttons wired to a placeholder — real PDF generation is a good fit for a Cloud Function + the `pdf` package |
 | Digital signature, campus map, curriculum builder | 📋 Not built — noted in Roadmap |
 
@@ -111,25 +111,47 @@ flutter test
 
 ## Turning on real Firebase
 
-1. `dart pub global activate flutterfire_cli` (if you don't have it)
-2. `flutterfire configure` — pick or create your Firebase project; this
+⚠️ **Disabled by default right now.** The `firebase_auth`/`firebase_storage`
+native plugin code broke both the Windows desktop build (a deprecated-method
+warning treated as a compile error, plus a `std::variant` conversion error
+against this Flutter SDK's `encodable_value.h`) and the Chrome/Web build (a
+similar interop-generation error inside `firebase_storage_web`) — both
+confirmed by actually running `flutter run -d windows` and
+`flutter run -d chrome` against this project's Flutter SDK version. This
+looks like a version-pinning mismatch between these specific Firebase
+plugin versions and this Flutter SDK, not something wrong with this
+project's own code — but it means Firebase needs a deliberate opt-in
+rather than "just works":
+
+1. In `pubspec.yaml`, uncomment the 7 `firebase_*` dependencies, then run
+   `flutter pub get`. **Before writing any new code against them**, confirm
+   `flutter run` still works on whichever platform you need (web/Windows/
+   Android/iOS) — if the same compile errors show up again, that's a
+   version-pinning problem to resolve on its own (try newer or older exact
+   versions of the failing package) before going further.
+2. Move `docs/firebase_repositories_example.dart.txt` back to
+   `lib/data/repositories/firebase_repositories_example.dart` (drop the
+   `.txt` extension so Dart treats it as source again).
+3. `dart pub global activate flutterfire_cli` (if you don't have it)
+4. `flutterfire configure` — pick or create your Firebase project; this
    generates `lib/firebase_options.dart`.
-3. In `lib/core/firebase/firebase_init.dart`, uncomment the import and the
-   `Firebase.initializeApp(...)` call.
-4. Set `AppConfig.backendMode = BackendMode.firebase` in
+5. In `lib/core/firebase/firebase_init.dart`, uncomment the two imports and
+   the `Firebase.initializeApp(...)` call.
+6. Set `AppConfig.backendMode = BackendMode.firebase` in
    `lib/core/config/app_config.dart`.
-5. In `lib/providers/repository_providers.dart`, uncomment the
+7. In `lib/providers/repository_providers.dart`, uncomment the
    `firebase_repositories_example.dart` import and return
    `FirebaseAuthRepository()` from `authRepositoryProvider`.
-6. Create the Firestore collections listed in
+8. Create the Firestore collections listed in
    `lib/core/constants/firestore_collections.dart` (schema/comments included
    there) and seed at least one real user document per role you want to
    test with.
 
-`FirestoreStudentRepository` in `firebase_repositories_example.dart` shows
-the real read pattern for 4 methods; the rest throw `UnimplementedError`
-with a pointer back to that same pattern — finish those the same way, then
-repeat for Registrar/Cashier/Faculty/Admin/CampusServices repositories.
+`FirestoreStudentRepository` in `firebase_repositories_example.dart.txt`
+shows the real read pattern for 4 methods; the rest throw
+`UnimplementedError` with a pointer back to that same pattern — finish
+those the same way, then repeat for
+Registrar/Cashier/Faculty/Admin/CampusServices repositories.
 
 ## Turning on the REST API (Flask + Supabase Postgres)
 
@@ -281,6 +303,12 @@ to `^1.7.0`) with GCash and Maya
   project (Authentication → Sign-in method → Google) plus platform-specific
   setup for `google_sign_in` — not included here since it depends on your
   Firebase project.
+- **Running `flutter run -d windows`**: needs Windows' Developer Mode
+  turned on first (`start ms-settings:developers`, then toggle it on) —
+  Flutter's plugin build step needs symlink support, which Windows only
+  allows in Developer Mode. It also needs Visual Studio with the "Desktop
+  development with C++" workload installed (not just VS Code) — the first
+  build after either of those is fresh can take several minutes.
 
 ## Branding
 
