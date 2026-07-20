@@ -96,6 +96,10 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/images/pgpc_logo_icon_source.png"
   min_sdk_android: 21
+  windows:
+    generate: true
+    image_path: "assets/images/pgpc_logo_icon_source.png"
+    icon_size: 256
   # The source seal already has a white background baked in, so an adaptive
   # background color isn't strictly needed — uncomment if you'd rather use a
   # transparent foreground + solid background instead:
