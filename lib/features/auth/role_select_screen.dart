@@ -27,74 +27,84 @@ class RoleSelectScreen extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 8),
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+        child: Center(
+          child: ConstrainedBox(
+            // Keeps the layout at a comfortable phone-like width on wide
+            // desktop/web windows — without this, a 2-column grid on a
+            // 1920px-wide window stretches each role card to a huge,
+            // mostly-empty rectangle. On an actual phone screen this cap
+            // never kicks in (phones are narrower than 480 already).
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 8),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.asset(
-                            'assets/images/pgpc_logo.png',
-                            width: 52,
-                            height: 52,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('PGPC Campus', style: textTheme.titleLarge),
-                              Text(
-                                AppConfig.collegeFullName,
-                                style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.asset(
+                                'assets/images/pgpc_logo.png',
+                                width: 52,
+                                height: 52,
+                                fit: BoxFit.cover,
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('PGPC Campus', style: textTheme.titleLarge),
+                                  Text(
+                                    AppConfig.collegeFullName,
+                                    style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 28),
+                        Text('Welcome back', style: textTheme.headlineMedium),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Select your role to continue — ${AppConfig.currentTermLabel}',
+                          style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 28),
-                    Text('Welcome back', style: textTheme.headlineMedium),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Select your role to continue — ${AppConfig.currentTermLabel}',
-                      style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 1.25,
                     ),
-                  ],
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final role = UserRole.values[index];
+                        return _RoleCard(
+                          role: role,
+                          icon: _roleIcons[role]!,
+                          onTap: () => context.push(Routes.login, extra: role),
+                        );
+                      },
+                      childCount: UserRole.values.length,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.25,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final role = UserRole.values[index];
-                    return _RoleCard(
-                      role: role,
-                      icon: _roleIcons[role]!,
-                      onTap: () => context.push(Routes.login, extra: role),
-                    );
-                  },
-                  childCount: UserRole.values.length,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
