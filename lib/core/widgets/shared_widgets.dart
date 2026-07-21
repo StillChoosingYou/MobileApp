@@ -233,3 +233,27 @@ class InitialsAvatar extends StatelessWidget {
     );
   }
 }
+
+/// Wraps a form (login, payment entry, grade encoding, ...) so it stays a
+/// comfortable phone-like width instead of stretching full window width on
+/// desktop/web. On an actual phone screen this cap never kicks in — phones
+/// are already narrower than [maxWidth].
+///
+/// Usage: wrap whatever's inside your Scaffold's `body` — typically a
+/// `SingleChildScrollView` — in this widget.
+class FormWidthLimiter extends StatelessWidget {
+  const FormWidthLimiter({super.key, required this.child, this.maxWidth = 480});
+
+  final Widget child;
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: child,
+      ),
+    );
+  }
+}

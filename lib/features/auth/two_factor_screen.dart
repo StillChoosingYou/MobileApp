@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/routing/app_router.dart';
+import '../../core/widgets/shared_widgets.dart';
 import '../../models/app_user.dart';
 
 /// A mock OTP step. Because there's no real SMS/email provider wired up in
@@ -40,7 +41,8 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Two-Factor Verification')),
       body: SafeArea(
-        child: Padding(
+        child: FormWidthLimiter(
+          child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,6 +82,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
               const SizedBox(height: 12),
               FilledButton(onPressed: _verify, child: const Text('Verify')),
             ],
+          ),
           ),
         ),
       ),

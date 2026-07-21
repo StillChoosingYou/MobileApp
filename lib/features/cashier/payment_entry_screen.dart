@@ -76,7 +76,8 @@ class _PaymentEntryScreenState extends ConsumerState<PaymentEntryScreen> {
     final searchResults = ref.watch(studentSearchProvider(_searchController.text));
     final scheme = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
+    return FormWidthLimiter(
+      child: SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Form(
         key: _formKey,
@@ -185,6 +186,7 @@ class _PaymentEntryScreenState extends ConsumerState<PaymentEntryScreen> {
             ],
           ],
         ),
+      ),
       ),
     );
   }

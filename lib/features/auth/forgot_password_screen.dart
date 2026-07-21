@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/utils/validators.dart';
+import '../../core/widgets/shared_widgets.dart';
 import '../../providers/repository_providers.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -52,7 +53,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Reset password')),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: FormWidthLimiter(
+          child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
@@ -96,6 +98,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
               ],
             ),
+          ),
           ),
         ),
       ),

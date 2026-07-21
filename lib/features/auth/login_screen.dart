@@ -7,6 +7,7 @@ import 'package:local_auth/local_auth.dart';
 
 import '../../core/routing/route_names.dart';
 import '../../core/utils/validators.dart';
+import '../../core/widgets/shared_widgets.dart';
 import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
 
@@ -101,7 +102,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('${widget.role.label} Login')),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: FormWidthLimiter(
+          child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
@@ -196,6 +198,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ],
             ),
+          ),
           ),
         ),
       ),

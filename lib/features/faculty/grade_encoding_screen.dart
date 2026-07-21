@@ -64,7 +64,8 @@ class _GradeEncodingScreenState extends ConsumerState<GradeEncodingScreen> {
     final sections = ref.watch(facultySectionsProvider(faculty.name));
     final scheme = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
+    return FormWidthLimiter(
+      child: SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -132,6 +133,7 @@ class _GradeEncodingScreenState extends ConsumerState<GradeEncodingScreen> {
             ),
           ],
         ],
+      ),
       ),
     );
   }
