@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/motion.dart';
+
 /// A left-aligned heading with an optional trailing action — used at the
 /// top of nearly every list screen.
 class SectionHeader extends StatelessWidget {
@@ -254,6 +256,67 @@ class FormWidthLimiter extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: child,
       ),
+    );
+  }
+}
+
+/// A one-shot fade + gentle upward slide-in, delayed by [index] — wrap each
+/// item in a list or grid with this and they cascade in one after another
+/// instead of all appearing at once. Used for the Role Select cards,
+/// dashboard stat rows, and chat bubbles.
+///
+/// Respects "reduce motion": jumps straight to the settled state with no
+/// animation when the person has that accessibility setting on.
+class FadeSlideIn extends StatefulWidget {
+  const FadeSlideIn({super.key, required this.index, required this.child});
+
+  final int index;
+  final Widget child;
+
+  @override
+  State<FadeSlideIn> createState() => _FadeSlideInState();
+}
+
+class _FadeSlideInState extends State<FadeSlideIn> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<Offset> _slide;
+  bool _started = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: AppMotion.standard);
+    final curved = CurvedAnimation(parent: _controller, curve: AppMotion.standardCurve);
+    _fade = curved;
+    _slide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero).animate(curved);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    if (AppMotion.reduceMotion(context)) {
+      _controller.value = 1;
+    } else {
+      Future.delayed(AppMotion.staggerDelayFor(widget.index), () {
+        if (mounted) _controller.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(position: _slide, child: widget.child),
     );
   }
 }

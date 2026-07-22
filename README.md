@@ -20,6 +20,7 @@ faster than starting from the prompt.
 |---|---|
 | Architecture (Clean Architecture, Riverpod, repository pattern, mock ⇄ Firebase ⇄ REST toggle) | ✅ Fully built |
 | Branding: real PGPC seal (in-app, app icon, launch splash) + colors sampled from it | ✅ Fully wired in |
+| Motion system: page transitions app-wide, staggered list/grid entrances, Digital ID reveal — respects reduce-motion | ✅ Applied to Role Select, Student dashboard, Admin analytics, AI Assistant chat, Digital ID, and every route; see "Motion & animation" below |
 | Auth (ID/password login, role routing, forgot password, 2FA, biometric) | ✅ Fully working (mock, Firebase, and Flask+Postgres implementations all included) |
 | Student: dashboard, Digital ID + QR, schedule, grades + GPA, tuition ledger, payment history, announcements | ✅ Fully working (mock + Flask/Postgres) |
 | Student Services: document requests, clearance tracker, digital queue, appointments | ✅ Fully working |
@@ -321,6 +322,43 @@ sampled directly from that seal via k-means clustering on its ink colors, so
 they're the real brand palette, not a guess — the whole app re-themes from
 those two constants via `ColorScheme.fromSeed` if the college ever issues an
 official Pantone spec that differs slightly.
+
+## Motion & animation
+
+Every animation in the app is built from one small system in
+`lib/core/theme/motion.dart` (`AppMotion`) — durations, curves, and a
+per-item stagger delay — rather than each screen picking its own numbers.
+Two reusable widgets in `lib/core/widgets/shared_widgets.dart` apply it:
+
+- **`FadeSlideIn(index: i, child: ...)`** — a fade + gentle upward
+  slide-in, delayed by `index`. Wrap each item in a list or grid with it
+  and they cascade in one after another instead of all popping in at
+  once. Currently applied to: the Role Select cards, the Student
+  dashboard's three stat cards, the Admin analytics stat grid, and each
+  new AI Assistant chat bubble.
+- **`_appPage(...)`** in `lib/core/routing/app_router.dart` — the one page
+  transition used for every route (a fade + slight upward slide), so
+  navigation feels the same everywhere instead of screen-by-screen.
+
+The Digital ID screen has its own one-off entrance (a scale + fade
+"materialize," in `digital_id_screen.dart`) — the one place a slightly
+more noticeable moment felt earned, since it's the closest thing this app
+has to a "reveal."
+
+**Accessibility:** every one of these checks
+`MediaQuery.of(context).disableAnimations` (Settings → Accessibility →
+Reduce Motion, on every platform this targets) and collapses straight to
+the settled state with no animation when it's on — motion is decoration
+here, never the only way information reaches the screen.
+
+**Extending it:** wrap any new list/grid item in `FadeSlideIn` the same
+way, or reach for `AppMotion.standard` / `AppMotion.emphasized` +
+`AppMotion.standardCurve` directly for a one-off transition — that keeps
+new screens feeling consistent with the rest without re-deriving timing
+values from scratch. The generic role dashboards (Accounting/Guidance/
+Dept Head/Dean) and the remaining list screens (transaction history,
+document requests, queue tickets, ...) don't have `FadeSlideIn` applied
+yet — same one-line wrap would extend it to those.
 
 ## A note on student data
 

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/routing/route_names.dart';
+import '../../core/widgets/shared_widgets.dart';
 import '../../models/app_user.dart';
 
 class RoleSelectScreen extends StatelessWidget {
@@ -92,10 +93,13 @@ class RoleSelectScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final role = UserRole.values[index];
-                        return _RoleCard(
-                          role: role,
-                          icon: _roleIcons[role]!,
-                          onTap: () => context.push(Routes.login, extra: role),
+                        return FadeSlideIn(
+                          index: index,
+                          child: _RoleCard(
+                            role: role,
+                            icon: _roleIcons[role]!,
+                            onTap: () => context.push(Routes.login, extra: role),
+                          ),
                         );
                       },
                       childCount: UserRole.values.length,

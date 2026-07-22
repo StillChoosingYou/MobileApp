@@ -34,17 +34,37 @@ class AnalyticsDashboardScreen extends ConsumerWidget {
               crossAxisSpacing: 12,
               childAspectRatio: 1.5,
               children: [
-                StatCard(icon: Icons.school_outlined, label: 'Total Students', value: '${s['totalStudents']}'),
-                StatCard(icon: Icons.co_present_outlined, label: 'Total Faculty', value: '${s['totalFaculty']}'),
-                StatCard(
-                  icon: Icons.pending_actions_outlined,
-                  label: 'Pending Enrollments',
-                  value: '${s['pendingEnrollments']}',
+                FadeSlideIn(
+                  index: 0,
+                  child: StatCard(
+                    icon: Icons.school_outlined,
+                    label: 'Total Students',
+                    value: '${s['totalStudents']}',
+                  ),
                 ),
-                StatCard(
-                  icon: Icons.payments_outlined,
-                  label: "Today's Collections",
-                  value: '₱${(s['todaysCollections'] as num).toStringAsFixed(0)}',
+                FadeSlideIn(
+                  index: 1,
+                  child: StatCard(
+                    icon: Icons.co_present_outlined,
+                    label: 'Total Faculty',
+                    value: '${s['totalFaculty']}',
+                  ),
+                ),
+                FadeSlideIn(
+                  index: 2,
+                  child: StatCard(
+                    icon: Icons.pending_actions_outlined,
+                    label: 'Pending Enrollments',
+                    value: '${s['pendingEnrollments']}',
+                  ),
+                ),
+                FadeSlideIn(
+                  index: 3,
+                  child: StatCard(
+                    icon: Icons.payments_outlined,
+                    label: "Today's Collections",
+                    value: '₱${(s['todaysCollections'] as num).toStringAsFixed(0)}',
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
 import '../../providers/repository_providers.dart';
 
@@ -101,20 +102,23 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
                   );
                 }
                 final m = _messages[i];
-                return Align(
-                  alignment: m.fromUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: m.fromUser ? scheme.primary : scheme.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(16),
-                      border: m.fromUser ? null : Border.all(color: scheme.outlineVariant),
-                    ),
-                    child: Text(
-                      m.text,
-                      style: TextStyle(color: m.fromUser ? scheme.onPrimary : scheme.onSurface),
+                return FadeSlideIn(
+                  index: i,
+                  child: Align(
+                    alignment: m.fromUser ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Container(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: m.fromUser ? scheme.primary : scheme.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(16),
+                        border: m.fromUser ? null : Border.all(color: scheme.outlineVariant),
+                      ),
+                      child: Text(
+                        m.text,
+                        style: TextStyle(color: m.fromUser ? scheme.onPrimary : scheme.onSurface),
+                      ),
                     ),
                   ),
                 );

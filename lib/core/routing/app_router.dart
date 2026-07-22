@@ -13,7 +13,37 @@ import '../../features/faculty/faculty_shell.dart';
 import '../../features/admin/admin_shell.dart';
 import '../../features/other_roles/other_role_screens.dart';
 import '../../features/common/emergency_visitor_lostfound_screens.dart';
+import '../theme/motion.dart';
 import 'route_names.dart';
+
+/// Wraps [child] in a fade + gentle upward slide — the app's one page
+/// transition, used for every route below so navigation feels the same
+/// everywhere instead of screen-by-screen. Collapses to an instant swap
+/// when the person has "reduce motion" on.
+CustomTransitionPage<void> _appPage({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  final reduceMotion = AppMotion.reduceMotion(context);
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: reduceMotion ? Duration.zero : AppMotion.standard,
+    reverseTransitionDuration: reduceMotion ? Duration.zero : AppMotion.standard,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (reduceMotion) return child;
+      final curved = CurvedAnimation(parent: animation, curve: AppMotion.standardCurve);
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(begin: const Offset(0, 0.03), end: Offset.zero).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
 
 /// This is a deliberately flat router: one top-level GoRoute per role
 /// landing page. Each role's *internal* tabs (Home, Grades, Tuition, ...)
@@ -33,55 +63,77 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: Routes.roleSelect,
-      builder: (context, state) => const RoleSelectScreen(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const RoleSelectScreen()),
     ),
     GoRoute(
       path: Routes.login,
-      builder: (context, state) => LoginScreen(role: state.extra as UserRole),
+      pageBuilder: (context, state) => _appPage(
+        context: context,
+        state: state,
+        child: LoginScreen(role: state.extra as UserRole),
+      ),
     ),
     GoRoute(
       path: Routes.forgotPassword,
-      builder: (context, state) => const ForgotPasswordScreen(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const ForgotPasswordScreen()),
     ),
     GoRoute(
       path: Routes.twoFactor,
-      builder: (context, state) => TwoFactorScreen(pendingUser: state.extra as AppUser),
+      pageBuilder: (context, state) => _appPage(
+        context: context,
+        state: state,
+        child: TwoFactorScreen(pendingUser: state.extra as AppUser),
+      ),
     ),
     GoRoute(
       path: Routes.student,
-      builder: (context, state) => const StudentShell(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const StudentShell()),
     ),
     GoRoute(
       path: Routes.registrar,
-      builder: (context, state) => const RegistrarShell(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const RegistrarShell()),
     ),
     GoRoute(
       path: Routes.cashier,
-      builder: (context, state) => const CashierShell(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const CashierShell()),
     ),
     GoRoute(
       path: Routes.faculty,
-      builder: (context, state) => const FacultyShell(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const FacultyShell()),
     ),
     GoRoute(
       path: Routes.admin,
-      builder: (context, state) => const AdminShell(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const AdminShell()),
     ),
     GoRoute(
       path: Routes.roleDashboard,
-      builder: (context, state) => GenericRoleDashboard(role: state.extra as UserRole),
+      pageBuilder: (context, state) => _appPage(
+        context: context,
+        state: state,
+        child: GenericRoleDashboard(role: state.extra as UserRole),
+      ),
     ),
     GoRoute(
       path: Routes.emergency,
-      builder: (context, state) => const EmergencyScreen(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const EmergencyScreen()),
     ),
     GoRoute(
       path: Routes.visitorPass,
-      builder: (context, state) => const VisitorPassScreen(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const VisitorPassScreen()),
     ),
     GoRoute(
       path: Routes.lostFound,
-      builder: (context, state) => const LostFoundScreen(),
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const LostFoundScreen()),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

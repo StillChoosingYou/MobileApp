@@ -60,11 +60,11 @@ class StudentHomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                Expanded(child: _GpaStatCard(studentId: user.id)),
+                Expanded(child: FadeSlideIn(index: 0, child: _GpaStatCard(studentId: user.id))),
                 const SizedBox(width: 12),
-                Expanded(child: _TuitionStatCard(studentId: user.id)),
+                Expanded(child: FadeSlideIn(index: 1, child: _TuitionStatCard(studentId: user.id))),
                 const SizedBox(width: 12),
-                Expanded(child: _EnrollmentStatCard(studentId: user.id)),
+                Expanded(child: FadeSlideIn(index: 2, child: _EnrollmentStatCard(studentId: user.id))),
               ],
             ),
           ),
