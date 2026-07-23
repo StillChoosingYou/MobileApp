@@ -54,7 +54,6 @@ dependencies:
   qr_flutter: ^4.1.0
   image_picker: ^1.0.0
   url_launcher: ^6.2.0
-  connectivity_plus: ^5.0.0
 
   # Networking (used by lib/data/repositories/api_repositories.dart when
   # AppConfig.backendMode == BackendMode.restApi — your own Flask + Postgres
