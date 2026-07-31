@@ -1,3 +1,12 @@
+import 'dart:io';
+
+// ===============================
+// Activity 4 - Function
+// ===============================
+double calculateArea(double length, double width) {
+  return length * width;
+}
+
 // ===============================
 // Activity 5 - Product Class
 // ===============================
@@ -24,106 +33,127 @@ class Student {
   Student(this.name, this.age, {this.email});
 
   void displayInfo() {
-    print('Name: $name');
-    print('Age: $age');
-    print('Email: ${email ?? "No email provided"}');
+    print("Name : $name");
+    print("Age  : $age");
+    print("Email: ${email ?? "No email provided"}");
   }
-}
-
-// ===============================
-// Activity 4 - Function
-// ===============================
-double calculateArea(double length, double width) {
-  return length * width;
 }
 
 // ===============================
 // Main Program
 // ===============================
 void main() {
-  // =====================================
-  // Activity 1
-  // =====================================
-  print('========== Activity 1 ==========');
+  int choice;
 
-  String studentName = 'Juan Dela Cruz';
-  int studentAge = 20;
-  double average = 91.75;
-  bool isEnrolled = true;
-  List<String> subjects = [
-    "Mobile Application Development",
-    "Statistics",
-    "Intelligent Systems"
-  ];
+  do {
+    print("\n======================================");
+    print("      CLASSROOM PRACTICE ACTIVITIES");
+    print("======================================");
+    print("1. Activity 1 - Variables");
+    print("2. Activity 2 - Grade Evaluation");
+    print("3. Activity 3 - Multiplication Table");
+    print("4. Activity 4 - Rectangle Area");
+    print("5. Activity 5 - Product Class");
+    print("6. Activity 6 - Student Class");
+    print("0. Exit");
+    print("======================================");
 
-  print('Student Name: $studentName');
-  print('Age: $studentAge');
-  print('Average: $average');
-  print('Enrollment Status: $isEnrolled');
-  print('Subjects: $subjects');
+    stdout.write("Enter your choice: ");
+    choice = int.tryParse(stdin.readLineSync() ?? "") ?? -1;
 
-  // =====================================
-  // Activity 2
-  // =====================================
-  print("\n========== Activity 2 ==========");
+    print("");
 
-  int grade = 87;
+    switch (choice) {
+      case 1:
+        print("========== Activity 1 ==========");
 
-  if (grade >= 90) {
-    print("Grade: A");
-  } else if (grade >= 80) {
-    print("Grade: B");
-  } else if (grade >= 70) {
-    print("Grade: C");
-  } else if (grade >= 60) {
-    print("Grade: D");
-  } else {
-    print("Grade: F");
-  }
+        String studentName = "Juan Dela Cruz";
+        int age = 20;
+        double average = 91.75;
+        bool isEnrolled = true;
 
-  // =====================================
-  // Activity 3
-  // =====================================
-  print("\n========== Activity 3 ==========");
+        List<String> subjects = [
+          "Mobile Application Development",
+          "Statistics",
+          "Intelligent Systems"
+        ];
 
-  for (int i = 1; i <= 10; i++) {
-    print("5 x $i = ${5 * i}");
-  }
+        print("Student Name : $studentName");
+        print("Age          : $age");
+        print("Average      : $average");
+        print("Enrolled     : $isEnrolled");
+        print("Subjects     : $subjects");
+        break;
 
-  // =====================================
-  // Activity 4
-  // =====================================
-  print("\n========== Activity 4 ==========");
+      case 2:
+        print("========== Activity 2 ==========");
 
-  double area = calculateArea(8, 5);
-  print("Area of Rectangle: $area");
+        int grade = 87;
 
-  // =====================================
-  // Activity 5
-  // =====================================
-  print("\n========== Activity 5 ==========");
+        if (grade >= 90) {
+          print("Grade: A");
+        } else if (grade >= 80) {
+          print("Grade: B");
+        } else if (grade >= 70) {
+          print("Grade: C");
+        } else if (grade >= 60) {
+          print("Grade: D");
+        } else {
+          print("Grade: F");
+        }
+        break;
 
-  Product product = Product("Laptop", 35000, 2);
+      case 3:
+        print("========== Activity 3 ==========");
 
-  print("Product Name: ${product.name}");
-  print("Price: ${product.price}");
-  print("Quantity: ${product.quantity}");
-  print("Total: ${product.calculateTotal()}");
+        for (int i = 1; i <= 10; i++) {
+          print("5 x $i = ${5 * i}");
+        }
+        break;
 
-  // =====================================
-  // Activity 6
-  // =====================================
-  print("\n========== Activity 6 ==========");
+      case 4:
+        print("========== Activity 4 ==========");
 
-  Student student1 =
-      Student("Jake", 21, email: "jake@gmail.com");
+        double area = calculateArea(8, 5);
+        print("Length : 8");
+        print("Width  : 5");
+        print("Area   : $area");
+        break;
 
-  Student student2 =
-      Student("Maria", 20);
+      case 5:
+        print("========== Activity 5 ==========");
 
-  student1.displayInfo();
+        Product product = Product("Laptop", 35000, 2);
 
-  print("");
+        print("Product Name : ${product.name}");
+        print("Price        : ${product.price}");
+        print("Quantity     : ${product.quantity}");
+        print("Total        : ${product.calculateTotal()}");
+        break;
 
-  student2.displayInfo();
+      case 6:
+        print("========== Activity 6 ==========");
+
+        Student student1 =
+            Student("Jake", 21, email: "jake@gmail.com");
+        Student student2 = Student("Maria", 20);
+
+        print("Student 1");
+        student1.displayInfo();
+
+        print("");
+
+        print("Student 2");
+        student2.displayInfo();
+        break;
+
+      case 0:
+        print("Thank you! Program terminated.");
+        break;
+
+      default:
+        print("Invalid choice. Please try again.");
+    }
+
+  } while (choice != 0);
 }
