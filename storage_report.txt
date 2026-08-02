@@ -1,0 +1,85 @@
+TOP LARGEST FILES
+============================================================
+   3.98 GB  C:\Users\User\AppData\Local\Google\Chrome\User Data\OptGuideOnDeviceModel\2025.8.8.1141\weights.bin
+   2.78 GB  C:\Users\User\AppData\Local\Android\Sdk\system-images\android-37.0\google_apis_playstore_ps16k\x86_64\system.img
+   1.38 GB  C:\Users\User\Documents\Unity Projects\Global Dominion The Rise of Nations\.git\objects\pack\pack-854ec62f497325641f5155621622a13d97a60d98.pack
+ 857.26 MB  C:\Users\User\AppData\Local\CapCut\User Data\Cache\bytebench\CC_win_2_swencode.yuv
+ 801.95 MB  C:\Users\User\Downloads\GTAV_Legacy_--_fitgirl-repacks.site_--_._Archive_full_3256.zip
+ 759.95 MB  C:\Users\User\Downloads\GTAV_Legacy_--_fitgirl-repacks.site_--_._Archive_free_548749.zip
+ 743.73 MB  C:\Users\User\AppData\Local\Microsoft\vscode-cpptools\1971048bd7cf2e48969164b2041d8aa3\.BROWSE.VC.DB
+ 711.00 MB  C:\Users\User\AppData\Local\Microsoft\Windows\Explorer\thumbcache_1280.db
+ 606.74 MB  C:\Users\User\edb_pem_server.exe-20260128082639
+ 591.61 MB  C:\Users\User\Downloads\Download - 2026-06-07T220039.500.mp4
+ 571.92 MB  C:\Users\User\AppData\Local\Packages\Clipchamp.Clipchamp_yxz26nhyzhsrt\LocalState\EBWebView\Default\IndexedDB\https_app.clipchamp.com_0.indexeddb.blob\3\00\19
+ 571.92 MB  C:\Users\User\AppData\Local\Packages\Clipchamp.Clipchamp_yxz26nhyzhsrt\LocalState\EBWebView\Default\File System\000\p\02\00000264
+ 549.56 MB  C:\Users\User\AppData\Roaming\Qoder\CachedExtensionVSIXs\oracle.mysql-shell-for-vs-code-2026.5.0
+ 547.44 MB  C:\Users\User\AppData\Roaming\Cursor\User\globalStorage\state.vscdb
+ 509.72 MB  C:\Users\User\AppData\Local\BraveSoftware\Brave-Browser\Application\151.1.93.129\Installer\chrome.7z
+ 495.62 MB  C:\Users\User\AppData\Local\Packages\Clipchamp.Clipchamp_yxz26nhyzhsrt\LocalState\EBWebView\Default\File System\000\p\02\00000279
+ 391.23 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\flutter\.git\objects\pack\pack-873fb83388c8ea6c4f91a1100fff366b2c16e90b.pack
+ 381.47 MB  C:\Users\User\AppData\Roaming\Traosk Utils Queue\laslaokadogk.rar
+ 372.48 MB  C:\Users\User\AppData\Local\Roblox\rbx-storage.db
+ 369.38 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\global_dominion\build\app\intermediates\merged_native_libs\debug\mergeDebugNativeLibs\out\lib\x86_64\libflutter.so
+ 354.70 MB  C:\Users\User\Downloads\postgresql-18.0-1-windows-x64.exe
+ 354.28 MB  C:\Users\User\Downloads\blender-5.1.2-windows-x64.msi
+ 346.41 MB  C:\Users\User\OneDrive\Videos\Screen Recordings\Screen Recording 2026-01-05 125246.mp4
+ 335.70 MB  C:\Users\User\AppData\Roaming\Cursor\User\workspaceStorage\e79251f77bf5c8dcdef298578a7b7bbc\ms-vscode.js-debug\.profile\ProvenanceData\2024.10.16.4\vti-b-p32-visual.quant.ort
+ 335.70 MB  C:\Users\User\AppData\Roaming\Cursor\User\workspaceStorage\8ef32c8ed6543009796f72f880095dac\ms-vscode.js-debug\.profile\ProvenanceData\2024.10.16.4\vti-b-p32-visual.quant.ort
+ 335.70 MB  C:\Users\User\AppData\Roaming\Code\User\workspaceStorage\e79251f77bf5c8dcdef298578a7b7bbc\ms-vscode.js-debug\.profile\ProvenanceData\2024.10.16.4\vti-b-p32-visual.quant.ort
+ 335.70 MB  C:\Users\User\AppData\Roaming\Code\User\workspaceStorage\8ef32c8ed6543009796f72f880095dac\ms-vscode.js-debug\.profile\ProvenanceData\2024.10.16.4\vti-b-p32-visual.quant.ort
+ 328.07 MB  C:\Users\User\AppData\Roaming\UnityHub\Templates\com.unity.template.get-started-2.1.1.tgz
+ 307.30 MB  C:\Users\User\AppData\Local\BraveSoftware\Brave-Browser\Application\151.1.93.129\chrome.dll
+ 303.23 MB  C:\Users\User\AppData\Local\OpenAI\Codex\bin\5d35d2790d1d3d7b\codex.exe
+ 303.23 MB  C:\Users\User\.codex\plugins\.plugin-appserver\codex.exe
+ 303.23 MB  C:\Users\User\.codex\.sandbox-bin\codex.exe
+ 277.00 MB  C:\Users\User\AppData\Local\Microsoft\Windows\Explorer\thumbcache_768.db
+ 263.88 MB  C:\Users\User\OneDrive\Desktop\MobileAppDev\windows\flutter\ephemeral\flutter_windows.dll.pdb
+ 263.88 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\global_dominion\windows\flutter\ephemeral\flutter_windows.dll.pdb
+ 263.88 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\flutter\dev\a11y_assessments\windows\flutter\ephemeral\flutter_windows.dll.pdb
+ 263.88 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\flutter\bin\cache\artifacts\engine\windows-x64\flutter_windows.dll.pdb
+ 253.41 MB  C:\Users\User\.vscode\extensions\anthropic.claude-code-2.1.220-win32-x64\resources\native-binary\claude.exe
+ 247.42 MB  C:\Users\User\AppData\Local\CapCut\Apps\8.5.0.3590\VECreator.dll
+ 244.59 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\flutter\bin\cache\artifacts\engine\windows-x64-profile\flutter_windows.dll.pdb
+ 243.36 MB  C:\Users\User\Downloads\wps_download\e6379f2126dd332a9afe1d9d8ca27cb6-15_setup_XA_mui_Free.exe.601.1115.exe
+ 241.94 MB  C:\Users\User\.antigravity\extensions\anthropic.claude-code-2.1.123-win32-x64\resources\native-binary\claude.exe
+ 239.43 MB  C:\Users\User\OneDrive\Desktop\Global Dominion\flutter\bin\cache\artifacts\engine\windows-x64-release\flutter_windows.dll.pdb
+ 236.44 MB  C:\Users\User\AppData\Local\CapCut\Apps\9.1.0.3879\VECreator.dll
+ 236.10 MB  C:\Users\User\AppData\Local\CapCut\Apps\9.0.0.3858\VECreator.dll
+ 225.76 MB  C:\Users\User\AppData\Local\CapCut\Apps\8.8.0.3774\VECreator.dll
+ 223.50 MB  C:\Users\User\AppData\Roaming\Code\CachedExtensionVSIXs\.d7e73fd8-84d3-419a-a1b9-db2d208ee574
+ 221.97 MB  C:\Users\User\AppData\Local\Programs\Microsoft VS Code\new_Code.exe
+ 221.92 MB  C:\Users\User\AppData\Local\Programs\Microsoft VS Code\Code.exe
+ 221.72 MB  C:\Users\User\.gradle\wrapper\dists\gradle-9.1.0-all\7wzd0jkjit61aq2p43wpjgij9\gradle-9.1.0-all.zip
+
+TOP LARGEST FOLDERS
+============================================================
+  88.10 GB  C:\Users\User\AppData
+  14.48 GB  C:\Users\User\Downloads
+  14.34 GB  C:\Users\User\OneDrive
+   6.49 GB  C:\Users\User\Documents
+   5.03 GB  C:\Users\User\.gradle
+   3.39 GB  C:\Users\User\.vscode
+   2.70 GB  C:\Users\User\.qoder
+   2.26 GB  C:\Users\User\.gemini
+   1.41 GB  C:\Users\User\.cache
+   1.04 GB  C:\Users\User\source
+ 801.07 MB  C:\Users\User\.codex
+ 315.03 MB  C:\Users\User\.antigravity-ide
+ 313.14 MB  C:\Users\User\.antigravity
+ 207.33 MB  C:\Users\User\.cursor
+  65.79 MB  C:\Users\User\.local
+  52.85 MB  C:\Users\User\.limpc
+  15.90 MB  C:\Users\User\.dbclient
+   9.90 MB  C:\Users\User\Links
+   6.36 MB  C:\Users\User\.android
+   4.87 MB  C:\Users\User\.nuget
+   3.43 MB  C:\Users\User\Music
+   3.04 MB  C:\Users\User\.mysqlsh-gui
+ 631.76 KB  C:\Users\User\.claude
+ 528.06 KB  C:\Users\User\system
+ 479.30 KB  C:\Users\User\WPSDrive
+ 379.43 KB  C:\Users\User\AndroidStudioProjects
+ 284.16 KB  C:\Users\User\WPS Cloud Files
+ 274.44 KB  C:\Users\User\.manus
+ 169.52 KB  C:\Users\User\.thumbnails
+ 156.05 KB  C:\Users\User\.vscode-shared
