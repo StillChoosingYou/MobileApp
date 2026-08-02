@@ -48,7 +48,7 @@ class AssistantRules {
     }
 
     if (q.contains('polic')) {
-      return "Policies are posted under Announcements and the Student Handbook. Tell me which "
+      return 'Policies are posted under Announcements and the Student Handbook. Tell me which '
           "one you're asking about (attendance, grading, clearance) and I'll point you to the "
           'right office.';
     }

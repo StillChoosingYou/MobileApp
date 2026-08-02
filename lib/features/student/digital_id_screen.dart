@@ -70,14 +70,14 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> with SingleTi
                 width: 340,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.royalBlueSeed, const Color(0xFF1A5088)],
+                    colors: [AppColors.royalBlueSeed, Color(0xFF1A5088)],
                   ),
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 20, offset: const Offset(0, 10)),
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 20, offset: const Offset(0, 10)),
                   ],
                 ),
                 child: Column(

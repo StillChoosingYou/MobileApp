@@ -117,8 +117,8 @@ class StudentHomeScreen extends ConsumerWidget {
                   padding: EdgeInsets.all(24),
                   child: LoadingView(),
                 ),
-                error: (e, _) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                error: (e, _) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: ErrorView(message: 'Could not load announcements.'),
                 ),
               );
