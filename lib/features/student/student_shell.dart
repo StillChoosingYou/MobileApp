@@ -20,14 +20,13 @@ class _StudentShellState extends State<StudentShell> {
   @override
   Widget build(BuildContext context) {
     return RoleNavShell(
-      title: 'PGPC Campus',
       currentIndex: _index,
       onTabSelected: (i) => setState(() => _index = i),
       tabs: const [
-        NavTab(icon: Icons.home_outlined, label: 'Home', screen: StudentHomeScreen()),
+        NavTab(icon: Icons.home_outlined, label: 'PGPC Campus', screen: StudentHomeScreen()),
         NavTab(icon: Icons.badge_outlined, label: 'Digital ID', screen: DigitalIdScreen()),
-        NavTab(icon: Icons.event_note_outlined, label: 'Schedule', screen: ScheduleGradesScreen()),
-        NavTab(icon: Icons.account_balance_wallet_outlined, label: 'Tuition', screen: TuitionWalletScreen()),
+        NavTab(icon: Icons.event_note_outlined, label: 'Schedule & Grades', screen: ScheduleGradesScreen()),
+        NavTab(icon: Icons.account_balance_wallet_outlined, label: 'Tuition & Wallet', screen: TuitionWalletScreen()),
         NavTab(icon: Icons.miscellaneous_services_outlined, label: 'Services', screen: ServicesScreen()),
       ],
     );

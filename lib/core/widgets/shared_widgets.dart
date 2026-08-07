@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/motion.dart';
+import '../utils/responsive.dart';
 
 /// A left-aligned heading with an optional trailing action — used at the
 /// top of nearly every list screen.
@@ -14,8 +15,9 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final padding = Responsive.pagePadding(context).copyWith(top: 20, bottom: 8);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      padding: padding,
       child: Row(
         children: [
           Expanded(
@@ -253,7 +255,9 @@ class FormWidthLimiter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
+        constraints: BoxConstraints(
+          maxWidth: maxWidth ?? Responsive.contentMaxWidth(context).clamp(0, 480),
+        ),
         child: child,
       ),
     );

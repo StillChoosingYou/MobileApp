@@ -17,27 +17,31 @@ class ServicesScreen extends ConsumerWidget {
 
     return DefaultTabController(
       length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Student Services'),
-          bottom: const TabBar(
-            isScrollable: true,
-            tabs: [
-              Tab(text: 'Documents'),
-              Tab(text: 'Clearance'),
-              Tab(text: 'Queue'),
-              Tab(text: 'Appointments'),
-            ],
+      child: Column(
+        children: [
+          Material(
+            color: Theme.of(context).colorScheme.surface,
+            child: const TabBar(
+              isScrollable: true,
+              tabs: [
+                Tab(text: 'Documents'),
+                Tab(text: 'Clearance'),
+                Tab(text: 'Queue'),
+                Tab(text: 'Appointments'),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            _DocumentsTab(studentId: user.id),
-            _ClearanceTab(studentId: user.id),
-            _QueueTab(studentId: user.id, studentName: user.name),
-            _AppointmentsTab(studentId: user.id),
-          ],
-        ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                _DocumentsTab(studentId: user.id),
+                _ClearanceTab(studentId: user.id),
+                _QueueTab(studentId: user.id, studentName: user.name),
+                _AppointmentsTab(studentId: user.id),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -107,13 +111,10 @@ class _DocumentsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final requests = ref.watch(documentRequestsProvider(studentId));
-    return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openNewRequest(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('New request'),
-      ),
-      body: requests.when(
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: requests.when(
         data: (list) {
           if (list.isEmpty) {
             return const EmptyState(
@@ -146,7 +147,18 @@ class _DocumentsTab extends ConsumerWidget {
         },
         loading: () => const LoadingView(),
         error: (_, __) => const ErrorView(message: 'Could not load your document requests.'),
-      ),
+          ),
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton.extended(
+            onPressed: () => _openNewRequest(context, ref),
+            icon: const Icon(Icons.add),
+            label: const Text('New request'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -424,13 +436,10 @@ class _AppointmentsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appointments = ref.watch(appointmentsProvider(studentId));
-    return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _bookAppointment(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Book'),
-      ),
-      body: appointments.when(
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: appointments.when(
         data: (list) {
           if (list.isEmpty) {
             return const EmptyState(
@@ -463,7 +472,18 @@ class _AppointmentsTab extends ConsumerWidget {
         },
         loading: () => const LoadingView(),
         error: (_, __) => const ErrorView(message: 'Could not load your appointments.'),
-      ),
+          ),
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton.extended(
+            onPressed: () => _bookAppointment(context, ref),
+            icon: const Icon(Icons.add),
+            label: const Text('Book'),
+          ),
+        ),
+      ],
     );
   }
 }

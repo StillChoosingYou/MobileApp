@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
 import '../../providers/repository_providers.dart';
@@ -107,7 +108,9 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
                   child: Align(
                     alignment: m.fromUser ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                      constraints: BoxConstraints(
+                        maxWidth: Responsive.fluidWidth(context, min: 220, max: 420, fraction: 0.75),
+                      ),
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(

@@ -1,5 +1,3 @@
-v = 1;
-for (var i = 0; i < 1000000; i++) {
-  v += 1;
+void main() {
+  print('Hello, World!');
 }
-print(v);

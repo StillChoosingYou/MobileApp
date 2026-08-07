@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
 
@@ -27,12 +28,12 @@ class AnalyticsDashboardScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           summary.when(
             data: (s) => GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: Responsive.gridCrossAxisCount(context),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 1.5,
+              childAspectRatio: Responsive.isCompactHeight(context) ? 1.65 : 1.5,
               children: [
                 FadeSlideIn(
                   index: 0,

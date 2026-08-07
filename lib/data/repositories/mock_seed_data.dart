@@ -19,25 +19,25 @@ class MockSeedData {
 
   final List<AppUser> users = [
     const AppUser(
-      id: 'u_stu_001',
+      id: 'P202300147',
       name: 'Andrea Villanueva',
       email: 'andrea.villanueva@pgpc.edu.ph',
       role: UserRole.student,
-      loginId: '2023-00147',
+      loginId: 'P202300147',
     ),
     const AppUser(
-      id: 'u_stu_002',
+      id: 'P202300212',
       name: 'Miguel Santos',
       email: 'miguel.santos@pgpc.edu.ph',
       role: UserRole.student,
-      loginId: '2023-00212',
+      loginId: 'P202300212',
     ),
     const AppUser(
-      id: 'u_stu_003',
+      id: 'P202400089',
       name: 'Jasmine Reyes',
       email: 'jasmine.reyes@pgpc.edu.ph',
       role: UserRole.student,
-      loginId: '2024-00089',
+      loginId: 'P202400089',
     ),
     const AppUser(
       id: 'u_fac_001',
@@ -115,20 +115,20 @@ class MockSeedData {
 
   final List<StudentProfile> studentProfiles = const [
     StudentProfile(
-      studentId: 'u_stu_001',
+      studentId: 'P202300147',
       program: 'BS Information Technology',
       yearLevel: 2,
       blockSection: 'BSIT-2A',
       scholarshipLabel: 'LGU Merit Scholar',
     ),
     StudentProfile(
-      studentId: 'u_stu_002',
+      studentId: 'P202300212',
       program: 'BS Business Administration',
       yearLevel: 3,
       blockSection: 'BSBA-3B',
     ),
     StudentProfile(
-      studentId: 'u_stu_003',
+      studentId: 'P202400089',
       program: 'BS Information Technology',
       yearLevel: 1,
       blockSection: 'BSIT-1C',
@@ -217,8 +217,8 @@ class MockSeedData {
   ];
 
   final Map<String, TuitionLedger> ledgers = {
-    'u_stu_001': const TuitionLedger(
-      studentId: 'u_stu_001',
+    'P202300147': const TuitionLedger(
+      studentId: 'P202300147',
       term: term,
       tuitionFee: 12500,
       miscFees: 2300,
@@ -226,8 +226,8 @@ class MockSeedData {
       scholarshipDiscount: 6000,
       totalPaid: 5000,
     ),
-    'u_stu_002': const TuitionLedger(
-      studentId: 'u_stu_002',
+    'P202300212': const TuitionLedger(
+      studentId: 'P202300212',
       term: term,
       tuitionFee: 13800,
       miscFees: 2300,
@@ -235,8 +235,8 @@ class MockSeedData {
       scholarshipDiscount: 0,
       totalPaid: 17000,
     ),
-    'u_stu_003': const TuitionLedger(
-      studentId: 'u_stu_003',
+    'P202400089': const TuitionLedger(
+      studentId: 'P202400089',
       term: term,
       tuitionFee: 11800,
       miscFees: 2100,
@@ -249,7 +249,7 @@ class MockSeedData {
   final List<Payment> payments = [
     Payment(
       id: 'pay_001',
-      studentId: 'u_stu_001',
+      studentId: 'P202300147',
       studentName: 'Andrea Villanueva',
       amount: 5000,
       method: PaymentMethod.gcash,
@@ -259,7 +259,7 @@ class MockSeedData {
     ),
     Payment(
       id: 'pay_002',
-      studentId: 'u_stu_002',
+      studentId: 'P202300212',
       studentName: 'Miguel Santos',
       amount: 17000,
       method: PaymentMethod.bankTransfer,
@@ -272,21 +272,21 @@ class MockSeedData {
   final List<Enrollment> enrollments = [
     const Enrollment(
       id: 'enr_001',
-      studentId: 'u_stu_001',
+      studentId: 'P202300147',
       term: term,
       sectionIds: ['sec_it201_a', 'sec_it202_a', 'sec_ge105_a', 'sec_it203_a'],
       status: EnrollmentStatus.enrolled,
     ),
     const Enrollment(
       id: 'enr_002',
-      studentId: 'u_stu_002',
+      studentId: 'P202300212',
       term: term,
       sectionIds: ['sec_ba301_a'],
       status: EnrollmentStatus.enrolled,
     ),
     const Enrollment(
       id: 'enr_003',
-      studentId: 'u_stu_003',
+      studentId: 'P202400089',
       term: term,
       sectionIds: ['sec_it201_a'],
       status: EnrollmentStatus.pending,
@@ -320,7 +320,7 @@ class MockSeedData {
   ];
 
   final Map<String, List<NotificationItem>> notifications = {
-    'u_stu_001': [
+    'P202300147': [
       NotificationItem(
         id: 'ntf_001',
         title: 'Payment received',
@@ -338,10 +338,10 @@ class MockSeedData {
   };
 
   final Map<String, List<DocumentRequest>> documentRequests = {
-    'u_stu_001': [
+    'P202300147': [
       DocumentRequest(
         id: 'doc_001',
-        studentId: 'u_stu_001',
+        studentId: 'P202300147',
         type: DocumentType.certificateOfEnrollment,
         purpose: 'Scholarship requirement',
         requestedAt: DateTime.now().subtract(const Duration(days: 4)),
@@ -351,8 +351,8 @@ class MockSeedData {
   };
 
   final Map<String, Clearance> clearances = {
-    'u_stu_001': const Clearance(
-      studentId: 'u_stu_001',
+    'P202300147': const Clearance(
+      studentId: 'P202300147',
       term: term,
       steps: [
         ClearanceStep(office: 'Library', cleared: true, clearedBy: 'Lib. Santos'),
@@ -382,7 +382,7 @@ class MockSeedData {
       id: 'log_003',
       actor: 'Kevin Mercado',
       action: 'Deactivated account',
-      target: 'u_stu_old_099',
+      target: 'P202100099',
       timestamp: DateTime.now().subtract(const Duration(days: 20)),
     ),
   ];

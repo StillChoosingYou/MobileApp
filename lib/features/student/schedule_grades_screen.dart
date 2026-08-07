@@ -16,17 +16,21 @@ class ScheduleGradesScreen extends ConsumerWidget {
 
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Schedule & Grades'),
-          bottom: const TabBar(tabs: [Tab(text: 'Schedule'), Tab(text: 'Grades')]),
-        ),
-        body: TabBarView(
-          children: [
-            _ScheduleTab(studentId: user.id),
-            _GradesTab(studentId: user.id),
-          ],
-        ),
+      child: Column(
+        children: [
+          Material(
+            color: Theme.of(context).colorScheme.surface,
+            child: const TabBar(tabs: [Tab(text: 'Schedule'), Tab(text: 'Grades')]),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                _ScheduleTab(studentId: user.id),
+                _GradesTab(studentId: user.id),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

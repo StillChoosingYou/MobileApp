@@ -18,16 +18,14 @@ class TuitionWalletScreen extends ConsumerWidget {
     final paymentsAsync = ref.watch(studentPaymentHistoryProvider(user.id));
     final scheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Tuition & Wallet')),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(studentLedgerProvider(user.id));
-          ref.invalidate(studentPaymentHistoryProvider(user.id));
-        },
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(studentLedgerProvider(user.id));
+        ref.invalidate(studentPaymentHistoryProvider(user.id));
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
             ledgerAsync.when(
               data: (ledger) => _LedgerCard(ledger: ledger),
               loading: () => const LoadingView(),
@@ -76,7 +74,6 @@ class TuitionWalletScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

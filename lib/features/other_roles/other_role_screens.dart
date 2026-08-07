@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../core/utils/date_utils.dart';
 import '../../models/app_user.dart';
@@ -77,11 +78,11 @@ class GenericRoleDashboard extends StatelessWidget {
       appBar: AppBar(title: Text(role.label), actions: const [LogoutButton()]),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: Responsive.gridCrossAxisCount(context),
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 1.2,
+          childAspectRatio: Responsive.gridChildAspectRatio(context),
         ),
         itemCount: _entries.length,
         itemBuilder: (context, i) {

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/date_utils.dart';
 import '../../core/utils/gpa_calculator.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/academic_models.dart';
 import '../../models/campus_models.dart';
@@ -56,17 +57,12 @@ class StudentHomeScreen extends ConsumerWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(child: FadeSlideIn(index: 0, child: _GpaStatCard(studentId: user.id))),
-                const SizedBox(width: 12),
-                Expanded(child: FadeSlideIn(index: 1, child: _TuitionStatCard(studentId: user.id))),
-                const SizedBox(width: 12),
-                Expanded(child: FadeSlideIn(index: 2, child: _EnrollmentStatCard(studentId: user.id))),
-              ],
-            ),
+          ResponsiveStatRow(
+            children: [
+              FadeSlideIn(index: 0, child: _GpaStatCard(studentId: user.id)),
+              FadeSlideIn(index: 1, child: _TuitionStatCard(studentId: user.id)),
+              FadeSlideIn(index: 2, child: _EnrollmentStatCard(studentId: user.id)),
+            ],
           ),
           const SizedBox(height: 20),
           Padding(

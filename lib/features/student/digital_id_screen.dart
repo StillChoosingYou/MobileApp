@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../core/config/app_config.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/motion.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
 
@@ -57,17 +58,15 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> with SingleTi
     if (user == null) return const LoadingView();
     final profileAsync = ref.watch(studentProfileProvider(user.id));
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Digital Student ID')),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: FadeTransition(
-            opacity: _fade,
-            child: ScaleTransition(
-              scale: _scale,
-              child: Container(
-                width: 340,
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: FadeTransition(
+          opacity: _fade,
+          child: ScaleTransition(
+            scale: _scale,
+            child: Container(
+              width: Responsive.fluidWidth(context, min: 280, max: 360),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -142,7 +141,7 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> with SingleTi
                       child: QrImageView(
                         data: 'PGPC-ID|${user.loginId}|${user.id}',
                         version: QrVersions.auto,
-                        size: 170,
+                        size: Responsive.fluidWidth(context, min: 140, max: 170, fraction: 0.42),
                         gapless: false,
                       ),
                     ),
@@ -158,7 +157,6 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> with SingleTi
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

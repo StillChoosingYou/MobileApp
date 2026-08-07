@@ -1,0 +1,143 @@
+import 'package:flutter/material.dart';
+
+/// Breakpoints and layout helpers for phones, landscape phones, tablets, and
+/// desktop/web widths.
+abstract final class Responsive {
+  static const double tabletBreakpoint = 600;
+  static const double desktopBreakpoint = 840;
+  static const double compactHeightBreakpoint = 500;
+
+  static Size sizeOf(BuildContext context) => MediaQuery.sizeOf(context);
+
+  static EdgeInsets viewPaddingOf(BuildContext context) =>
+      MediaQuery.viewPaddingOf(context);
+
+  static bool isLandscape(BuildContext context) {
+    final size = sizeOf(context);
+    return size.width > size.height;
+  }
+
+  /// True on landscape phones and other short viewports.
+  static bool isCompactHeight(BuildContext context) =>
+      sizeOf(context).height < compactHeightBreakpoint;
+
+  static bool isTabletOrWider(BuildContext context) =>
+      sizeOf(context).width >= tabletBreakpoint;
+
+  static bool isDesktopOrWider(BuildContext context) =>
+      sizeOf(context).width >= desktopBreakpoint;
+
+  /// Side [NavigationRail] saves vertical space in landscape and scales up
+  /// naturally on tablets/desktop.
+  static bool useSideNavigation(BuildContext context) =>
+      isTabletOrWider(context) || (isLandscape(context) && isCompactHeight(context));
+
+  static bool shouldExtendNavigationRail(BuildContext context) =>
+      isDesktopOrWider(context);
+
+  static int gridCrossAxisCount(
+    BuildContext context, {
+    int compact = 2,
+    int medium = 3,
+    int expanded = 4,
+  }) {
+    final width = sizeOf(context).width;
+    if (width >= desktopBreakpoint) return expanded;
+    if (width >= tabletBreakpoint) return medium;
+    return compact;
+  }
+
+  static double gridChildAspectRatio(BuildContext context) {
+    if (isCompactHeight(context)) return 1.35;
+    if (isTabletOrWider(context)) return 1.25;
+    return 1.2;
+  }
+
+  static double contentMaxWidth(BuildContext context) {
+    final width = sizeOf(context).width;
+    if (width >= desktopBreakpoint) return 960;
+    if (width >= tabletBreakpoint) return 720;
+    return width;
+  }
+
+  static EdgeInsets pagePadding(BuildContext context) {
+    final horizontal = isDesktopOrWider(context)
+        ? 32.0
+        : isTabletOrWider(context)
+            ? 24.0
+            : 20.0;
+    return EdgeInsets.symmetric(horizontal: horizontal);
+  }
+
+  /// Fluid width clamped between [min] and [max], scaled by [fraction] of
+  /// the current viewport width.
+  static double fluidWidth(
+    BuildContext context, {
+    required double min,
+    required double max,
+    double fraction = 0.9,
+  }) {
+    return (sizeOf(context).width * fraction).clamp(min, max);
+  }
+}
+
+/// Centers content and caps width on larger screens.
+class ResponsiveContent extends StatelessWidget {
+  const ResponsiveContent({super.key, required this.child, this.maxWidth});
+
+  final Widget child;
+  final double? maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth ?? Responsive.contentMaxWidth(context)),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// A row of stat cards that scrolls horizontally when horizontal space is tight.
+class ResponsiveStatRow extends StatelessWidget {
+  const ResponsiveStatRow({super.key, required this.children, this.spacing = 12});
+
+  final List<Widget> children;
+  final double spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = Responsive.pagePadding(context);
+    final width = Responsive.sizeOf(context).width;
+    final useHorizontalScroll = width < 400 || Responsive.isCompactHeight(context);
+
+    if (useHorizontalScroll) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: padding,
+        child: Row(
+          children: [
+            for (var i = 0; i < children.length; i++) ...[
+              if (i > 0) SizedBox(width: spacing),
+              SizedBox(width: 148, child: children[i]),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: padding,
+      child: Row(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) SizedBox(width: spacing),
+            Expanded(child: children[i]),
+          ],
+        ],
+      ),
+    );
+  }
+}
