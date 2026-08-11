@@ -246,17 +246,17 @@ class InitialsAvatar extends StatelessWidget {
 /// Usage: wrap whatever's inside your Scaffold's `body` — typically a
 /// `SingleChildScrollView` — in this widget.
 class FormWidthLimiter extends StatelessWidget {
-  const FormWidthLimiter({super.key, required this.child, this.maxWidth = 480});
+  const FormWidthLimiter({super.key, required this.child, this.maxWidth});
 
   final Widget child;
-  final double maxWidth;
+  final double? maxWidth;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: maxWidth ?? Responsive.contentMaxWidth(context).clamp(0, 480),
+          maxWidth: maxWidth ?? Responsive.contentMaxWidth(context).clamp(0.0, 480.0),
         ),
         child: child,
       ),
