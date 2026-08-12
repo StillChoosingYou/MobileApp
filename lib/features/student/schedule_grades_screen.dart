@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/gpa_calculator.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/academic_models.dart';
 import '../../providers/feature_providers.dart';
@@ -63,7 +64,7 @@ class _ScheduleTab extends ConsumerWidget {
         }
         final sorted = [...list]..sort((a, b) => a.startTime.compareTo(b.startTime));
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: Responsive.scrollPadding(context),
           itemCount: sorted.length,
           itemBuilder: (context, i) {
             final s = sorted[i];
@@ -115,33 +116,66 @@ class _GradesTab extends ConsumerWidget {
         }
         final gpa = GpaCalculator.compute(list);
         return ListView(
-          padding: const EdgeInsets.all(16),
+          padding: Responsive.scrollPadding(context),
           children: [
             Card(
               elevation: 0,
               color: Theme.of(context).colorScheme.primaryContainer,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Icon(Icons.grade, color: Theme.of(context).colorScheme.onPrimaryContainer),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Overall GPA: ${gpa?.toStringAsFixed(2) ?? '—'}',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                padding: EdgeInsets.all(Responsive.spacing(context, normal: 16, compact: 12)),
+                child: Responsive.isCompactHeight(context) || Responsive.sizeOf(context).width < 360
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.grade, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Overall GPA: ${gpa?.toStringAsFixed(2) ?? '—'}',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '1.00 highest • 5.00 failing',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Icon(Icons.grade, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Overall GPA: ${gpa?.toStringAsFixed(2) ?? '—'}',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            '1.00 highest • 5.00 failing',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '1.00 highest • 5.00 failing',
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer, fontSize: 11),
-                    ),
-                  ],
-                ),
               ),
             ),
             const SizedBox(height: 12),

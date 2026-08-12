@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/routing/app_router.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/app_user.dart';
 
@@ -42,21 +43,21 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
       appBar: AppBar(title: const Text('Two-Factor Verification')),
       body: SafeArea(
         child: FormWidthLimiter(
-          child: Padding(
-          padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
+          padding: Responsive.formPadding(context),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Enter the code we sent you', style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 8),
+              SizedBox(height: Responsive.spacing(context, normal: 8, compact: 6)),
               Text(
                 'Hi ${widget.pendingUser.name.split(' ').first}, enter the 6-digit code to '
                 'finish signing in.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: Responsive.spacing(context, normal: 8, compact: 6)),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(Responsive.spacing(context, normal: 12, compact: 10)),
                 decoration: BoxDecoration(
                   color: scheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(10),
@@ -66,7 +67,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
                   style: TextStyle(color: scheme.onSecondaryContainer),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: Responsive.spacing(context, normal: 20, compact: 14)),
               TextField(
                 controller: _controller,
                 keyboardType: TextInputType.number,

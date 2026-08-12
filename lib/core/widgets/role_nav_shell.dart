@@ -100,10 +100,15 @@ class RoleNavShell extends StatelessWidget {
         bottom: tabs[currentIndex].appBarBottom,
         actions: const [LogoutButton()],
       ),
-      body: ResponsiveContent(child: body),
+      body: SafeArea(
+        child: ResponsiveContent(child: body),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: onTabSelected,
+        labelBehavior: Responsive.isCompactHeight(context)
+            ? NavigationDestinationLabelBehavior.onlyShowSelected
+            : NavigationDestinationLabelBehavior.alwaysShow,
         destinations: destinations,
       ),
     );

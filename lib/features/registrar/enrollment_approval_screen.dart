@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/academic_models.dart';
 import '../../providers/feature_providers.dart';
@@ -49,7 +50,7 @@ class EnrollmentApprovalScreen extends ConsumerWidget {
           );
         }
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: Responsive.scrollPadding(context),
           itemCount: list.length,
           itemBuilder: (context, i) {
             final e = list[i];

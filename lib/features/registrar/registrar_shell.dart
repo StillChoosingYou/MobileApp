@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
@@ -42,48 +43,48 @@ class _RegistrarHomeScreen extends ConsumerWidget {
     final sections = ref.watch(allSectionsProvider);
 
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: Responsive.scrollPadding(context),
       children: [
         Text('Registrar Overview', style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 16),
-        Row(
+        SizedBox(height: Responsive.spacing(context)),
+        ResponsiveStatRow(
           children: [
-            Expanded(
-              child: pending.when(
-                data: (list) => StatCard(
-                  icon: Icons.pending_actions_outlined,
-                  label: 'Pending Enrollments',
-                  value: '${list.length}',
-                  color: list.isEmpty ? null : Colors.orange,
-                ),
-                loading: () => const StatCard(icon: Icons.pending_actions_outlined, label: 'Pending Enrollments', value: '…'),
-                error: (_, __) => const StatCard(icon: Icons.pending_actions_outlined, label: 'Pending Enrollments', value: '—'),
+            pending.when(
+              data: (list) => StatCard(
+                icon: Icons.pending_actions_outlined,
+                label: 'Pending Enrollments',
+                value: '${list.length}',
+                color: list.isEmpty ? null : Colors.orange,
               ),
+              loading: () => const StatCard(icon: Icons.pending_actions_outlined, label: 'Pending Enrollments', value: '…'),
+              error: (_, __) => const StatCard(icon: Icons.pending_actions_outlined, label: 'Pending Enrollments', value: '—'),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: subjects.when(
-                data: (list) => StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '${list.length}'),
-                loading: () => const StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '…'),
-                error: (_, __) => const StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '—'),
-              ),
+            subjects.when(
+              data: (list) => StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '${list.length}'),
+              loading: () => const StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '…'),
+              error: (_, __) => const StatCard(icon: Icons.menu_book_outlined, label: 'Subjects Offered', value: '—'),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        sections.when(
-          data: (list) => StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '${list.length}'),
-          loading: () => const StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '…'),
-          error: (_, __) => const StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '—'),
+        Padding(
+          padding: Responsive.pagePadding(context).copyWith(top: 12),
+          child: sections.when(
+            data: (list) => StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '${list.length}'),
+            loading: () => const StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '…'),
+            error: (_, __) => const StatCard(icon: Icons.event_seat_outlined, label: 'Active Sections', value: '—'),
+          ),
         ),
-        const SizedBox(height: 24),
-        Text(
-          'Curriculum management, COR issuance, transcript and certificate generation, and '
-          'graduation evaluation share the same Records screen pattern — extend '
-          'StudentRecordsScreen / RegistrarRepository the same way once you need them.',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+        SizedBox(height: Responsive.spacing(context, normal: 24, compact: 16)),
+        Padding(
+          padding: Responsive.pagePadding(context),
+          child: Text(
+            'Curriculum management, COR issuance, transcript and certificate generation, and '
+            'graduation evaluation share the same Records screen pattern — extend '
+            'StudentRecordsScreen / RegistrarRepository the same way once you need them.',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
         ),
       ],
     );

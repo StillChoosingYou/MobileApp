@@ -15,7 +15,10 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final padding = Responsive.pagePadding(context).copyWith(top: 20, bottom: 8);
+    final padding = Responsive.pagePadding(context).copyWith(
+      top: Responsive.isCompactHeight(context) ? 12 : 20,
+      bottom: 8,
+    );
     return Padding(
       padding: padding,
       child: Row(

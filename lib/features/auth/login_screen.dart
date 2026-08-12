@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../core/routing/route_names.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/app_user.dart';
@@ -104,7 +105,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: SafeArea(
         child: FormWidthLimiter(
           child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: Responsive.formPadding(context),
           child: Form(
             key: _formKey,
             child: Column(

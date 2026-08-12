@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/campus_models.dart';
 import '../../providers/feature_providers.dart';
@@ -189,7 +190,7 @@ class _ClearanceTab extends ConsumerWidget {
     final clearance = ref.watch(clearanceProvider(studentId));
     return clearance.when(
       data: (c) => ListView(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.scrollPadding(context),
         children: [
           LinearProgressIndicator(
             value: c.steps.isEmpty ? 0 : c.clearedCount / c.steps.length,
@@ -307,7 +308,7 @@ class _MyTicketCard extends ConsumerWidget {
       color: scheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.scrollPadding(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

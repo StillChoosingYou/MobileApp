@@ -31,7 +31,7 @@ class StudentHomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+            padding: Responsive.pagePadding(context).copyWith(top: 20, bottom: 8),
             child: Row(
               children: [
                 InitialsAvatar(name: user.name, radius: 26),

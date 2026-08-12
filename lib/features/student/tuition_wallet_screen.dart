@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/financial_models.dart';
 import '../../providers/feature_providers.dart';
@@ -24,7 +25,7 @@ class TuitionWalletScreen extends ConsumerWidget {
         ref.invalidate(studentPaymentHistoryProvider(user.id));
       },
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.scrollPadding(context),
         children: [
             ledgerAsync.when(
               data: (ledger) => _LedgerCard(ledger: ledger),

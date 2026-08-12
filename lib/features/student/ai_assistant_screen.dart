@@ -86,7 +86,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.all(16),
+              padding: Responsive.scrollPadding(context),
               itemCount: _messages.length + (_thinking ? 1 : 0),
               itemBuilder: (context, i) {
                 if (i >= _messages.length) {
@@ -131,7 +131,10 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              padding: Responsive.pagePadding(context).copyWith(
+                top: 8,
+                bottom: 12 + MediaQuery.viewInsetsOf(context).bottom,
+              ),
               child: Row(
                 children: [
                   Expanded(

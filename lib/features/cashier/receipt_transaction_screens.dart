@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../models/financial_models.dart';
 import '../../providers/feature_providers.dart';
@@ -14,51 +15,55 @@ class ReceiptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final receiptWidth = Responsive.receiptWidth(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Digital Receipt')),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            width: 320,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: scheme.outlineVariant),
-            ),
-            child: Column(
-              children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 48),
-                const SizedBox(height: 12),
-                Text('Payment Recorded', style: Theme.of(context).textTheme.titleLarge),
-                Text(payment.receiptNumber, style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 16),
-                Text(
-                  '₱${payment.amount.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                const Divider(),
-                _ReceiptLine(label: 'Student', value: payment.studentName),
-                _ReceiptLine(label: 'Method', value: payment.method.label),
-                _ReceiptLine(label: 'Recorded by', value: payment.recordedBy),
-                _ReceiptLine(label: 'Date', value: AppDateUtils.dateTime(payment.timestamp)),
-                const SizedBox(height: 16),
-                QrImageView(
-                  data: 'PGPC-OR|${payment.receiptNumber}|${payment.amount}',
-                  size: 140,
-                  backgroundColor: Colors.white,
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton.icon(
-                  onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Wire this to a real printer via a receipt-printing plugin.')),
+          padding: Responsive.scrollPadding(context),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: receiptWidth),
+            child: Container(
+              width: double.infinity,
+              padding: Responsive.formPadding(context),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 48),
+                  const SizedBox(height: 12),
+                  Text('Payment Recorded', style: Theme.of(context).textTheme.titleLarge),
+                  Text(payment.receiptNumber, style: Theme.of(context).textTheme.bodyMedium),
+                  const SizedBox(height: 16),
+                  Text(
+                    '₱${payment.amount.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  icon: const Icon(Icons.print_outlined),
-                  label: const Text('Print physical receipt'),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  const Divider(),
+                  _ReceiptLine(label: 'Student', value: payment.studentName),
+                  _ReceiptLine(label: 'Method', value: payment.method.label),
+                  _ReceiptLine(label: 'Recorded by', value: payment.recordedBy),
+                  _ReceiptLine(label: 'Date', value: AppDateUtils.dateTime(payment.timestamp)),
+                  const SizedBox(height: 16),
+                  QrImageView(
+                    data: 'PGPC-OR|${payment.receiptNumber}|${payment.amount}',
+                    size: Responsive.fluidWidth(context, min: 120, max: 180, fraction: 0.4),
+                    backgroundColor: Colors.white,
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Wire this to a real printer via a receipt-printing plugin.')),
+                    ),
+                    icon: const Icon(Icons.print_outlined),
+                    label: const Text('Print physical receipt'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -103,7 +108,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
         ref.invalidate(dailyCollectionTotalProvider);
       },
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.scrollPadding(context),
         children: [
           Card(
             elevation: 0,

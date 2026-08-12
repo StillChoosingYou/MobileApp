@@ -65,9 +65,35 @@ abstract final class Responsive {
         ? 32.0
         : isTabletOrWider(context)
             ? 24.0
-            : 20.0;
+            : isCompactHeight(context)
+                ? 16.0
+                : 20.0;
     return EdgeInsets.symmetric(horizontal: horizontal);
   }
+
+  /// Padding for scrollable page content — tighter on short/landscape viewports.
+  static EdgeInsets scrollPadding(BuildContext context) {
+    final horizontal = pagePadding(context).horizontal / 2;
+    final vertical = isCompactHeight(context)
+        ? 12.0
+        : isTabletOrWider(context)
+            ? 20.0
+            : 16.0;
+    return EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical);
+  }
+
+  /// Form/auth screens — accounts for keyboard and compact height.
+  static EdgeInsets formPadding(BuildContext context) {
+    final base = scrollPadding(context);
+    return base.copyWith(
+      top: isCompactHeight(context) ? 16.0 : 24.0,
+      bottom: isCompactHeight(context) ? 16.0 : 24.0,
+    );
+  }
+
+  /// Fluid spacing that scales down on compact viewports.
+  static double spacing(BuildContext context, {double normal = 16, double compact = 10}) =>
+      isCompactHeight(context) ? compact : normal;
 
   /// Fluid width clamped between [min] and [max], scaled by [fraction] of
   /// the current viewport width.
@@ -78,6 +104,16 @@ abstract final class Responsive {
     double fraction = 0.9,
   }) {
     return (sizeOf(context).width * fraction).clamp(min, max);
+  }
+
+  /// Receipt/card overlay width — never fixed pixels on small screens.
+  static double receiptWidth(BuildContext context) =>
+      fluidWidth(context, min: 280, max: 420, fraction: 0.88);
+
+  /// QR scan frame — scales with the shortest viewport side.
+  static double scanFrameSize(BuildContext context) {
+    final shortest = sizeOf(context).shortestSide;
+    return (shortest * 0.55).clamp(180.0, 320.0);
   }
 }
 
