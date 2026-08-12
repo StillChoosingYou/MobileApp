@@ -3,6 +3,7 @@ import '../../models/academic_models.dart';
 import '../../models/financial_models.dart';
 import '../../models/campus_models.dart';
 import '../../models/audit_log.dart';
+import '../../models/advanced_models.dart';
 
 /// One shared, mutable seed so every mock repository sees the same "world" —
 /// e.g. a payment the Cashier records shows up in the Student's tuition
@@ -40,6 +41,41 @@ class MockSeedData {
       loginId: 'P202400089',
     ),
     const AppUser(
+      id: 'P202300310',
+      name: 'Carlos Mendoza',
+      email: 'carlos.mendoza@pgpc.edu.ph',
+      role: UserRole.student,
+      loginId: 'P202300310',
+    ),
+    const AppUser(
+      id: 'P202200055',
+      name: 'Maria Clara Diaz',
+      email: 'maria.diaz@pgpc.edu.ph',
+      role: UserRole.student,
+      loginId: 'P202200055',
+    ),
+    const AppUser(
+      id: 'P202400102',
+      name: 'Rafael Tan',
+      email: 'rafael.tan@pgpc.edu.ph',
+      role: UserRole.student,
+      loginId: 'P202400102',
+    ),
+    const AppUser(
+      id: 'P202300188',
+      name: 'Sophia Ramos',
+      email: 'sophia.ramos@pgpc.edu.ph',
+      role: UserRole.student,
+      loginId: 'P202300188',
+    ),
+    const AppUser(
+      id: 'P202200033',
+      name: 'Daniel Cruz',
+      email: 'daniel.cruz@pgpc.edu.ph',
+      role: UserRole.student,
+      loginId: 'P202200033',
+    ),
+    const AppUser(
       id: 'u_fac_001',
       name: 'Prof. Ramon Dela Cruz',
       email: 'r.delacruz@pgpc.edu.ph',
@@ -54,6 +90,14 @@ class MockSeedData {
       role: UserRole.teacher,
       loginId: 'EMP-1077',
       department: 'College of Business Administration',
+    ),
+    const AppUser(
+      id: 'u_fac_003',
+      name: 'Prof. Eduardo Garcia',
+      email: 'e.garcia@pgpc.edu.ph',
+      role: UserRole.teacher,
+      loginId: 'EMP-1091',
+      department: 'College of Computing Studies',
     ),
     const AppUser(
       id: 'u_reg_001',
@@ -133,17 +177,60 @@ class MockSeedData {
       yearLevel: 1,
       blockSection: 'BSIT-1C',
     ),
+    StudentProfile(
+      studentId: 'P202300310',
+      program: 'BS Information Technology',
+      yearLevel: 2,
+      blockSection: 'BSIT-2B',
+    ),
+    StudentProfile(
+      studentId: 'P202200055',
+      program: 'BS Information Technology',
+      yearLevel: 4,
+      blockSection: 'BSIT-4A',
+      scholarshipLabel: 'Academic Excellence Awardee',
+    ),
+    StudentProfile(
+      studentId: 'P202400102',
+      program: 'BS Business Administration',
+      yearLevel: 1,
+      blockSection: 'BSBA-1A',
+    ),
+    StudentProfile(
+      studentId: 'P202300188',
+      program: 'BS Business Administration',
+      yearLevel: 2,
+      blockSection: 'BSBA-2A',
+    ),
+    StudentProfile(
+      studentId: 'P202200033',
+      program: 'BS Information Technology',
+      yearLevel: 4,
+      blockSection: 'BSIT-4A',
+    ),
   ];
 
   final List<Subject> subjects = const [
-    Subject(code: 'IT201', title: 'Data Structures and Algorithms', units: 3),
+    Subject(code: 'IT101', title: 'Introduction to Computing', units: 3),
+    Subject(code: 'IT102', title: 'Computer Programming 1', units: 3, prerequisites: ['IT101']),
+    Subject(code: 'IT201', title: 'Data Structures and Algorithms', units: 3, prerequisites: ['IT102']),
     Subject(code: 'IT202', title: 'Information Management', units: 3),
     Subject(code: 'IT203', title: 'Mobile Application Development', units: 3, prerequisites: ['IT201']),
+    Subject(code: 'IT301', title: 'Software Engineering', units: 3, prerequisites: ['IT201']),
+    Subject(code: 'IT302', title: 'Web Development', units: 3, prerequisites: ['IT102']),
+    Subject(code: 'IT401', title: 'Capstone Project 1', units: 3, prerequisites: ['IT301']),
+    Subject(code: 'IT402', title: 'Capstone Project 2', units: 3, prerequisites: ['IT401']),
+    Subject(code: 'GE101', title: 'Purposive Communication', units: 3),
+    Subject(code: 'GE102', title: 'Understanding the Self', units: 3),
     Subject(code: 'GE105', title: 'The Life and Works of Rizal', units: 3),
+    Subject(code: 'MATH101', title: 'College Algebra', units: 3),
+    Subject(code: 'MATH102', title: 'Discrete Mathematics', units: 3, prerequisites: ['MATH101']),
     Subject(code: 'IT250', title: 'Human-Computer Interaction', units: 3, isElective: true),
     Subject(code: 'IT260', title: 'Cloud Computing Fundamentals', units: 3, isElective: true),
+    Subject(code: 'IT270', title: 'Cybersecurity Fundamentals', units: 3, isElective: true),
     Subject(code: 'BA301', title: 'Financial Management', units: 3),
-    Subject(code: 'PE201', title: 'Physical Fitness', units: 2),
+    Subject(code: 'PE101', title: 'Physical Fitness 1', units: 2),
+    Subject(code: 'PE201', title: 'Physical Fitness 2', units: 2, prerequisites: ['PE101']),
   ];
 
   final List<Section> sections = const [
@@ -207,13 +294,27 @@ class MockSeedData {
       slotsTotal: 40,
       slotsTaken: 33,
     ),
+    Section(
+      id: 'sec_it301_a',
+      subjectCode: 'IT301',
+      sectionLabel: 'BSIT-3A',
+      facultyName: 'Prof. Eduardo Garcia',
+      dayPattern: 'TTh',
+      startTime: '08:00',
+      endTime: '09:30',
+      room: 'CCS Lab 3',
+      slotsTotal: 35,
+      slotsTaken: 30,
+    ),
   ];
 
   final List<Grade> grades = [
-    const Grade(subjectCode: 'IT101', subjectTitle: 'Intro to Computing', units: 3, term: 'A.Y. 2025–2026, 2nd Semester', numericGrade: 1.50),
+    const Grade(subjectCode: 'IT101', subjectTitle: 'Intro to Computing', units: 3, term: 'A.Y. 2025–2026, 1st Semester', numericGrade: 1.50),
+    const Grade(subjectCode: 'IT102', subjectTitle: 'Computer Programming 1', units: 3, term: 'A.Y. 2025–2026, 1st Semester', numericGrade: 1.75),
     const Grade(subjectCode: 'GE101', subjectTitle: 'Purposive Communication', units: 3, term: 'A.Y. 2025–2026, 2nd Semester', numericGrade: 1.75),
     const Grade(subjectCode: 'MATH101', subjectTitle: 'College Algebra', units: 3, term: 'A.Y. 2025–2026, 2nd Semester', numericGrade: 2.00),
     const Grade(subjectCode: 'PE101', subjectTitle: 'Physical Fitness 1', units: 2, term: 'A.Y. 2025–2026, 2nd Semester', numericGrade: 1.25),
+    const Grade(subjectCode: 'GE102', subjectTitle: 'Understanding the Self', units: 3, term: 'A.Y. 2025–2026, 2nd Semester', numericGrade: 1.50),
   ];
 
   final Map<String, TuitionLedger> ledgers = {
@@ -244,6 +345,24 @@ class MockSeedData {
       scholarshipDiscount: 0,
       totalPaid: 0,
     ),
+    'P202300310': const TuitionLedger(
+      studentId: 'P202300310',
+      term: term,
+      tuitionFee: 12500,
+      miscFees: 2300,
+      labFees: 1800,
+      scholarshipDiscount: 0,
+      totalPaid: 8300,
+    ),
+    'P202200055': const TuitionLedger(
+      studentId: 'P202200055',
+      term: term,
+      tuitionFee: 12500,
+      miscFees: 2300,
+      labFees: 1800,
+      scholarshipDiscount: 8000,
+      totalPaid: 8600,
+    ),
   };
 
   final List<Payment> payments = [
@@ -265,6 +384,36 @@ class MockSeedData {
       method: PaymentMethod.bankTransfer,
       receiptNumber: 'OR-2026-01012',
       timestamp: DateTime.now().subtract(const Duration(days: 30)),
+      recordedBy: 'Bea Fernandez',
+    ),
+    Payment(
+      id: 'pay_003',
+      studentId: 'P202300310',
+      studentName: 'Carlos Mendoza',
+      amount: 8300,
+      method: PaymentMethod.cash,
+      receiptNumber: 'OR-2026-01038',
+      timestamp: DateTime.now().subtract(const Duration(days: 5)),
+      recordedBy: 'Bea Fernandez',
+    ),
+    Payment(
+      id: 'pay_004',
+      studentId: 'P202200055',
+      studentName: 'Maria Clara Diaz',
+      amount: 8600,
+      method: PaymentMethod.maya,
+      receiptNumber: 'OR-2026-01040',
+      timestamp: DateTime.now().subtract(const Duration(days: 3)),
+      recordedBy: 'Bea Fernandez',
+    ),
+    Payment(
+      id: 'pay_005',
+      studentId: 'P202300188',
+      studentName: 'Sophia Ramos',
+      amount: 4500,
+      method: PaymentMethod.gcash,
+      receiptNumber: 'OR-2026-01041',
+      timestamp: DateTime.now().subtract(const Duration(days: 1)),
       recordedBy: 'Bea Fernandez',
     ),
   ];
@@ -289,6 +438,27 @@ class MockSeedData {
       studentId: 'P202400089',
       term: term,
       sectionIds: ['sec_it201_a'],
+      status: EnrollmentStatus.pending,
+    ),
+    const Enrollment(
+      id: 'enr_004',
+      studentId: 'P202300310',
+      term: term,
+      sectionIds: ['sec_it201_a', 'sec_it202_a'],
+      status: EnrollmentStatus.enrolled,
+    ),
+    const Enrollment(
+      id: 'enr_005',
+      studentId: 'P202200055',
+      term: term,
+      sectionIds: ['sec_it301_a'],
+      status: EnrollmentStatus.enrolled,
+    ),
+    const Enrollment(
+      id: 'enr_006',
+      studentId: 'P202400102',
+      term: term,
+      sectionIds: ['sec_ba301_a'],
       status: EnrollmentStatus.pending,
     ),
   ];
@@ -317,6 +487,14 @@ class MockSeedData {
       category: 'Campus Life',
       postedAt: DateTime.now().subtract(const Duration(days: 9)),
     ),
+    Announcement(
+      id: 'ann_004',
+      title: 'Faculty Evaluation Period Open',
+      body: 'All students are required to complete faculty evaluations for their enrolled subjects this term. '
+          'Access the evaluation form through Student Tools.',
+      category: 'Academics',
+      postedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
   ];
 
   final Map<String, List<NotificationItem>> notifications = {
@@ -333,6 +511,18 @@ class MockSeedData {
         title: 'Tuition deadline approaching',
         body: 'Settle your remaining balance before the midterm deadline.',
         timestamp: DateTime.now().subtract(const Duration(days: 1)),
+      ),
+      NotificationItem(
+        id: 'ntf_003',
+        title: 'Faculty evaluation open',
+        body: 'Please evaluate your faculty for this semester through Student Tools.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+      ),
+      NotificationItem(
+        id: 'ntf_004',
+        title: 'Document ready for pickup',
+        body: 'Your Certificate of Enrollment is ready at the Registrar window.',
+        timestamp: DateTime.now().subtract(const Duration(hours: 2)),
       ),
     ],
   };
@@ -358,6 +548,26 @@ class MockSeedData {
         ClearanceStep(office: 'Library', cleared: true, clearedBy: 'Lib. Santos'),
         ClearanceStep(office: 'Laboratory', cleared: true, clearedBy: 'Eng. Torres'),
         ClearanceStep(office: 'Accounting', cleared: false),
+        ClearanceStep(office: 'Guidance', cleared: true, clearedBy: 'C. Lim'),
+      ],
+    ),
+    'P202300212': const Clearance(
+      studentId: 'P202300212',
+      term: term,
+      steps: [
+        ClearanceStep(office: 'Library', cleared: true, clearedBy: 'Lib. Santos'),
+        ClearanceStep(office: 'Laboratory', cleared: true, clearedBy: 'Eng. Torres'),
+        ClearanceStep(office: 'Accounting', cleared: true, clearedBy: 'N. Ibarra'),
+        ClearanceStep(office: 'Guidance', cleared: false),
+      ],
+    ),
+    'P202200055': const Clearance(
+      studentId: 'P202200055',
+      term: term,
+      steps: [
+        ClearanceStep(office: 'Library', cleared: true, clearedBy: 'Lib. Santos'),
+        ClearanceStep(office: 'Laboratory', cleared: true, clearedBy: 'Eng. Torres'),
+        ClearanceStep(office: 'Accounting', cleared: true, clearedBy: 'N. Ibarra'),
         ClearanceStep(office: 'Guidance', cleared: true, clearedBy: 'C. Lim'),
       ],
     ),
@@ -410,4 +620,268 @@ class MockSeedData {
     ),
   ];
   final List<Appointment> appointments = [];
+
+  // ---------------------------------------------------------------------------
+  // Advanced seed data
+  // ---------------------------------------------------------------------------
+
+  final List<ScholarshipProgram> scholarshipPrograms = const [
+    ScholarshipProgram(
+      id: 'sch_001',
+      name: 'LGU Merit Scholarship',
+      description: 'Full tuition discount for students from the municipality with a GPA of 1.75 or better.',
+      discountPercent: 100,
+      requirements: 'Must maintain a GPA of 1.75 or better. Must be a resident of Padre Garcia.',
+      slots: 20,
+      slotsTaken: 15,
+    ),
+    ScholarshipProgram(
+      id: 'sch_002',
+      name: 'Academic Excellence Award',
+      description: '50% tuition discount for Dean\'s Listers.',
+      discountPercent: 50,
+      requirements: 'Must be on the Dean\'s List for the previous semester.',
+      slots: 30,
+      slotsTaken: 22,
+    ),
+    ScholarshipProgram(
+      id: 'sch_003',
+      name: 'CHED Tulong-Dunong',
+      description: 'Government financial assistance for qualified students.',
+      discountPercent: 75,
+      requirements: 'Must come from a family with income below ₱400,000/year. Must be enrolled full-time.',
+      slots: 50,
+      slotsTaken: 48,
+    ),
+    ScholarshipProgram(
+      id: 'sch_004',
+      name: 'Student Assistant Program',
+      description: 'Work-study program offering tuition reduction in exchange for campus service hours.',
+      discountPercent: 25,
+      requirements: '10 hours/week of campus service. Must maintain passing grades.',
+      slots: 15,
+      slotsTaken: 10,
+    ),
+  ];
+
+  final List<ScholarshipApplication> scholarshipApplications = [
+    ScholarshipApplication(
+      id: 'sa_001',
+      studentId: 'P202300147',
+      studentName: 'Andrea Villanueva',
+      scholarshipId: 'sch_001',
+      scholarshipName: 'LGU Merit Scholarship',
+      status: ScholarshipStatus.active,
+      appliedAt: DateTime(2026, 6, 15),
+    ),
+    ScholarshipApplication(
+      id: 'sa_002',
+      studentId: 'P202200055',
+      studentName: 'Maria Clara Diaz',
+      scholarshipId: 'sch_002',
+      scholarshipName: 'Academic Excellence Award',
+      status: ScholarshipStatus.active,
+      appliedAt: DateTime(2026, 7, 1),
+    ),
+    ScholarshipApplication(
+      id: 'sa_003',
+      studentId: 'P202400089',
+      studentName: 'Jasmine Reyes',
+      scholarshipId: 'sch_003',
+      scholarshipName: 'CHED Tulong-Dunong',
+      status: ScholarshipStatus.applied,
+      appliedAt: DateTime(2026, 7, 20),
+    ),
+    ScholarshipApplication(
+      id: 'sa_004',
+      studentId: 'P202300310',
+      studentName: 'Carlos Mendoza',
+      scholarshipId: 'sch_004',
+      scholarshipName: 'Student Assistant Program',
+      status: ScholarshipStatus.active,
+      appliedAt: DateTime(2026, 8, 1),
+    ),
+  ];
+
+  final List<InstallmentPlan> installmentPlans = [
+    InstallmentPlan(
+      id: 'inst_001',
+      studentId: 'P202300147',
+      studentName: 'Andrea Villanueva',
+      term: term,
+      totalAmount: 10600,
+      installments: [
+        Installment(
+          dueDate: DateTime(2026, 8, 15),
+          amount: 3534,
+          status: InstallmentStatus.paid,
+          paidAt: DateTime(2026, 8, 12),
+        ),
+        Installment(
+          dueDate: DateTime(2026, 9, 15),
+          amount: 3533,
+          status: InstallmentStatus.upcoming,
+        ),
+        Installment(
+          dueDate: DateTime(2026, 10, 15),
+          amount: 3533,
+          status: InstallmentStatus.upcoming,
+        ),
+      ],
+    ),
+    InstallmentPlan(
+      id: 'inst_002',
+      studentId: 'P202400089',
+      studentName: 'Jasmine Reyes',
+      term: term,
+      totalAmount: 15400,
+      installments: [
+        Installment(
+          dueDate: DateTime(2026, 8, 15),
+          amount: 5134,
+          status: InstallmentStatus.overdue,
+        ),
+        Installment(
+          dueDate: DateTime(2026, 9, 15),
+          amount: 5133,
+          status: InstallmentStatus.upcoming,
+        ),
+        Installment(
+          dueDate: DateTime(2026, 10, 15),
+          amount: 5133,
+          status: InstallmentStatus.upcoming,
+        ),
+      ],
+    ),
+  ];
+
+  final List<CounselingRecord> counselingRecords = [
+    CounselingRecord(
+      id: 'cr_001',
+      studentId: 'P202300147',
+      studentName: 'Andrea Villanueva',
+      counselorName: 'Corazon Lim',
+      type: CounselingType.academic,
+      notes: 'Student expressed concern about managing workload with scholarship requirements. '
+          'Discussed time management strategies and available tutoring resources.',
+      sessionDate: DateTime.now().subtract(const Duration(days: 14)),
+      followUpDate: DateTime.now().add(const Duration(days: 7)),
+    ),
+    CounselingRecord(
+      id: 'cr_002',
+      studentId: 'P202400089',
+      studentName: 'Jasmine Reyes',
+      counselorName: 'Corazon Lim',
+      type: CounselingType.personal,
+      notes: 'Student adjusting to college life. Discussed campus resources and support networks.',
+      sessionDate: DateTime.now().subtract(const Duration(days: 7)),
+      isResolved: true,
+    ),
+    CounselingRecord(
+      id: 'cr_003',
+      studentId: 'P202300310',
+      studentName: 'Carlos Mendoza',
+      counselorName: 'Corazon Lim',
+      type: CounselingType.career,
+      notes: 'Career planning session. Reviewed internship opportunities in web development. '
+          'Student interested in pursuing mobile app development track.',
+      sessionDate: DateTime.now().subtract(const Duration(days: 3)),
+      followUpDate: DateTime.now().add(const Duration(days: 14)),
+    ),
+  ];
+
+  final List<FacultyEvaluation> facultyEvaluations = [
+    FacultyEvaluation(
+      id: 'eval_001',
+      studentId: 'P202300147',
+      facultyName: 'Prof. Ramon Dela Cruz',
+      sectionId: 'sec_it201_a',
+      term: term,
+      rating: 5,
+      comment: 'Excellent professor. Explains concepts clearly and gives practical examples.',
+      submittedAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    FacultyEvaluation(
+      id: 'eval_002',
+      studentId: 'P202300212',
+      facultyName: 'Prof. Liza Marquez',
+      sectionId: 'sec_ba301_a',
+      term: term,
+      rating: 4,
+      comment: 'Very knowledgeable. Homework load is heavy but manageable.',
+      submittedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+  ];
+
+  final List<CalendarEvent> calendarEvents = [
+    CalendarEvent(
+      id: 'cal_001',
+      title: 'First Day of Classes',
+      description: 'Regular classes begin for A.Y. 2026–2027, 1st Semester.',
+      date: DateTime(2026, 8, 5),
+      category: CalendarCategory.academic,
+    ),
+    CalendarEvent(
+      id: 'cal_002',
+      title: 'Preliminary Examinations',
+      description: 'Prelim exams for all programs.',
+      date: DateTime(2026, 9, 15),
+      endDate: DateTime(2026, 9, 19),
+      category: CalendarCategory.exam,
+    ),
+    CalendarEvent(
+      id: 'cal_003',
+      title: 'Foundation Week',
+      description: 'PGPC Foundation Day celebration with sportsfest and cultural events.',
+      date: DateTime(2026, 9, 22),
+      endDate: DateTime(2026, 9, 26),
+      category: CalendarCategory.activity,
+    ),
+    CalendarEvent(
+      id: 'cal_004',
+      title: 'Midterm Examinations',
+      description: 'Midterm exams for all programs.',
+      date: DateTime(2026, 10, 13),
+      endDate: DateTime(2026, 10, 17),
+      category: CalendarCategory.exam,
+    ),
+    CalendarEvent(
+      id: 'cal_005',
+      title: 'All Saints\' Day / All Souls\' Day',
+      description: 'No classes.',
+      date: DateTime(2026, 11, 1),
+      endDate: DateTime(2026, 11, 2),
+      category: CalendarCategory.holiday,
+    ),
+    CalendarEvent(
+      id: 'cal_006',
+      title: 'Faculty Evaluation Deadline',
+      description: 'Last day for students to submit faculty evaluations.',
+      date: DateTime(2026, 11, 14),
+      category: CalendarCategory.deadline,
+    ),
+    CalendarEvent(
+      id: 'cal_007',
+      title: 'Final Examinations',
+      description: 'Final exams for all programs.',
+      date: DateTime(2026, 12, 8),
+      endDate: DateTime(2026, 12, 12),
+      category: CalendarCategory.exam,
+    ),
+    CalendarEvent(
+      id: 'cal_008',
+      title: 'Christmas Break Begins',
+      description: 'Holiday break starts. Classes resume January 5, 2027.',
+      date: DateTime(2026, 12, 19),
+      category: CalendarCategory.holiday,
+    ),
+    CalendarEvent(
+      id: 'cal_009',
+      title: 'Enrollment Deadline',
+      description: 'Last day to settle enrollment balance for this semester.',
+      date: DateTime(2026, 9, 30),
+      category: CalendarCategory.deadline,
+    ),
+  ];
 }
+

@@ -4,6 +4,7 @@ import '../../models/academic_models.dart';
 import '../../models/financial_models.dart';
 import '../../models/campus_models.dart';
 import '../../models/audit_log.dart';
+import '../../models/advanced_models.dart';
 
 abstract class AuthRepository {
   Future<Result<AppUser>> login({
@@ -39,6 +40,18 @@ abstract class StudentRepository {
   /// Rule-based elective suggestions: subjects the student hasn't taken
   /// whose prerequisites they've already passed.
   Future<List<Subject>> recommendElectives(String studentId);
+
+  /// Degree audit — all subjects in the student's curriculum with status.
+  Future<CurriculumChecklist> getCurriculumChecklist(String studentId);
+
+  /// Academic calendar events.
+  Future<List<CalendarEvent>> getCalendarEvents();
+
+  /// Submit a faculty evaluation for a section.
+  Future<Result<bool>> submitFacultyEvaluation(FacultyEvaluation evaluation);
+
+  /// Mark a notification as read.
+  Future<void> markNotificationRead(String studentId, String notificationId);
 }
 
 abstract class RegistrarRepository {
@@ -54,6 +67,21 @@ abstract class RegistrarRepository {
   /// Returns a human-readable conflict description, or null if the proposed
   /// section list is conflict-free and within the unit cap.
   String? checkEnrollmentConflicts(List<Section> proposedSections, {double maxUnits = 24});
+
+  /// Subject CRUD
+  Future<Result<bool>> addSubject(Subject subject);
+  Future<Result<bool>> updateSubject(Subject subject);
+  Future<Result<bool>> deleteSubject(String code);
+
+  /// Section CRUD
+  Future<Result<bool>> addSection(Section section);
+  Future<Result<bool>> updateSection(Section section);
+
+  /// Enrollment stats by program.
+  Future<Map<String, int>> getEnrollmentStatsByProgram();
+
+  /// Student population by year level.
+  Future<Map<int, int>> getStudentPopulationByYear();
 }
 
 abstract class CashierRepository {
@@ -68,6 +96,15 @@ abstract class CashierRepository {
   Future<List<Payment>> getTransactionHistory({DateTime? onDate});
   Future<double> getDailyCollectionTotal(DateTime date);
   Future<Result<bool>> refundPayment(String paymentId, String reason);
+
+  /// Collection breakdown by payment method.
+  Future<Map<String, double>> getCollectionByMethod();
+
+  /// Daily collection totals for the past N days.
+  Future<Map<String, double>> getCollectionTrend({int days = 7});
+
+  /// Outstanding balance summary across all students.
+  Future<double> getTotalOutstandingBalance();
 }
 
 abstract class FacultyRepository {
@@ -84,6 +121,15 @@ abstract class FacultyRepository {
   /// Faculty-generated rotating QR payload for a class session — students
   /// scan this to mark themselves present.
   String generateSessionQrPayload(String sectionId);
+
+  /// Attendance summary per student for a section.
+  Future<List<AttendanceSummary>> getAttendanceSummary(String sectionId);
+
+  /// Grade distribution for a section.
+  Future<GradeDistribution> getGradeDistribution(String sectionId);
+
+  /// Students with attendance below threshold or failing grades.
+  Future<List<AppUser>> getAtRiskStudents(String sectionId);
 }
 
 abstract class AdminRepository {
@@ -93,6 +139,16 @@ abstract class AdminRepository {
   Future<List<AuditLogEntry>> getAuditLog();
   Future<Map<String, num>> getAnalyticsSummary();
   Future<Map<String, int>> getEnrollmentTrend();
+
+  /// Revenue trend over months.
+  Future<Map<String, double>> getRevenueTrend();
+
+  /// User count by role.
+  Future<Map<String, int>> getRoleDistribution();
+
+  /// Create/edit an announcement.
+  Future<Result<bool>> createAnnouncement(Announcement announcement);
+  Future<Result<bool>> deleteAnnouncement(String id);
 }
 
 abstract class CampusServicesRepository {
@@ -125,4 +181,43 @@ abstract class CampusServicesRepository {
   Future<List<LostFoundItem>> getLostFoundItems();
   Future<Result<LostFoundItem>> reportLostFoundItem(LostFoundItem item);
   Future<Result<bool>> markItemClaimed(String itemId);
+}
+
+// ---------------------------------------------------------------------------
+// New role-specific repositories
+// ---------------------------------------------------------------------------
+
+abstract class AccountingRepository {
+  Future<List<ScholarshipProgram>> getScholarships();
+  Future<List<ScholarshipApplication>> getScholarshipApplications();
+  Future<Result<bool>> updateScholarshipStatus(String applicationId, ScholarshipStatus status);
+
+  Future<List<InstallmentPlan>> getInstallmentPlans();
+  Future<InstallmentPlan?> getStudentInstallmentPlan(String studentId);
+  Future<Result<bool>> createInstallmentPlan(InstallmentPlan plan);
+
+  Future<FinancialReport> getFinancialReport(String period);
+  Future<Map<String, double>> getLabFeesByDepartment();
+}
+
+abstract class GuidanceRepository {
+  Future<List<CounselingRecord>> getCounselingRecords({String? studentId});
+  Future<Result<CounselingRecord>> addCounselingRecord(CounselingRecord record);
+  Future<Result<bool>> resolveCounselingRecord(String recordId);
+
+  /// Sign off a student's clearance for a given office.
+  Future<Result<bool>> signClearance(String studentId, String term, String office);
+  Future<List<Clearance>> getPendingClearances(String term);
+}
+
+abstract class DeptHeadRepository {
+  Future<List<AppUser>> getDepartmentFaculty(String department);
+  Future<DepartmentPerformance> getDepartmentPerformance(String department);
+  Future<List<CurriculumItem>> getCurriculumReview(String department);
+}
+
+abstract class DeanRepository {
+  Future<Map<String, num>> getCollegeOverview();
+  Future<List<GraduationEvaluation>> getGraduationEvaluations(String term);
+  Future<GraduationEvaluation> evaluateGraduation(String studentId);
 }
