@@ -185,6 +185,27 @@ class ApiCashierRepository implements CashierRepository {
   }
 
   @override
+  Future<Map<String, double>> getCollectionByMethod() async {
+    final json = await ApiClient.get('/cashier/collection-by-method') as Map<String, dynamic>;
+    return json.map((key, value) => MapEntry(key, (value as num).toDouble()));
+  }
+
+  @override
+  Future<Map<String, double>> getCollectionTrend({int days = 7}) async {
+    final json = await ApiClient.get(
+      '/cashier/collection-trend',
+      query: {'days': '$days'},
+    ) as Map<String, dynamic>;
+    return json.map((key, value) => MapEntry(key, (value as num).toDouble()));
+  }
+
+  @override
+  Future<double> getTotalOutstandingBalance() async {
+    final json = await ApiClient.get('/cashier/outstanding-balance') as Map<String, dynamic>;
+    return (json['total'] as num).toDouble();
+  }
+
+  @override
   Future<Result<bool>> refundPayment(String paymentId, String reason) async {
     try {
       await ApiClient.post('/cashier/payments/$paymentId/refund', {'reason': reason});

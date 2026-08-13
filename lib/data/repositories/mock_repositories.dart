@@ -328,6 +328,45 @@ class MockCashierRepository implements CashierRepository {
   }
 
   @override
+  Future<Map<String, double>> getCollectionByMethod() async {
+    await _delay();
+    final totals = <String, double>{for (final m in PaymentMethod.values) m.name: 0.0};
+    for (final p in _seed.payments) {
+      totals[p.method.name] = totals[p.method.name]! + p.amount;
+    }
+    return totals;
+  }
+
+  @override
+  Future<Map<String, double>> getCollectionTrend({int days = 7}) async {
+    await _delay();
+    final now = DateTime.now();
+    final trend = <String, double>{
+      for (var i = days - 1; i >= 0; i--) _dateOnly(now.subtract(Duration(days: i))): 0.0,
+    };
+    for (final p in _seed.payments) {
+      final key = _dateOnly(p.timestamp);
+      if (trend.containsKey(key)) trend[key] = trend[key]! + p.amount;
+    }
+    return trend;
+  }
+
+  @override
+  Future<double> getTotalOutstandingBalance() async {
+    await _delay();
+    var total = 0.0;
+    for (final ledger in _seed.ledgers.values) {
+      final balance = ledger.tuitionFee +
+          ledger.miscFees +
+          ledger.labFees -
+          ledger.scholarshipDiscount -
+          ledger.totalPaid;
+      if (balance > 0) total += balance;
+    }
+    return total;
+  }
+
+  @override
   Future<Result<bool>> refundPayment(String paymentId, String reason) async {
     await _delay();
     final idx = _seed.payments.indexWhere((p) => p.id == paymentId);
@@ -347,6 +386,9 @@ class MockCashierRepository implements CashierRepository {
     );
     return Result.ok(true);
   }
+
+  static String _dateOnly(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 }
 
 class MockFacultyRepository implements FacultyRepository {
