@@ -2,6 +2,7 @@
 /// scholarships, installment plans, counseling, curriculum tracking,
 /// department performance, graduation evaluations, calendar events, and
 /// user settings.
+library;
 
 // ---------------------------------------------------------------------------
 // Faculty Evaluation (Student → Faculty)
