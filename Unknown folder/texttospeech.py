@@ -8,8 +8,8 @@ from gtts import gTTS
 #    :param lang: The language for the speech (default is English).
 #    :param filename: The name of the output audio file (default is 'output.mp3').
 #    """
-text = "what sup duck!"
+text = "putang ina mo!"
 
-tts = gTTS(text=text, lang='en')#lang
+tts = gTTS(text=text, lang='tl')#tl, en, 
 tts.save('output.mp3')#filename
 print(f"Audio saved successfully.")
