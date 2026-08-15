@@ -10,6 +10,6 @@ from gtts import gTTS
 #    """
 text = "putang ina mo!"
 
-tts = gTTS(text=text, lang='tl')#tl, en, 
+tts = gTTS(text=text, lang='tl')#tl(tagalog), en(english), es(spanish), fr(french), de(german), it(italian), ja(japanese), ko(korean), zh-cn(chinese), id(indonesian), hi(hindi), ar(arabic), ru(russian), pt(portuguese), vi(vietnamese), th(thai), tr(turkish), pl(polish), nl(dutch), sv(swedish), fi(finnish), no(norwegian), da(danish), cs(czech), el(greek), hu(hungarian), ro(romanian), sk(slovak), bg(bulgarian)
 tts.save('output.mp3')#filename
 print(f"Audio saved successfully.")
