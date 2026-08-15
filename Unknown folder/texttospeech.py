@@ -10,6 +10,6 @@ from gtts import gTTS
 #    """
 text = "what sup duck!"
 
-tts = gTTS(text=text, lang='en')
-tts.save('output.mp3')
+tts = gTTS(text=text, lang='en')#lang
+tts.save('output.mp3')#filename
 print(f"Audio saved successfully.")
