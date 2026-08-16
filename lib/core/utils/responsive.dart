@@ -119,7 +119,7 @@ abstract final class Responsive {
 
 /// Centers content and caps width on larger screens.
 class ResponsiveContent extends StatelessWidget {
-  const ResponsiveContent({super.key, required this.child, this.maxWidth});
+  const ResponsiveContent({required this.child, super.key, this.maxWidth});
 
   final Widget child;
   final double? maxWidth;
@@ -138,7 +138,7 @@ class ResponsiveContent extends StatelessWidget {
 
 /// A row of stat cards that scrolls horizontally when horizontal space is tight.
 class ResponsiveStatRow extends StatelessWidget {
-  const ResponsiveStatRow({super.key, required this.children, this.spacing = 12});
+  const ResponsiveStatRow({required this.children, super.key, this.spacing = 12});
 
   final List<Widget> children;
   final double spacing;

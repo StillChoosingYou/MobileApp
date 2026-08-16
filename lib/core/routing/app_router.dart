@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../models/app_user.dart';
-import '../../features/auth/role_select_screen.dart';
-import '../../features/auth/login_screen.dart';
-import '../../features/auth/forgot_password_screen.dart';
-import '../../features/auth/two_factor_screen.dart';
-import '../../features/student/student_shell.dart';
-import '../../features/registrar/registrar_shell.dart';
-import '../../features/cashier/cashier_shell.dart';
-import '../../features/faculty/faculty_shell.dart';
 import '../../features/admin/admin_shell.dart';
-import '../../features/other_roles/other_role_screens.dart';
+import '../../features/auth/forgot_password_screen.dart';
+import '../../features/auth/login_screen.dart';
+import '../../features/auth/role_select_screen.dart';
+import '../../features/auth/two_factor_screen.dart';
+import '../../features/cashier/cashier_shell.dart';
 import '../../features/common/emergency_visitor_lostfound_screens.dart';
+import '../../features/faculty/faculty_shell.dart';
+import '../../features/other_roles/other_role_screens.dart';
+import '../../features/registrar/registrar_shell.dart';
+import '../../features/student/student_shell.dart';
+import '../../models/app_user.dart';
 import '../theme/motion.dart';
 import 'route_names.dart';
 

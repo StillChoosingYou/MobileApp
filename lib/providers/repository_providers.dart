@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/config/app_config.dart';
-import '../data/repositories/repository_interfaces.dart';
-import '../data/repositories/mock_repositories.dart';
 import '../data/repositories/api_repositories.dart';
+import '../data/repositories/mock_repositories.dart';
+import '../data/repositories/repository_interfaces.dart';
 // Firebase is currently disabled — see the note at the top of
 // pubspec.yaml's commented-out firebase_* dependencies for why. To bring
 // it back: uncomment those dependencies, move

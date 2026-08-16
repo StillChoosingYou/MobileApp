@@ -1,5 +1,13 @@
 /// A catalog subject, independent of who teaches it or when.
 class Subject {
+
+  factory Subject.fromJson(Map<String, dynamic> json) => Subject(
+        code: json['code'] as String,
+        title: json['title'] as String,
+        units: (json['units'] as num).toDouble(),
+        prerequisites: List<String>.from(json['prerequisites'] as List? ?? const []),
+        isElective: json['isElective'] as bool? ?? false,
+      );
   const Subject({
     required this.code,
     required this.title,
@@ -21,18 +29,23 @@ class Subject {
         'prerequisites': prerequisites,
         'isElective': isElective,
       };
-
-  factory Subject.fromJson(Map<String, dynamic> json) => Subject(
-        code: json['code'] as String,
-        title: json['title'] as String,
-        units: (json['units'] as num).toDouble(),
-        prerequisites: List<String>.from(json['prerequisites'] as List? ?? const []),
-        isElective: json['isElective'] as bool? ?? false,
-      );
 }
 
 /// One offered class: a Subject taught by someone, at a time, in a room.
 class Section {
+
+  factory Section.fromJson(Map<String, dynamic> json) => Section(
+        id: json['id'] as String,
+        subjectCode: json['subjectCode'] as String,
+        sectionLabel: json['sectionLabel'] as String,
+        facultyName: json['facultyName'] as String,
+        dayPattern: json['dayPattern'] as String,
+        startTime: json['startTime'] as String,
+        endTime: json['endTime'] as String,
+        room: json['room'] as String,
+        slotsTotal: json['slotsTotal'] as int,
+        slotsTaken: json['slotsTaken'] as int,
+      );
   const Section({
     required this.id,
     required this.subjectCode,
@@ -92,25 +105,21 @@ class Section {
         'slotsTotal': slotsTotal,
         'slotsTaken': slotsTaken,
       };
-
-  factory Section.fromJson(Map<String, dynamic> json) => Section(
-        id: json['id'] as String,
-        subjectCode: json['subjectCode'] as String,
-        sectionLabel: json['sectionLabel'] as String,
-        facultyName: json['facultyName'] as String,
-        dayPattern: json['dayPattern'] as String,
-        startTime: json['startTime'] as String,
-        endTime: json['endTime'] as String,
-        room: json['room'] as String,
-        slotsTotal: json['slotsTotal'] as int,
-        slotsTaken: json['slotsTaken'] as int,
-      );
 }
 
 enum EnrollmentStatus { pending, approved, enrolled, rejected }
 
 /// A student's enrollment in one term, holding the sections they're taking.
 class Enrollment {
+
+  factory Enrollment.fromJson(Map<String, dynamic> json) => Enrollment(
+        id: json['id'] as String,
+        studentId: json['studentId'] as String,
+        term: json['term'] as String,
+        sectionIds: List<String>.from(json['sectionIds'] as List? ?? const []),
+        status: EnrollmentStatus.values.byName(json['status'] as String),
+        remarks: json['remarks'] as String?,
+      );
   const Enrollment({
     required this.id,
     required this.studentId,
@@ -135,15 +144,6 @@ class Enrollment {
         status: status ?? this.status,
         remarks: remarks ?? this.remarks,
       );
-
-  factory Enrollment.fromJson(Map<String, dynamic> json) => Enrollment(
-        id: json['id'] as String,
-        studentId: json['studentId'] as String,
-        term: json['term'] as String,
-        sectionIds: List<String>.from(json['sectionIds'] as List? ?? const []),
-        status: EnrollmentStatus.values.byName(json['status'] as String),
-        remarks: json['remarks'] as String?,
-      );
 }
 
 /// A final grade for one subject in one term.
@@ -151,6 +151,15 @@ class Enrollment {
 /// colleges; 3.00 is the usual passing threshold, 5.00 is a failure, "INC"
 /// is represented as a null [numericGrade] with [isIncomplete] = true.
 class Grade {
+
+  factory Grade.fromJson(Map<String, dynamic> json) => Grade(
+        subjectCode: json['subjectCode'] as String,
+        subjectTitle: json['subjectTitle'] as String,
+        units: (json['units'] as num).toDouble(),
+        term: json['term'] as String,
+        numericGrade: (json['numericGrade'] as num?)?.toDouble(),
+        isIncomplete: json['isIncomplete'] as bool? ?? false,
+      );
   const Grade({
     required this.subjectCode,
     required this.subjectTitle,
@@ -168,15 +177,6 @@ class Grade {
   final bool isIncomplete;
 
   String get display => isIncomplete ? 'INC' : (numericGrade?.toStringAsFixed(2) ?? '—');
-
-  factory Grade.fromJson(Map<String, dynamic> json) => Grade(
-        subjectCode: json['subjectCode'] as String,
-        subjectTitle: json['subjectTitle'] as String,
-        units: (json['units'] as num).toDouble(),
-        term: json['term'] as String,
-        numericGrade: (json['numericGrade'] as num?)?.toDouble(),
-        isIncomplete: json['isIncomplete'] as bool? ?? false,
-      );
 }
 
 enum AttendanceStatus { present, absent, late, excused }
@@ -200,6 +200,14 @@ class AttendanceRecord {
 /// Academic-program details for a Student — kept separate from [AppUser]
 /// since Faculty/Registrar/etc. don't have a program or year level.
 class StudentProfile {
+
+  factory StudentProfile.fromJson(Map<String, dynamic> json) => StudentProfile(
+        studentId: json['studentId'] as String,
+        program: json['program'] as String,
+        yearLevel: json['yearLevel'] as int,
+        blockSection: json['blockSection'] as String,
+        scholarshipLabel: json['scholarshipLabel'] as String?,
+      );
   const StudentProfile({
     required this.studentId,
     required this.program,
@@ -215,12 +223,4 @@ class StudentProfile {
 
   /// e.g. "LGU Merit Scholar" — null if not on a scholarship.
   final String? scholarshipLabel;
-
-  factory StudentProfile.fromJson(Map<String, dynamic> json) => StudentProfile(
-        studentId: json['studentId'] as String,
-        program: json['program'] as String,
-        yearLevel: json['yearLevel'] as int,
-        blockSection: json['blockSection'] as String,
-        scholarshipLabel: json['scholarshipLabel'] as String?,
-      );
 }

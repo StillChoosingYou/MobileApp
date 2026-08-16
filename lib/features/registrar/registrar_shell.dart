@@ -5,8 +5,8 @@ import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../providers/feature_providers.dart';
-import 'student_records_screen.dart';
 import 'enrollment_approval_screen.dart';
+import 'student_records_screen.dart';
 
 class RegistrarShell extends StatefulWidget {
   const RegistrarShell({super.key});

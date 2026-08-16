@@ -23,7 +23,7 @@ class _MenuEntry {
 /// screen is wired per role below; the rest are placeholders that show how
 /// to extend `CampusServicesRepository` / a new repository the same way.
 class GenericRoleDashboard extends StatelessWidget {
-  const GenericRoleDashboard({super.key, required this.role});
+  const GenericRoleDashboard({required this.role, super.key});
   final UserRole role;
 
   List<_MenuEntry> get _entries {
@@ -200,7 +200,7 @@ class AccountingBillingScreen extends ConsumerWidget {
 /// the same way other mutations are done here once you need staff to
 /// confirm/complete appointments from this screen.
 class StaffAppointmentsScreen extends ConsumerWidget {
-  const StaffAppointmentsScreen({super.key, required this.office});
+  const StaffAppointmentsScreen({required this.office, super.key});
   final AppointmentOffice office;
 
   @override

@@ -681,7 +681,7 @@ class MockSeedData {
       scholarshipId: 'sch_002',
       scholarshipName: 'Academic Excellence Award',
       status: ScholarshipStatus.active,
-      appliedAt: DateTime(2026, 7, 1),
+      appliedAt: DateTime(2026, 7),
     ),
     ScholarshipApplication(
       id: 'sa_003',
@@ -699,7 +699,7 @@ class MockSeedData {
       scholarshipId: 'sch_004',
       scholarshipName: 'Student Assistant Program',
       status: ScholarshipStatus.active,
-      appliedAt: DateTime(2026, 8, 1),
+      appliedAt: DateTime(2026, 8),
     ),
   ];
 
@@ -849,7 +849,7 @@ class MockSeedData {
       id: 'cal_005',
       title: 'All Saints\' Day / All Souls\' Day',
       description: 'No classes.',
-      date: DateTime(2026, 11, 1),
+      date: DateTime(2026, 11),
       endDate: DateTime(2026, 11, 2),
       category: CalendarCategory.holiday,
     ),

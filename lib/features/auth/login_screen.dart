@@ -13,7 +13,7 @@ import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key, required this.role});
+  const LoginScreen({required this.role, super.key});
   final UserRole role;
 
   @override
@@ -111,10 +111,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Sign in', style: Theme.of(context).textTheme.headlineMedium),
+                Text('Welcome to PGPC Campus', style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 6),
                 Text(
-                  'Use your ${_loginIdLabel.toLowerCase()} and password.',
+                  'Use your ${_loginIdLabel.toLowerCase()} and password to sign in.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                 ),
                 const SizedBox(height: 24),

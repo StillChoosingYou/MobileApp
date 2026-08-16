@@ -9,7 +9,7 @@ import '../../models/financial_models.dart';
 import '../../providers/feature_providers.dart';
 
 class ReceiptScreen extends StatelessWidget {
-  const ReceiptScreen({super.key, required this.payment});
+  const ReceiptScreen({required this.payment, super.key});
   final Payment payment;
 
   @override

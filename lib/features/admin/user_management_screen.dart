@@ -15,7 +15,7 @@ class UserManagementScreen extends ConsumerWidget {
     final nameController = TextEditingController();
     final emailController = TextEditingController();
     final loginIdController = TextEditingController();
-    UserRole role = UserRole.student;
+    var role = UserRole.student;
 
     final created = await showModalBottomSheet<bool>(
       context: context,

@@ -123,7 +123,7 @@ class _GradesTab extends ConsumerWidget {
               color: Theme.of(context).colorScheme.primaryContainer,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               child: Padding(
-                padding: EdgeInsets.all(Responsive.spacing(context, normal: 16, compact: 12)),
+                padding: EdgeInsets.all(Responsive.spacing(context, compact: 12)),
                 child: Responsive.isCompactHeight(context) || Responsive.sizeOf(context).width < 360
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

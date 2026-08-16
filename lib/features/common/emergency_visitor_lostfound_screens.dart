@@ -263,7 +263,7 @@ class LostFoundScreen extends ConsumerWidget {
   const LostFoundScreen({super.key});
 
   Future<void> _report(BuildContext context, WidgetRef ref) async {
-    bool isFound = true;
+    var isFound = true;
     final itemController = TextEditingController();
     final descController = TextEditingController();
     final locationController = TextEditingController();

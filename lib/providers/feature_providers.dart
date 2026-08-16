@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/config/app_config.dart';
 import '../core/error/result.dart';
 import '../core/network/api_client.dart';
-import '../models/app_user.dart';
+import '../data/local/hive_service.dart';
 import '../models/academic_models.dart';
+import '../models/app_user.dart';
 import '../models/audit_log.dart';
 import '../models/campus_models.dart';
 import '../models/financial_models.dart';
@@ -16,12 +17,21 @@ import 'repository_providers.dart';
 // ---------------------------------------------------------------------------
 
 class AuthController extends AsyncNotifier<AppUser?> {
+  static const _userKey = 'current_user';
+
   @override
   Future<AppUser?> build() async {
-    // No persisted-session restore in this scaffold — every launch starts
-    // at Role Select. Wire this to HiveService.session / FirebaseAuth's
-    // authStateChanges() if you want auto-login.
-    return null;
+    // Restore a persisted session so users stay signed in across launches.
+    // Wrapped in try/catch: a corrupt or unreadable Hive box must never
+    // crash app startup — we fall back to a logged-out state instead.
+    try {
+      final stored = HiveService.session.get(_userKey) as Map?;
+      if (stored == null) return null;
+      return AppUser.fromJson(Map<String, dynamic>.from(stored));
+    } catch (_) {
+      await HiveService.session.delete(_userKey);
+      return null;
+    }
   }
 
   Future<Result<AppUser>> login({
@@ -35,11 +45,24 @@ class AuthController extends AsyncNotifier<AppUser?> {
           loginId: loginId,
           password: password,
         );
-    state = AsyncValue.data(result.valueOrNull);
+    final user = result.valueOrNull;
+    if (user != null) {
+      try {
+        HiveService.session.put(_userKey, user.toJson());
+      } catch (_) {
+        // Non-fatal: the in-memory session still works for this launch.
+      }
+    }
+    state = AsyncValue.data(user);
     return result;
   }
 
   void logout() {
+    try {
+      HiveService.session.delete(_userKey);
+    } catch (_) {
+      // Non-fatal.
+    }
     ApiClient.clearToken();
     state = const AsyncValue.data(null);
   }
@@ -54,14 +77,31 @@ final authControllerProvider = AsyncNotifierProvider<AuthController, AppUser?>(
 // ---------------------------------------------------------------------------
 
 class ThemeModeController extends Notifier<ThemeMode> {
-  @override
-  ThemeMode build() => ThemeMode.system;
+  static const _prefKey = 'theme_mode';
 
-  void toggle() {
-    state = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+  @override
+  ThemeMode build() {
+    final stored = HiveService.settings.get(_prefKey) as String?;
+    return switch (stored) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system,
+    };
   }
 
-  void set(ThemeMode mode) => state = mode;
+  void _persist(ThemeMode mode) =>
+      HiveService.settings.put(_prefKey, mode.name);
+
+  void toggle() {
+    final next = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    state = next;
+    _persist(next);
+  }
+
+  void set(ThemeMode mode) {
+    state = mode;
+    _persist(mode);
+  }
 }
 
 final themeModeControllerProvider = NotifierProvider<ThemeModeController, ThemeMode>(

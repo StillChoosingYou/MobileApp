@@ -10,7 +10,7 @@ import '../../models/app_user.dart';
 /// a real one-time code from Firebase Auth's phone/email verification, or
 /// a Cloud Function that sends via a provider like Semaphore or Twilio.
 class TwoFactorScreen extends StatefulWidget {
-  const TwoFactorScreen({super.key, required this.pendingUser});
+  const TwoFactorScreen({required this.pendingUser, super.key});
   final AppUser pendingUser;
 
   @override
@@ -57,7 +57,7 @@ class _TwoFactorScreenState extends State<TwoFactorScreen> {
               ),
               SizedBox(height: Responsive.spacing(context, normal: 8, compact: 6)),
               Container(
-                padding: EdgeInsets.all(Responsive.spacing(context, normal: 12, compact: 10)),
+                padding: EdgeInsets.all(Responsive.spacing(context, normal: 12)),
                 decoration: BoxDecoration(
                   color: scheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(10),

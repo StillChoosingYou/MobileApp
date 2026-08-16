@@ -7,7 +7,7 @@ import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
 
 class StudentDetailScreen extends ConsumerWidget {
-  const StudentDetailScreen({super.key, required this.student});
+  const StudentDetailScreen({required this.student, super.key});
   final AppUser student;
 
   @override

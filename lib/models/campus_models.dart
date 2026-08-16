@@ -1,4 +1,12 @@
 class Announcement {
+
+  factory Announcement.fromJson(Map<String, dynamic> json) => Announcement(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        body: json['body'] as String,
+        category: json['category'] as String,
+        postedAt: DateTime.parse(json['postedAt'] as String),
+      );
   const Announcement({
     required this.id,
     required this.title,
@@ -12,17 +20,17 @@ class Announcement {
   final String body;
   final String category;
   final DateTime postedAt;
-
-  factory Announcement.fromJson(Map<String, dynamic> json) => Announcement(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String,
-        category: json['category'] as String,
-        postedAt: DateTime.parse(json['postedAt'] as String),
-      );
 }
 
 class NotificationItem {
+
+  factory NotificationItem.fromJson(Map<String, dynamic> json) => NotificationItem(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        body: json['body'] as String,
+        timestamp: DateTime.parse(json['timestamp'] as String),
+        read: json['read'] as bool? ?? false,
+      );
   const NotificationItem({
     required this.id,
     required this.title,
@@ -43,14 +51,6 @@ class NotificationItem {
         body: body,
         timestamp: timestamp,
         read: true,
-      );
-
-  factory NotificationItem.fromJson(Map<String, dynamic> json) => NotificationItem(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String,
-        timestamp: DateTime.parse(json['timestamp'] as String),
-        read: json['read'] as bool? ?? false,
       );
 }
 

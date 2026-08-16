@@ -29,11 +29,11 @@ class NavTab {
 /// pattern.
 class RoleNavShell extends StatelessWidget {
   const RoleNavShell({
-    super.key,
-    this.title,
     required this.tabs,
     required this.currentIndex,
     required this.onTabSelected,
+    super.key,
+    this.title,
   });
 
   /// Fallback title when [NavTab.label] should not be used as the AppBar title.

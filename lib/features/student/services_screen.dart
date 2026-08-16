@@ -57,7 +57,7 @@ class _DocumentsTab extends ConsumerWidget {
   final String studentId;
 
   Future<void> _openNewRequest(BuildContext context, WidgetRef ref) async {
-    DocumentType selected = DocumentType.certificateOfEnrollment;
+    var selected = DocumentType.certificateOfEnrollment;
     final purposeController = TextEditingController();
 
     final submitted = await showModalBottomSheet<bool>(
@@ -116,38 +116,38 @@ class _DocumentsTab extends ConsumerWidget {
       children: [
         Positioned.fill(
           child: requests.when(
-        data: (list) {
-          if (list.isEmpty) {
-            return const EmptyState(
-              icon: Icons.description_outlined,
-              title: 'No document requests yet',
-              message: 'Request your TOR, COE, Good Moral, or diploma copy here.',
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-            itemCount: list.length,
-            itemBuilder: (context, i) {
-              final r = list[i];
-              return Card(
-                elevation: 0,
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
-                ),
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  title: Text(r.type.label),
-                  subtitle: Text('${r.purpose} • ${AppDateUtils.date(r.requestedAt)}'),
-                  trailing: StatusPill(label: r.status.label, color: _statusColor(r.status)),
-                ),
+            data: (list) {
+              if (list.isEmpty) {
+                return const EmptyState(
+                  icon: Icons.description_outlined,
+                  title: 'No document requests yet',
+                  message: 'Request your TOR, COE, Good Moral, or diploma copy here.',
+                );
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
+                itemCount: list.length,
+                itemBuilder: (context, i) {
+                  final r = list[i];
+                  return Card(
+                    elevation: 0,
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                    ),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: ListTile(
+                      title: Text(r.type.label),
+                      subtitle: Text('${r.purpose} • ${AppDateUtils.date(r.requestedAt)}'),
+                      trailing: StatusPill(label: r.status.label, color: _statusColor(r.status)),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        loading: () => const LoadingView(),
-        error: (_, __) => const ErrorView(message: 'Could not load your document requests.'),
+            loading: () => const LoadingView(),
+            error: (_, __) => const ErrorView(message: 'Could not load your document requests.'),
           ),
         ),
         Positioned(
@@ -356,7 +356,7 @@ class _AppointmentsTab extends ConsumerWidget {
   final String studentId;
 
   Future<void> _bookAppointment(BuildContext context, WidgetRef ref) async {
-    AppointmentOffice office = AppointmentOffice.registrar;
+    var office = AppointmentOffice.registrar;
     final purposeController = TextEditingController();
     DateTime? when;
 
@@ -441,38 +441,38 @@ class _AppointmentsTab extends ConsumerWidget {
       children: [
         Positioned.fill(
           child: appointments.when(
-        data: (list) {
-          if (list.isEmpty) {
-            return const EmptyState(
-              icon: Icons.event_available_outlined,
-              title: 'No appointments booked',
-              message: 'Book time with the Registrar, Accounting, Guidance, or Dean.',
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-            itemCount: list.length,
-            itemBuilder: (context, i) {
-              final a = list[i];
-              return Card(
-                elevation: 0,
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
-                ),
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  title: Text('${a.office.label} — ${a.purpose}'),
-                  subtitle: Text(AppDateUtils.dateTime(a.requestedFor)),
-                  trailing: StatusPill(label: a.status.name, color: Colors.blueGrey),
-                ),
+            data: (list) {
+              if (list.isEmpty) {
+                return const EmptyState(
+                  icon: Icons.event_available_outlined,
+                  title: 'No appointments booked',
+                  message: 'Book time with the Registrar, Accounting, Guidance, or Dean.',
+                );
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
+                itemCount: list.length,
+                itemBuilder: (context, i) {
+                  final a = list[i];
+                  return Card(
+                    elevation: 0,
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                    ),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: ListTile(
+                      title: Text('${a.office.label} — ${a.purpose}'),
+                      subtitle: Text(AppDateUtils.dateTime(a.requestedFor)),
+                      trailing: StatusPill(label: a.status.name, color: Colors.blueGrey),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        loading: () => const LoadingView(),
-        error: (_, __) => const ErrorView(message: 'Could not load your appointments.'),
+            loading: () => const LoadingView(),
+            error: (_, __) => const ErrorView(message: 'Could not load your appointments.'),
           ),
         ),
         Positioned(

@@ -2,11 +2,12 @@ import 'dart:async';
 
 import '../../core/error/result.dart';
 import '../../core/utils/assistant_rules.dart';
-import '../../models/app_user.dart';
 import '../../models/academic_models.dart';
-import '../../models/financial_models.dart';
-import '../../models/campus_models.dart';
+import '../../models/advanced_models.dart';
+import '../../models/app_user.dart';
 import '../../models/audit_log.dart';
+import '../../models/campus_models.dart';
+import '../../models/financial_models.dart';
 import 'mock_seed_data.dart';
 import 'repository_interfaces.dart';
 
@@ -66,6 +67,79 @@ class MockStudentRepository implements StudentRepository {
       if (p.studentId == studentId) return p;
     }
     return null;
+  }
+
+  @override
+  Future<List<CalendarEvent>> getCalendarEvents() async {
+    await _delay();
+    return List<CalendarEvent>.from(_seed.calendarEvents);
+  }
+
+  @override
+  Future<CurriculumChecklist> getCurriculumChecklist(String studentId) async {
+    await _delay();
+    final profile = await getStudentProfile(studentId);
+    if (profile == null) {
+      return CurriculumChecklist(
+        studentId: studentId,
+        program: 'Unknown',
+        totalUnitsRequired: 0,
+        items: const [],
+      );
+    }
+    final takenCodes = _seed.grades
+        .where((g) => g.numericGrade != null && !g.isIncomplete)
+        .map((g) => g.subjectCode)
+        .toSet();
+
+    final items = _seed.subjects.map((s) {
+      final status = takenCodes.contains(s.code)
+          ? ChecklistItemStatus.completed
+          : ChecklistItemStatus.notTaken;
+      final grade = takenCodes.contains(s.code)
+          ? _seed.grades.firstWhere((g) => g.subjectCode == s.code).numericGrade
+          : null;
+      return CurriculumItem(
+        subjectCode: s.code,
+        subjectTitle: s.title,
+        units: s.units,
+        yearLevel: 1,
+        semester: 1,
+        status: status,
+        grade: grade,
+      );
+    }).toList();
+
+    final totalUnits = _seed.subjects.fold(0.0, (sum, s) => sum + s.units);
+    return CurriculumChecklist(
+      studentId: studentId,
+      program: profile.program,
+      totalUnitsRequired: totalUnits,
+      items: items,
+    );
+  }
+
+  @override
+  Future<void> markNotificationRead(String studentId, String notificationId) async {
+    await _delay();
+    final list = _seed.notifications[studentId];
+    if (list != null) {
+      final idx = list.indexWhere((n) => n.id == notificationId);
+      if (idx != -1) {
+        _seed.notifications[studentId] = [
+          ...list.sublist(0, idx),
+          list[idx].markRead(),
+          ...list.sublist(idx + 1),
+        ];
+      }
+    }
+  }
+
+  @override
+  Future<Result<bool>> submitFacultyEvaluation(FacultyEvaluation evaluation) async {
+    await _delay();
+    _seed.facultyEvaluations.add(evaluation);
+    return Result.ok(true);
   }
 
   @override
@@ -247,6 +321,73 @@ class MockRegistrarRepository implements RegistrarRepository {
       return 'Total load of $totalUnits units exceeds the $maxUnits-unit cap.';
     }
     return null;
+  }
+
+  @override
+  Future<Result<bool>> addSubject(Subject subject) async {
+    await _delay();
+    if (_seed.subjects.any((s) => s.code == subject.code)) {
+      return Result.error('Subject with code ${subject.code} already exists.');
+    }
+    _seed.subjects.add(subject);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> updateSubject(Subject subject) async {
+    await _delay();
+    final idx = _seed.subjects.indexWhere((s) => s.code == subject.code);
+    if (idx == -1) return Result.error('Subject not found.');
+    _seed.subjects[idx] = subject;
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> deleteSubject(String code) async {
+    await _delay();
+    final idx = _seed.subjects.indexWhere((s) => s.code == code);
+    if (idx == -1) return Result.error('Subject not found.');
+    _seed.subjects.removeAt(idx);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> addSection(Section section) async {
+    await _delay();
+    if (_seed.sections.any((s) => s.id == section.id)) {
+      return Result.error('Section with ID ${section.id} already exists.');
+    }
+    _seed.sections.add(section);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> updateSection(Section section) async {
+    await _delay();
+    final idx = _seed.sections.indexWhere((s) => s.id == section.id);
+    if (idx == -1) return Result.error('Section not found.');
+    _seed.sections[idx] = section;
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Map<String, int>> getEnrollmentStatsByProgram() async {
+    await _delay();
+    final stats = <String, int>{};
+    for (final profile in _seed.studentProfiles) {
+      stats[profile.program] = (stats[profile.program] ?? 0) + 1;
+    }
+    return stats;
+  }
+
+  @override
+  Future<Map<int, int>> getStudentPopulationByYear() async {
+    await _delay();
+    final stats = <int, int>{};
+    for (final profile in _seed.studentProfiles) {
+      stats[profile.yearLevel] = (stats[profile.yearLevel] ?? 0) + 1;
+    }
+    return stats;
   }
 }
 
@@ -445,6 +586,51 @@ class MockFacultyRepository implements FacultyRepository {
     final ts = DateTime.now().millisecondsSinceEpoch;
     return 'PGPC-ATT|$sectionId|$ts';
   }
+
+  @override
+  Future<List<AttendanceSummary>> getAttendanceSummary(String sectionId) async {
+    await _delay();
+    final roster = await getRoster(sectionId);
+    return roster.map((student) {
+      return AttendanceSummary(
+        studentId: student.id,
+        studentName: student.name,
+        totalSessions: 20,
+        present: 18,
+        absent: 1,
+        late: 1,
+        excused: 0,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<GradeDistribution> getGradeDistribution(String sectionId) async {
+    await _delay();
+    return GradeDistribution(
+      sectionId: sectionId,
+      subjectCode: _seed.sections
+          .firstWhere(
+            (s) => s.id == sectionId,
+            orElse: () => _seed.sections.first,
+          )
+          .subjectCode,
+      excellent: 5,
+      good: 8,
+      satisfactory: 6,
+      passing: 4,
+      failing: 2,
+      incomplete: 1,
+    );
+  }
+
+  @override
+  Future<List<AppUser>> getAtRiskStudents(String sectionId) async {
+    await _delay();
+    final roster = await getRoster(sectionId);
+    // Mock: students with academic warning status (demo: those with IDs ending in certain patterns)
+    return roster.where((student) => student.id.endsWith('089') || student.id.endsWith('310')).toList();
+  }
 }
 
 class MockAdminRepository implements AdminRepository {
@@ -511,6 +697,48 @@ class MockAdminRepository implements AdminRepository {
   Future<Map<String, int>> getEnrollmentTrend() async {
     await _delay();
     return {'Aug': 410, 'Sep': 60, 'Oct': 15, 'Nov': 8, 'Dec': 5, 'Jan': 430};
+  }
+
+  @override
+  Future<Map<String, double>> getRevenueTrend() async {
+    await _delay();
+    return {
+      'Jan': 45000,
+      'Feb': 52000,
+      'Mar': 48000,
+      'Apr': 61000,
+      'May': 55000,
+      'Jun': 67000,
+      'Jul': 72000,
+      'Aug': 58000,
+    };
+  }
+
+  @override
+  Future<Map<String, int>> getRoleDistribution() async {
+    await _delay();
+    final stats = <String, int>{};
+    for (final user in _seed.users) {
+      final roleName = user.role.name;
+      stats[roleName] = (stats[roleName] ?? 0) + 1;
+    }
+    return stats;
+  }
+
+  @override
+  Future<Result<bool>> createAnnouncement(Announcement announcement) async {
+    await _delay();
+    _seed.announcements.add(announcement);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> deleteAnnouncement(String id) async {
+    await _delay();
+    final idx = _seed.announcements.indexWhere((a) => a.id == id);
+    if (idx == -1) return Result.error('Announcement not found.');
+    _seed.announcements.removeAt(idx);
+    return Result.ok(true);
   }
 }
 

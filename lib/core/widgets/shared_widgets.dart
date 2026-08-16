@@ -6,7 +6,7 @@ import '../utils/responsive.dart';
 /// A left-aligned heading with an optional trailing action — used at the
 /// top of nearly every list screen.
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({super.key, required this.title, this.subtitle, this.trailing});
+  const SectionHeader({required this.title, super.key, this.subtitle, this.trailing});
 
   final String title;
   final String? subtitle;
@@ -43,15 +43,13 @@ class SectionHeader extends StatelessWidget {
       ),
     );
   }
-}
+
+  }
 
 /// A compact stat tile — "Tuition Balance: ₱4,200", "GPA: 1.75", etc.
 class StatCard extends StatelessWidget {
   const StatCard({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.value,
+    required this.icon, required this.label, required this.value, super.key,
     this.color,
     this.onTap,
   });
@@ -98,7 +96,7 @@ class StatCard extends StatelessWidget {
 
 /// A small rounded label used for statuses: "Pending", "Cleared", "Paid"...
 class StatusPill extends StatelessWidget {
-  const StatusPill({super.key, required this.label, required this.color});
+  const StatusPill({required this.label, required this.color, super.key});
 
   final String label;
   final Color color;
@@ -123,10 +121,7 @@ class StatusPill extends StatelessWidget {
 /// empty states should say what happened and what to do next.
 class EmptyState extends StatelessWidget {
   const EmptyState({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.message,
+    required this.icon, required this.title, required this.message, super.key,
     this.action,
   });
 
@@ -186,7 +181,7 @@ class LoadingView extends StatelessWidget {
 }
 
 class ErrorView extends StatelessWidget {
-  const ErrorView({super.key, required this.message, this.onRetry});
+  const ErrorView({required this.message, super.key, this.onRetry});
   final String message;
   final VoidCallback? onRetry;
 
@@ -215,7 +210,7 @@ class ErrorView extends StatelessWidget {
 /// A circular initials avatar — no network image dependency needed for the
 /// mock/demo data path.
 class InitialsAvatar extends StatelessWidget {
-  const InitialsAvatar({super.key, required this.name, this.radius = 20});
+  const InitialsAvatar({required this.name, super.key, this.radius = 20});
 
   final String name;
   final double radius;
@@ -249,7 +244,7 @@ class InitialsAvatar extends StatelessWidget {
 /// Usage: wrap whatever's inside your Scaffold's `body` — typically a
 /// `SingleChildScrollView` — in this widget.
 class FormWidthLimiter extends StatelessWidget {
-  const FormWidthLimiter({super.key, required this.child, this.maxWidth});
+  const FormWidthLimiter({required this.child, super.key, this.maxWidth});
 
   final Widget child;
   final double? maxWidth;
@@ -275,7 +270,7 @@ class FormWidthLimiter extends StatelessWidget {
 /// Respects "reduce motion": jumps straight to the settled state with no
 /// animation when the person has that accessibility setting on.
 class FadeSlideIn extends StatefulWidget {
-  const FadeSlideIn({super.key, required this.index, required this.child});
+  const FadeSlideIn({required this.index, required this.child, super.key});
 
   final int index;
   final Widget child;

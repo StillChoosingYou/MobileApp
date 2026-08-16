@@ -58,7 +58,7 @@ class ClassAttendanceScreen extends ConsumerWidget {
 }
 
 class AttendanceSessionScreen extends ConsumerStatefulWidget {
-  const AttendanceSessionScreen({super.key, required this.section});
+  const AttendanceSessionScreen({required this.section, super.key});
   final Section section;
 
   @override

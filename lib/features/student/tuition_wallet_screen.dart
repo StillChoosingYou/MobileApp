@@ -124,7 +124,8 @@ class _LedgerCard extends StatelessWidget {
       ),
     );
   }
-}
+
+  }
 
 class _LedgerLine extends StatelessWidget {
   const _LedgerLine({required this.label, required this.amount, required this.scheme});

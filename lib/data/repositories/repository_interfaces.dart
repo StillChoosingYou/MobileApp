@@ -1,10 +1,10 @@
 import '../../core/error/result.dart';
-import '../../models/app_user.dart';
 import '../../models/academic_models.dart';
-import '../../models/financial_models.dart';
-import '../../models/campus_models.dart';
-import '../../models/audit_log.dart';
 import '../../models/advanced_models.dart';
+import '../../models/app_user.dart';
+import '../../models/audit_log.dart';
+import '../../models/campus_models.dart';
+import '../../models/financial_models.dart';
 
 abstract class AuthRepository {
   Future<Result<AppUser>> login({

@@ -60,6 +60,10 @@ dependencies:
   # backend, see api/ at the project root)
   http: ^1.6.0
 
+  # Connectivity awareness: online/offline status drives the offline-fallback
+  # cache in the REST repositories and the global "you're offline" banner.
+  connectivity_plus: ^6.0.0
+
   # UI / data
   google_fonts: ^6.1.0
   fl_chart: ^0.66.0

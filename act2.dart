@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 import 'dart:io';
 
 // ===============================
@@ -12,11 +11,11 @@ double calculateArea(double length, double width) {
 // Activity 5 - Product Class
 // ===============================
 class Product {
+
+  Product(this.name, this.price, this.quantity);
   String name;
   double price;
   int quantity;
-
-  Product(this.name, this.price, this.quantity);
 
   double calculateTotal() {
     return price * quantity;
@@ -27,11 +26,11 @@ class Product {
 // Activity 6 - Student Class
 // ===============================
 class Student {
+
+  Student(this.name, this.age, {this.email});
   String name;
   int age;
   String? email;
-
-  Student(this.name, this.age, {this.email});
 
   void displayInfo() {
     print('Name : $name');
@@ -68,12 +67,12 @@ void main() {
       case 1:
         print('========== Activity 1 ==========');
 
-        String studentName = 'Juan Dela Cruz';
-        int age = 20;
-        double average = 91.75;
-        bool isEnrolled = true;
+        var studentName = 'Juan Dela Cruz';
+        var age = 20;
+        var average = 91.75;
+        var isEnrolled = true;
 
-        List<String> subjects = [
+        var subjects = <String>[
           'Mobile Application Development',
           'Statistics',
           'Intelligent Systems'
@@ -89,7 +88,7 @@ void main() {
       case 2:
         print('========== Activity 2 ==========');
 
-        int grade = 87;
+        var grade = 87;
 
         if (grade >= 90) {
           print('Grade: A');
@@ -107,7 +106,7 @@ void main() {
       case 3:
         print('========== Activity 3 ==========');
 
-        for (int i = 1; i <= 10; i++) {
+        for (var i = 1; i <= 10; i++) {
           print('5 x $i = ${5 * i}');
         }
         break;
@@ -115,7 +114,7 @@ void main() {
       case 4:
         print('========== Activity 4 ==========');
 
-        double area = calculateArea(8, 5);
+        var area = calculateArea(8, 5);
         print('Length : 8');
         print('Width  : 5');
         print('Area   : $area');
@@ -124,7 +123,7 @@ void main() {
       case 5:
         print('========== Activity 5 ==========');
 
-        Product product = Product('Laptop', 35000, 2);
+        var product = Product('Laptop', 35000, 2);
 
         print('Product Name : ${product.name}');
         print('Price        : ${product.price}');
@@ -135,9 +134,9 @@ void main() {
       case 6:
         print('========== Activity 6 ==========');
 
-        Student student1 =
+        var student1 =
             Student('Jake', 21, email: 'jake@gmail.com');
-        Student student2 = Student('Maria', 20);
+        var student2 = Student('Maria', 20);
 
         print('Student 1');
         student1.displayInfo();

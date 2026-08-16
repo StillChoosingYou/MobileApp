@@ -50,6 +50,17 @@ enum UserRole {
 /// (a Student's grades, a Faculty's class list, etc. live in their own
 /// models and are looked up by [id]).
 class AppUser {
+
+  factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        email: json['email'] as String,
+        role: UserRole.fromName(json['role'] as String),
+        loginId: json['loginId'] as String,
+        photoUrl: json['photoUrl'] as String?,
+        department: json['department'] as String?,
+        biometricEnabled: json['biometricEnabled'] as bool? ?? false,
+      );
   const AppUser({
     required this.id,
     required this.name,
@@ -102,15 +113,4 @@ class AppUser {
         'department': department,
         'biometricEnabled': biometricEnabled,
       };
-
-  factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        email: json['email'] as String,
-        role: UserRole.fromName(json['role'] as String),
-        loginId: json['loginId'] as String,
-        photoUrl: json['photoUrl'] as String?,
-        department: json['department'] as String?,
-        biometricEnabled: json['biometricEnabled'] as bool? ?? false,
-      );
 }

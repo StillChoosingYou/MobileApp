@@ -9,6 +9,18 @@ library;
 // ---------------------------------------------------------------------------
 
 class FacultyEvaluation {
+
+  factory FacultyEvaluation.fromJson(Map<String, dynamic> json) =>
+      FacultyEvaluation(
+        id: json['id'] as String,
+        studentId: json['studentId'] as String,
+        facultyName: json['facultyName'] as String,
+        sectionId: json['sectionId'] as String,
+        term: json['term'] as String,
+        rating: json['rating'] as int,
+        comment: json['comment'] as String?,
+        submittedAt: DateTime.parse(json['submittedAt'] as String),
+      );
   const FacultyEvaluation({
     required this.id,
     required this.studentId,
@@ -16,8 +28,7 @@ class FacultyEvaluation {
     required this.sectionId,
     required this.term,
     required this.rating,
-    this.comment,
-    required this.submittedAt,
+    required this.submittedAt, this.comment,
   });
 
   final String id;
@@ -41,18 +52,6 @@ class FacultyEvaluation {
         'comment': comment,
         'submittedAt': submittedAt.toIso8601String(),
       };
-
-  factory FacultyEvaluation.fromJson(Map<String, dynamic> json) =>
-      FacultyEvaluation(
-        id: json['id'] as String,
-        studentId: json['studentId'] as String,
-        facultyName: json['facultyName'] as String,
-        sectionId: json['sectionId'] as String,
-        term: json['term'] as String,
-        rating: json['rating'] as int,
-        comment: json['comment'] as String?,
-        submittedAt: DateTime.parse(json['submittedAt'] as String),
-      );
 }
 
 // ---------------------------------------------------------------------------
@@ -62,6 +61,17 @@ class FacultyEvaluation {
 enum ScholarshipStatus { active, applied, expired, revoked }
 
 class ScholarshipProgram {
+
+  factory ScholarshipProgram.fromJson(Map<String, dynamic> json) =>
+      ScholarshipProgram(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        description: json['description'] as String,
+        discountPercent: (json['discountPercent'] as num).toDouble(),
+        requirements: json['requirements'] as String,
+        slots: json['slots'] as int,
+        slotsTaken: json['slotsTaken'] as int,
+      );
   const ScholarshipProgram({
     required this.id,
     required this.name,
@@ -81,17 +91,6 @@ class ScholarshipProgram {
   final int slotsTaken;
 
   bool get isFull => slotsTaken >= slots;
-
-  factory ScholarshipProgram.fromJson(Map<String, dynamic> json) =>
-      ScholarshipProgram(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        description: json['description'] as String,
-        discountPercent: (json['discountPercent'] as num).toDouble(),
-        requirements: json['requirements'] as String,
-        slots: json['slots'] as int,
-        slotsTaken: json['slotsTaken'] as int,
-      );
 }
 
 class ScholarshipApplication {
@@ -246,6 +245,16 @@ class CounselingRecord {
 enum ChecklistItemStatus { completed, inProgress, notTaken }
 
 class CurriculumItem {
+
+  factory CurriculumItem.fromJson(Map<String, dynamic> json) => CurriculumItem(
+        subjectCode: json['subjectCode'] as String,
+        subjectTitle: json['subjectTitle'] as String,
+        units: (json['units'] as num).toDouble(),
+        yearLevel: json['yearLevel'] as int,
+        semester: json['semester'] as int,
+        status: ChecklistItemStatus.values.byName(json['status'] as String),
+        grade: json['grade'] != null ? (json['grade'] as num).toDouble() : null,
+      );
   const CurriculumItem({
     required this.subjectCode,
     required this.subjectTitle,
@@ -266,6 +275,15 @@ class CurriculumItem {
 }
 
 class CurriculumChecklist {
+
+  factory CurriculumChecklist.fromJson(Map<String, dynamic> json) => CurriculumChecklist(
+        studentId: json['studentId'] as String,
+        program: json['program'] as String,
+        totalUnitsRequired: (json['totalUnitsRequired'] as num).toDouble(),
+        items: (json['items'] as List)
+            .map((e) => CurriculumItem.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
   const CurriculumChecklist({
     required this.studentId,
     required this.program,
@@ -370,6 +388,15 @@ extension CalendarCategoryLabel on CalendarCategory {
 }
 
 class CalendarEvent {
+
+  factory CalendarEvent.fromJson(Map<String, dynamic> json) => CalendarEvent(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        description: json['description'] as String,
+        date: DateTime.parse(json['date'] as String),
+        endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+        category: CalendarCategory.values.byName(json['category'] as String),
+      );
   const CalendarEvent({
     required this.id,
     required this.title,
@@ -387,15 +414,6 @@ class CalendarEvent {
   final CalendarCategory category;
 
   bool get isMultiDay => endDate != null && endDate!.isAfter(date);
-
-  factory CalendarEvent.fromJson(Map<String, dynamic> json) => CalendarEvent(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        description: json['description'] as String,
-        date: DateTime.parse(json['date'] as String),
-        endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
-        category: CalendarCategory.values.byName(json['category'] as String),
-      );
 }
 
 // ---------------------------------------------------------------------------

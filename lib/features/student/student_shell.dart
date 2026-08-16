@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
-import 'student_home_screen.dart';
 import 'digital_id_screen.dart';
 import 'schedule_grades_screen.dart';
-import 'tuition_wallet_screen.dart';
 import 'services_screen.dart';
+import 'student_home_screen.dart';
+import 'tuition_wallet_screen.dart';
 
 class StudentShell extends StatefulWidget {
   const StudentShell({super.key});

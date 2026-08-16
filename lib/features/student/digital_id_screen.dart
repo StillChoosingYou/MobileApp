@@ -140,7 +140,6 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> with SingleTi
                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
                       child: QrImageView(
                         data: 'PGPC-ID|${user.loginId}|${user.id}',
-                        version: QrVersions.auto,
                         size: Responsive.fluidWidth(context, min: 140, max: 170, fraction: 0.42),
                         gapless: false,
                       ),
