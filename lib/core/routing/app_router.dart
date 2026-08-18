@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/admin/admin_shell.dart';
 import '../../features/auth/forgot_password_screen.dart';
+import '../../features/auth/intro_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/role_select_screen.dart';
 import '../../features/auth/two_factor_screen.dart';
@@ -59,8 +60,13 @@ CustomTransitionPage<void> _appPage({
 /// Auth guarding is intentionally not wired through `redirect` here — see
 /// the README "Hardening for production" section.
 final GoRouter appRouter = GoRouter(
-  initialLocation: Routes.roleSelect,
+  initialLocation: Routes.intro,
   routes: [
+    GoRoute(
+      path: Routes.intro,
+      pageBuilder: (context, state) =>
+          _appPage(context: context, state: state, child: const IntroScreen()),
+    ),
     GoRoute(
       path: Routes.roleSelect,
       pageBuilder: (context, state) =>

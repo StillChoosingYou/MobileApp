@@ -2,6 +2,7 @@
 class Routes {
   Routes._();
 
+  static const intro = '/intro';
   static const roleSelect = '/';
   static const login = '/login';
   static const forgotPassword = '/forgot-password';

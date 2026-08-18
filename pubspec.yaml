@@ -54,6 +54,7 @@ dependencies:
   qr_flutter: ^4.1.0
   image_picker: ^1.0.0
   url_launcher: ^6.2.0
+  video_player: ^2.8.0
 
   # Networking (used by lib/data/repositories/api_repositories.dart when
   # AppConfig.backendMode == BackendMode.restApi — your own Flask + Postgres
@@ -87,6 +88,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/videos/PGPCIntroScene.mp4
 
   # If you have a licensed display typeface for the college, drop the .ttf
   # files into assets/fonts and register a `fonts:` block here — otherwise
