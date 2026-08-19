@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../routing/route_names.dart';
 import '../utils/responsive.dart';
+import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../providers/feature_providers.dart';
 
 class NavTab {
@@ -12,6 +13,7 @@ class NavTab {
     required this.label,
     required this.screen,
     this.appBarBottom,
+    this.coachMarkKey, // Key for coach mark targeting
   });
 
   final IconData icon;
@@ -20,6 +22,9 @@ class NavTab {
 
   /// Optional [TabBar] or other widget placed under the AppBar title.
   final PreferredSizeWidget? appBarBottom;
+
+  /// Optional GlobalKey for coach mark tutorial targeting.
+  final GlobalKey? coachMarkKey;
 }
 
 /// One AppBar + bottom [NavigationBar] or side [NavigationRail] driving an

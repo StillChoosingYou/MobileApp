@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
+import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../providers/feature_providers.dart';
 import 'enrollment_approval_screen.dart';
 import 'student_records_screen.dart';
@@ -24,10 +25,25 @@ class _RegistrarShellState extends State<RegistrarShell> {
       title: 'Registrar',
       currentIndex: _index,
       onTabSelected: (i) => setState(() => _index = i),
-      tabs: const [
-        NavTab(icon: Icons.dashboard_outlined, label: 'Home', screen: _RegistrarHomeScreen()),
-        NavTab(icon: Icons.folder_shared_outlined, label: 'Records', screen: StudentRecordsScreen()),
-        NavTab(icon: Icons.fact_check_outlined, label: 'Enrollment', screen: EnrollmentApprovalScreen()),
+      tabs: [
+        NavTab(
+          icon: Icons.dashboard_outlined,
+          label: 'Home',
+          screen: const _RegistrarHomeScreen(),
+          coachMarkKey: RoleTutorialKeys.registrarEnrollmentTabKey,
+        ),
+        NavTab(
+          icon: Icons.folder_shared_outlined,
+          label: 'Records',
+          screen: const StudentRecordsScreen(),
+          coachMarkKey: RoleTutorialKeys.registrarRecordsTabKey,
+        ),
+        NavTab(
+          icon: Icons.fact_check_outlined,
+          label: 'Enrollment',
+          screen: const EnrollmentApprovalScreen(),
+          coachMarkKey: RoleTutorialKeys.registrarReportsTabKey,
+        ),
       ],
     );
   }

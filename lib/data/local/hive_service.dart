@@ -15,14 +15,19 @@ class HiveService {
   /// string key (see `lib/core/network/offline_cache.dart`).
   static const cacheBoxName = 'pgpc_cache';
 
+  /// Tutorial completion state (offline-first, per-user+role)
+  static const tutorialStateBoxName = 'pgpc_tutorial_state';
+
   static Future<void> init() async {
     await Hive.initFlutter();
     await Hive.openBox(sessionBoxName);
     await Hive.openBox(settingsBoxName);
     await Hive.openBox(cacheBoxName);
+    await Hive.openBox(tutorialStateBoxName);
   }
 
   static Box get session => Hive.box(sessionBoxName);
   static Box get settings => Hive.box(settingsBoxName);
   static Box get cache => Hive.box(cacheBoxName);
+  static Box get tutorialState => Hive.box(tutorialStateBoxName);
 }
