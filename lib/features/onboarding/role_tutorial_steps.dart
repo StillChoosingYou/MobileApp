@@ -139,7 +139,6 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.studentDigitalIdKey,
       title: 'Digital Campus ID',
       description: 'Your QR-based ID for gate entry, library, and events. Works offline!',
-      shape: CoachMarkShape.circle,
       alignment: Alignment.topCenter,
     ),
   ];

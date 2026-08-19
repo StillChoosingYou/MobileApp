@@ -5,6 +5,8 @@ import 'core/config/app_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/offline_banner.dart';
+import 'features/onboarding/app_onboarding_carousel.dart';
+import 'features/onboarding/tutorial_providers.dart';
 import 'providers/feature_providers.dart';
 
 class PgpcCampusApp extends ConsumerWidget {
@@ -13,7 +15,28 @@ class PgpcCampusApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeControllerProvider);
+    final appIntroSeen = ref.watch(appIntroSeenProvider);
 
+    return appIntroSeen.when(
+      data: (seen) {
+        if (!seen) {
+          return const AppOnboardingCarousel();
+        }
+        return _AppWithRouter(themeMode: themeMode);
+      },
+      loading: () => const _LoadingScaffold(),
+      error: (_, __) => _AppWithRouter(themeMode: themeMode),
+    );
+  }
+}
+
+class _AppWithRouter extends StatelessWidget {
+  const _AppWithRouter({required this.themeMode, super.key});
+
+  final ThemeMode themeMode;
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
@@ -24,11 +47,20 @@ class PgpcCampusApp extends ConsumerWidget {
       builder: (context, child) => Stack(
         children: [
           child ?? const SizedBox.shrink(),
-          // Global, connectivity-aware banner. Shows only when the device is
-          // offline; auto-hides when connectivity returns.
           const OfflineBanner(),
         ],
       ),
+    );
+  }
+}
+
+class _LoadingScaffold extends StatelessWidget {
+  const _LoadingScaffold({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }

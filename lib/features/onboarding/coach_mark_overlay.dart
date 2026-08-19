@@ -374,7 +374,7 @@ class _TooltipCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: scheme.outlineVariant, width: 1),
+            border: Border.all(color: scheme.outlineVariant),
           ),
           padding: const EdgeInsets.all(20),
           child: Column(
