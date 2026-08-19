@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/routing/route_names.dart';
 
@@ -45,7 +46,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
 
   void _navigateToRoleSelect() {
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(Routes.roleSelect);
+    context.go(Routes.roleSelect);
   }
 
   @override
