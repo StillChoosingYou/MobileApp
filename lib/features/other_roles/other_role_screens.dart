@@ -5,16 +5,18 @@ import '../../core/widgets/role_nav_shell.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../core/utils/date_utils.dart';
+import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../models/app_user.dart';
 import '../../models/campus_models.dart';
 import '../../models/financial_models.dart';
 import '../../providers/feature_providers.dart';
 
 class _MenuEntry {
-  const _MenuEntry({required this.icon, required this.label, this.builder});
+  const _MenuEntry({required this.icon, required this.label, this.builder, this.coachMarkKey});
   final IconData icon;
   final String label;
   final WidgetBuilder? builder;
+  final GlobalKey? coachMarkKey;
 }
 
 /// Accounting, Guidance, Department Head, and Dean share this dashboard
@@ -34,10 +36,20 @@ class GenericRoleDashboard extends StatelessWidget {
             icon: Icons.receipt_long_outlined,
             label: 'Billing & Ledger',
             builder: (_) => const AccountingBillingScreen(),
+            coachMarkKey: RoleTutorialKeys.accountingLedgerTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.summarize_outlined,
+            label: 'Financial Reports',
+            coachMarkKey: RoleTutorialKeys.accountingReportsTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.account_balance_outlined,
+            label: 'Reconciliation',
+            coachMarkKey: RoleTutorialKeys.accountingReconciliationTabKey,
           ),
           const _MenuEntry(icon: Icons.card_giftcard_outlined, label: 'Scholarships & Discounts'),
           const _MenuEntry(icon: Icons.science_outlined, label: 'Laboratory Fees'),
-          const _MenuEntry(icon: Icons.summarize_outlined, label: 'Financial Reports'),
           const _MenuEntry(icon: Icons.calendar_view_month_outlined, label: 'Installment Plans'),
         ];
       case UserRole.guidance:
@@ -46,25 +58,54 @@ class GenericRoleDashboard extends StatelessWidget {
             icon: Icons.event_available_outlined,
             label: 'Appointments',
             builder: (_) => const StaffAppointmentsScreen(office: AppointmentOffice.guidance),
+            coachMarkKey: RoleTutorialKeys.guidanceAppointmentsTabKey,
           ),
-          const _MenuEntry(icon: Icons.favorite_outline, label: 'Counseling Records'),
-          const _MenuEntry(icon: Icons.fact_check_outlined, label: 'Clearance Sign-off'),
+          _MenuEntry(
+            icon: Icons.fact_check_outlined,
+            label: 'Clearance Sign-off',
+            coachMarkKey: RoleTutorialKeys.guidanceClearanceTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.favorite_outline,
+            label: 'Counseling Records',
+            coachMarkKey: RoleTutorialKeys.guidanceCasesTabKey,
+          ),
         ];
       case UserRole.deptHead:
         return [
-          const _MenuEntry(icon: Icons.groups_2_outlined, label: 'Department Faculty'),
-          const _MenuEntry(icon: Icons.bar_chart_outlined, label: 'Department Performance'),
-          const _MenuEntry(icon: Icons.rule_folder_outlined, label: 'Curriculum Review'),
+          _MenuEntry(
+            icon: Icons.groups_2_outlined,
+            label: 'Faculty Load',
+            coachMarkKey: RoleTutorialKeys.deptHeadFacultyLoadKey,
+          ),
+          _MenuEntry(
+            icon: Icons.bar_chart_outlined,
+            label: 'Department Reports',
+            coachMarkKey: RoleTutorialKeys.deptHeadReportsKey,
+          ),
+          _MenuEntry(
+            icon: Icons.rule_folder_outlined,
+            label: 'Approvals Queue',
+            coachMarkKey: RoleTutorialKeys.deptHeadApprovalsKey,
+          ),
         ];
       case UserRole.dean:
         return [
-          const _MenuEntry(icon: Icons.school_outlined, label: 'College Overview'),
           _MenuEntry(
-            icon: Icons.event_available_outlined,
-            label: 'Appointments',
-            builder: (_) => const StaffAppointmentsScreen(office: AppointmentOffice.dean),
+            icon: Icons.school_outlined,
+            label: 'College Overview',
+            coachMarkKey: RoleTutorialKeys.deanOverviewKey,
           ),
-          const _MenuEntry(icon: Icons.verified_outlined, label: 'Graduation Evaluation'),
+          _MenuEntry(
+            icon: Icons.menu_book_outlined,
+            label: 'Program Management',
+            coachMarkKey: RoleTutorialKeys.deanProgramsKey,
+          ),
+          _MenuEntry(
+            icon: Icons.verified_outlined,
+            label: 'Faculty Overview',
+            coachMarkKey: RoleTutorialKeys.deanFacultyKey,
+          ),
         ];
       default:
         return const [];

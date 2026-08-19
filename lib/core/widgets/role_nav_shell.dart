@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../routing/route_names.dart';
 import '../utils/responsive.dart';
-import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../providers/feature_providers.dart';
 
 class NavTab {
