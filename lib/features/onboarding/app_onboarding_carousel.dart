@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/routing/route_names.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive.dart';
+import 'tutorial_providers.dart';
 
 /// App-level onboarding carousel shown on first launch (before role selection).
 /// 3-4 slides introducing key app capabilities, with "Get Started" → role select.
-class AppOnboardingCarousel extends StatefulWidget {
+class AppOnboardingCarousel extends ConsumerStatefulWidget {
   const AppOnboardingCarousel({super.key});
 
   @override
-  State<AppOnboardingCarousel> createState() => _AppOnboardingCarouselState();
+  ConsumerState<AppOnboardingCarousel> createState() => _AppOnboardingCarouselState();
 }
 
-class _AppOnboardingCarouselState extends State<AppOnboardingCarousel> {
+class _AppOnboardingCarouselState extends ConsumerState<AppOnboardingCarousel> {
   late final PageController _pageController;
   int _currentPage = 0;
 
@@ -82,7 +84,11 @@ class _AppOnboardingCarouselState extends State<AppOnboardingCarousel> {
 
   Future<void> _completeOnboarding() async {
     if (!mounted) return;
-    context.go(Routes.roleSelect);
+    // Persist that the app-level intro has been seen so it never shows again.
+    await ref.read(markAppIntroSeenProvider)();
+    if (mounted) {
+      context.go(Routes.roleSelect);
+    }
   }
 
   @override

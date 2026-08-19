@@ -4,47 +4,96 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
+import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
+import '../../features/onboarding/tutorial_providers.dart';
+import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
 import 'enrollment_approval_screen.dart';
 import 'student_records_screen.dart';
 
-class RegistrarShell extends StatefulWidget {
+class RegistrarShell extends ConsumerStatefulWidget {
   const RegistrarShell({super.key});
 
   @override
-  State<RegistrarShell> createState() => _RegistrarShellState();
+  ConsumerState<RegistrarShell> createState() => _RegistrarShellState();
 }
 
-class _RegistrarShellState extends State<RegistrarShell> {
+class _RegistrarShellState extends ConsumerState<RegistrarShell> {
   int _index = 0;
+  bool _tutorialStarted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndStartTutorial();
+  }
+
+  Future<void> _checkAndStartTutorial() async {
+    final authState = ref.read(authControllerProvider);
+    final user = authState.value;
+    if (user == null) return;
+
+    final completed = await ref.read(roleTutorialCompletedProvider(
+      (userId: user.id, role: user.role),
+    ).future);
+
+    if (!completed && mounted && !_tutorialStarted) {
+      _tutorialStarted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _startTutorial();
+        }
+      });
+    }
+  }
+
+  void _startTutorial() {
+    final steps = RoleTutorialSteps.getStepsForRole(UserRole.registrar);
+    CoachMarkOverlay.show(
+      context: context,
+      steps: steps,
+      onComplete: () async {
+        final authState = ref.read(authControllerProvider);
+        final user = authState.value;
+        if (user != null) {
+          await ref.read(markRoleTutorialCompletedProvider)(
+            user.id,
+            user.role,
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final tabs = [
+      NavTab(
+        icon: Icons.dashboard_outlined,
+        label: 'Home',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.registrarEnrollmentTabKey, child: const _RegistrarHomeScreen()),
+        coachMarkKey: RoleTutorialKeys.registrarEnrollmentTabKey,
+      ),
+      NavTab(
+        icon: Icons.folder_shared_outlined,
+        label: 'Records',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.registrarRecordsTabKey, child: const StudentRecordsScreen()),
+        coachMarkKey: RoleTutorialKeys.registrarRecordsTabKey,
+      ),
+      NavTab(
+        icon: Icons.fact_check_outlined,
+        label: 'Enrollment',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.registrarReportsTabKey, child: const EnrollmentApprovalScreen()),
+        coachMarkKey: RoleTutorialKeys.registrarReportsTabKey,
+      ),
+    ];
+
     return RoleNavShell(
       title: 'Registrar',
       currentIndex: _index,
       onTabSelected: (i) => setState(() => _index = i),
-      tabs: [
-        NavTab(
-          icon: Icons.dashboard_outlined,
-          label: 'Home',
-          screen: const _RegistrarHomeScreen(),
-          coachMarkKey: RoleTutorialKeys.registrarEnrollmentTabKey,
-        ),
-        NavTab(
-          icon: Icons.folder_shared_outlined,
-          label: 'Records',
-          screen: const StudentRecordsScreen(),
-          coachMarkKey: RoleTutorialKeys.registrarRecordsTabKey,
-        ),
-        NavTab(
-          icon: Icons.fact_check_outlined,
-          label: 'Enrollment',
-          screen: const EnrollmentApprovalScreen(),
-          coachMarkKey: RoleTutorialKeys.registrarReportsTabKey,
-        ),
-      ],
+      tabs: tabs,
     );
   }
 }

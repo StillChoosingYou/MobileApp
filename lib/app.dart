@@ -31,7 +31,7 @@ class PgpcCampusApp extends ConsumerWidget {
 }
 
 class _AppWithRouter extends StatelessWidget {
-  const _AppWithRouter({required this.themeMode, super.key});
+  const _AppWithRouter({required this.themeMode});
 
   final ThemeMode themeMode;
 
@@ -55,7 +55,7 @@ class _AppWithRouter extends StatelessWidget {
 }
 
 class _LoadingScaffold extends StatelessWidget {
-  const _LoadingScaffold({super.key});
+  const _LoadingScaffold();
 
   @override
   Widget build(BuildContext context) {

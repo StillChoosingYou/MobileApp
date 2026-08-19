@@ -207,6 +207,84 @@ class ErrorView extends StatelessWidget {
   }
 }
 
+/// A small inline "?" icon button (48x48 tap target) that opens a help dialog.
+/// Pair it with [HelpDialog] for a consistent contextual-help affordance.
+class HelpIconButton extends StatelessWidget {
+  const HelpIconButton({required this.onPressed, super.key, this.tooltip = 'Help'});
+
+  final VoidCallback onPressed;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.help_outline),
+      tooltip: tooltip,
+      onPressed: onPressed,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+    );
+  }
+}
+
+/// A standard-shaped help dialog. [title] is the heading; [body] is the
+/// explanatory content (typically a Text or a short Column of rows).
+class HelpDialog extends StatelessWidget {
+  const HelpDialog({required this.title, required this.body, super.key});
+
+  final String title;
+  final Widget body;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.help_outline, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 10),
+          Expanded(child: Text(title)),
+        ],
+      ),
+      content: body,
+      actions: [
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Got it'),
+        ),
+      ],
+    );
+  }
+}
+
+/// One labeled row inside a [HelpDialog] body — an icon + short text.
+class HelpRow extends StatelessWidget {
+  const HelpRow({required this.icon, required this.text, super.key});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: scheme.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// A circular initials avatar — no network image dependency needed for the
 /// mock/demo data path.
 class InitialsAvatar extends StatelessWidget {

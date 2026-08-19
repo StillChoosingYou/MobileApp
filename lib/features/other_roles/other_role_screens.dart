@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/widgets/role_nav_shell.dart';
 import '../../core/utils/responsive.dart';
+import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../core/utils/date_utils.dart';
+import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
+import '../../features/onboarding/tutorial_providers.dart';
 import '../../models/app_user.dart';
 import '../../models/campus_models.dart';
 import '../../models/financial_models.dart';
@@ -24,12 +26,62 @@ class _MenuEntry {
 /// feature lists are shorter and don't (yet) need dedicated tabs. One real
 /// screen is wired per role below; the rest are placeholders that show how
 /// to extend `CampusServicesRepository` / a new repository the same way.
-class GenericRoleDashboard extends StatelessWidget {
+class GenericRoleDashboard extends ConsumerStatefulWidget {
   const GenericRoleDashboard({required this.role, super.key});
   final UserRole role;
 
+  @override
+  ConsumerState<GenericRoleDashboard> createState() => _GenericRoleDashboardState();
+}
+
+class _GenericRoleDashboardState extends ConsumerState<GenericRoleDashboard> {
+  bool _tutorialStarted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndStartTutorial();
+  }
+
+  Future<void> _checkAndStartTutorial() async {
+    final authState = ref.read(authControllerProvider);
+    final user = authState.value;
+    if (user == null) return;
+
+    final completed = await ref.read(roleTutorialCompletedProvider(
+      (userId: user.id, role: user.role),
+    ).future);
+
+    if (!completed && mounted && !_tutorialStarted) {
+      _tutorialStarted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _startTutorial();
+        }
+      });
+    }
+  }
+
+  void _startTutorial() {
+    final steps = RoleTutorialSteps.getStepsForRole(widget.role);
+    CoachMarkOverlay.show(
+      context: context,
+      steps: steps,
+      onComplete: () async {
+        final authState = ref.read(authControllerProvider);
+        final user = authState.value;
+        if (user != null) {
+          await ref.read(markRoleTutorialCompletedProvider)(
+            user.id,
+            user.role,
+          );
+        }
+      },
+    );
+  }
+
   List<_MenuEntry> get _entries {
-    switch (role) {
+    switch (widget.role) {
       case UserRole.accounting:
         return [
           _MenuEntry(
@@ -116,7 +168,7 @@ class GenericRoleDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text(role.label), actions: const [LogoutButton()]),
+      appBar: AppBar(title: Text(widget.role.label), actions: const [LogoutButton()]),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -135,26 +187,29 @@ class GenericRoleDashboard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(color: scheme.outlineVariant),
             ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                if (entry.builder != null) {
-                  Navigator.of(context).push(MaterialPageRoute(builder: entry.builder!));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${entry.label} follows the same repository pattern — not wired up yet.')),
-                  );
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(entry.icon, color: scheme.primary),
-                    Text(entry.label, style: Theme.of(context).textTheme.titleSmall),
-                  ],
+            child: CoachMarkTarget(
+              key: entry.coachMarkKey,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  if (entry.builder != null) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: entry.builder!));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${entry.label} follows the same repository pattern — not wired up yet.')),
+                    );
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(entry.icon, color: scheme.primary),
+                      Text(entry.label, style: Theme.of(context).textTheme.titleSmall),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -7,6 +7,7 @@ import '../../core/routing/route_names.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
+import '../../data/local/tutorial_state.dart';
 import '../../models/app_user.dart';
 
 class RoleSelectScreen extends StatefulWidget {
@@ -205,6 +206,11 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
                               ),
 
                             SizedBox(height: compactHeight ? 8 : 16),
+
+                            // ── Help / tutorial replay ──
+                            _TutorialHelpRow(onReplayIntro: _replayAppIntro),
+
+                            SizedBox(height: compactHeight ? 8 : 16),
                           ],
                         ),
                       );
@@ -214,6 +220,35 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _replayAppIntro() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Replay app intro?'),
+        content: const Text(
+          'This shows the welcome carousel again now. '
+          'You can also replay a role\'s guided tour after signing in.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Replay now'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      await TutorialStateService.resetAppIntro();
+      if (mounted) {
+        context.go(Routes.intro);
+      }
+    }
   }
 }
 
@@ -675,6 +710,61 @@ class _RoleCardState extends State<_RoleCard> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A compact row of tutorial/help affordances shown beneath the role cards:
+/// replay the app intro, and open the guided tour selector.
+class _TutorialHelpRow extends StatelessWidget {
+  const _TutorialHelpRow({required this.onReplayIntro});
+
+  final VoidCallback onReplayIntro;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: onReplayIntro,
+              icon: const Icon(Icons.replay_outlined, size: 18),
+              label: const Text('Replay intro'),
+              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: const Text('How to replay a guided tour'),
+                    content: const Text(
+                      'After you sign in, open the role you want and the guided '
+                      'tour replays automatically if you haven\'t finished it.\n\n'
+                      'To replay any tour on demand: sign in, then return here '
+                      'and the tour will start again on your next visit to that role.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: const Text('Got it'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: const Icon(Icons.help_outline, size: 18),
+              label: const Text('Tutorial help'),
+              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            ),
+          ),
+        ],
       ),
     );
   }

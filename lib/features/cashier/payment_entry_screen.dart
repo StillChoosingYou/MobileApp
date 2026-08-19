@@ -71,6 +71,32 @@ class _PaymentEntryScreenState extends ConsumerState<PaymentEntryScreen> {
     );
   }
 
+  void _showPaymentMethodHelp(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => const HelpDialog(
+        title: 'Payment methods explained',
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            HelpRow(
+              icon: Icons.payments_outlined,
+              text: 'Cash — Record a physical cash payment at the counter.',
+            ),
+            HelpRow(
+              icon: Icons.credit_card_outlined,
+              text: 'Card / Bank Transfer — Record a payment made via bank deposit, online banking, or card terminal. You enter the reference number manually.',
+            ),
+            HelpRow(
+              icon: Icons.phone_android_outlined,
+              text: 'GCash / Maya (manual) — Record that the student paid via the app. You verify the reference number against the cashier portal. The app does not yet integrate live checkout; see the README for PayMongo setup.',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchResults = ref.watch(studentSearchProvider(_searchController.text));
@@ -137,7 +163,16 @@ class _PaymentEntryScreenState extends ConsumerState<PaymentEntryScreen> {
                 validator: Validators.amount,
               ),
               const SizedBox(height: 14),
-              Text('Payment method', style: Theme.of(context).textTheme.labelLarge),
+              Row(
+                children: [
+                  Text('Payment method', style: Theme.of(context).textTheme.labelLarge),
+                  const Spacer(),
+                  HelpIconButton(
+                    onPressed: () => _showPaymentMethodHelp(context),
+                    tooltip: 'Payment method help',
+                  ),
+                ],
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
