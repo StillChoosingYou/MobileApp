@@ -26,11 +26,7 @@ class LocalNotificationsService {
     tz.initializeTimeZones();
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosInit = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+    const iosInit = DarwinInitializationSettings();
     const initSettings = InitializationSettings(
       android: androidInit,
       iOS: iosInit,
@@ -68,7 +64,6 @@ class LocalNotificationsService {
       body: body,
       payload: payload,
       category: category,
-      scheduledDate: null,
     );
   }
 

@@ -51,11 +51,7 @@ class FcmService {
     if (_initialized) return;
 
     // Request permission (iOS/macOS/Web)
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    final settings = await _messaging.requestPermission();
     debugPrint('FCM permission: ${settings.authorizationStatus}');
 
     // Get initial token

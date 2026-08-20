@@ -135,7 +135,7 @@ class _MonthView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstDayOfMonth = DateTime(selectedDate.year, selectedDate.month, 1);
+    final firstDayOfMonth = DateTime(selectedDate.year, selectedDate.month);
     final daysInMonth = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
     final startWeekday = firstDayOfMonth.weekday % 7; // 0 = Sunday
 

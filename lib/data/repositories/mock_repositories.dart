@@ -860,7 +860,6 @@ class MockMessageRepository implements MessageRepository {
       participantIds: participantIds,
       groupName: groupName,
       groupAvatarUrl: groupAvatarUrl,
-      lastMessage: null,
       updatedAt: DateTime.now(),
       unreadCounts: {for (final id in participantIds) id: 0},
     );
@@ -899,7 +898,6 @@ class MockMessageRepository implements MessageRepository {
       content: content,
       metadata: metadata,
       sentAt: DateTime.now(),
-      isRead: false,
       readBy: [senderId],
     );
 
@@ -955,13 +953,12 @@ class MockMessageRepository implements MessageRepository {
     String? groupAvatarUrl,
   }) async {
     await _delay();
-    final allParticipants = [creatorId, ...participantIds].toSet().toList();
+    final allParticipants = <String>{creatorId, ...participantIds}.toList();
     final conv = Conversation(
       id: 'conv_${DateTime.now().microsecondsSinceEpoch}',
       participantIds: allParticipants,
       groupName: groupName,
       groupAvatarUrl: groupAvatarUrl,
-      lastMessage: null,
       updatedAt: DateTime.now(),
       unreadCounts: {for (final id in allParticipants) id: 0},
     );
@@ -1193,7 +1190,6 @@ class MockAttendanceRepository implements AttendanceRepository {
       studentName: student.name,
       status: AttendanceStatus.present,
       recordedAt: DateTime.now(),
-      method: AttendanceMethod.qrScan,
     );
     _records.add(record);
 

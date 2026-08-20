@@ -131,12 +131,7 @@ final notificationPermissionProvider = FutureProvider<NotificationPermissionStat
   }
 
   final messaging = FirebaseMessaging.instance;
-  final settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-    provisional: false,
-  );
+  final settings = await messaging.requestPermission();
 
   switch (settings.authorizationStatus) {
     case AuthorizationStatus.authorized:
@@ -158,9 +153,6 @@ final requestNotificationPermissionProvider = FutureProvider<NotificationPermiss
 
   final messaging = FirebaseMessaging.instance;
   final settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
     provisional: true,
   );
 
@@ -397,7 +389,7 @@ class InAppNotificationsController extends StateNotifier<AsyncValue<List<InAppNo
     try {
       // In a real app, load from Hive/SharedPreferences
       // For now, return empty list
-      state = AsyncValue.data(const []);
+      state = AsyncValue.data(const <InAppNotification>[]);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -432,8 +424,8 @@ class InAppNotificationsController extends StateNotifier<AsyncValue<List<InAppNo
   }
 
   Future<void> clearAll() async {
-    state = AsyncValue.data(const []);
-    await _persist(const []);
+    state = AsyncValue.data(const <InAppNotification>[]);
+    await _persist(const <InAppNotification>[]);
   }
 
   Future<void> _persist(List<InAppNotification> notifications) async {
