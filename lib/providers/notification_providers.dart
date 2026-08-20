@@ -89,6 +89,29 @@ final deleteAllFcmTokensProvider = FutureProvider<void>((ref) async {
   }
 });
 
+/// Register current user's FCM token (called after login).
+/// Gets token from FCM service and saves to backend.
+final registerFcmTokenProvider = FutureProvider.family<void, String>((ref, userId) async {
+  if (AppConfig.backendMode == BackendMode.mock) {
+    return;
+  }
+  final token = await FcmService.instance.getToken();
+  if (token != null) {
+    await ref.read(notificationRepositoryProvider).saveFcmToken(userId, token);
+    ref.read(currentFcmTokenProvider.notifier).state = token;
+  }
+});
+
+/// Unregister all FCM tokens for current user (called on logout).
+final unregisterFcmTokenProvider = FutureProvider<void>((ref) async {
+  final authState = ref.read(authControllerProvider);
+  final user = authState.value;
+  if (user != null) {
+    await ref.read(notificationRepositoryProvider).deleteAllFcmTokens(user.id);
+    ref.read(currentFcmTokenProvider.notifier).state = null;
+  }
+});
+
 // ============================================================================
 // Notification Permission Providers
 // ============================================================================

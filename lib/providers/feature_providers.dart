@@ -13,6 +13,7 @@ import '../models/audit_log.dart';
 import '../models/campus_models.dart';
 import '../models/financial_models.dart';
 import '../models/messaging_models.dart';
+import 'notification_providers.dart';
 import 'repository_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -55,6 +56,14 @@ class AuthController extends AsyncNotifier<AppUser?> {
       } catch (_) {
         // Non-fatal: the in-memory session still works for this launch.
       }
+      // Register this device's FCM token so the backend can target pushes
+      // to the signed-in user. Best-effort: a failure here (e.g. FCM not
+      // initialized in mock mode) must not block login.
+      ref.read(registerFcmTokenProvider(user.id).future).ignore();
+      // Subscribe to role-relevant broadcast topics (announcements, etc.).
+      for (final topic in NotificationTopics.forRole(user.role)) {
+        ref.read(subscribeToTopicProvider(topic).future).ignore();
+      }
     }
     state = AsyncValue.data(user);
     return result;
@@ -66,6 +75,8 @@ class AuthController extends AsyncNotifier<AppUser?> {
     } catch (_) {
       // Non-fatal.
     }
+    // Drop FCM tokens so we stop receiving pushes for this device/user.
+    ref.read(unregisterFcmTokenProvider.future).ignore();
     ApiClient.clearToken();
     state = const AsyncValue.data(null);
   }

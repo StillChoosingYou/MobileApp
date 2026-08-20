@@ -25,6 +25,7 @@ class RoleTutorialKeys {
   static final GlobalKey studentDigitalIdKey = GlobalKey();
   static final GlobalKey studentAttendanceTabKey = GlobalKey();
   static final GlobalKey studentMessagesTabKey = GlobalKey();
+  static final GlobalKey studentNotificationsTabKey = GlobalKey();
 
   // Teacher keys
   static final GlobalKey teacherClassesTabKey = GlobalKey();
@@ -177,6 +178,12 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.studentMessagesTabKey,
       title: 'Messages',
       description: 'Chat with classmates and faculty. Start a group chat for your section.',
+      alignment: Alignment.topCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.studentNotificationsTabKey,
+      title: 'Notifications',
+      description: 'All your grade, payment, and announcement updates in one place. Tap to mark as read.',
       alignment: Alignment.topCenter,
     ),
   ];

@@ -13,6 +13,7 @@ import 'schedule_grades_screen.dart';
 import 'services_screen.dart';
 import 'student_attendance_screen.dart';
 import 'student_home_screen.dart';
+import 'notification_center_screen.dart';
 import 'tuition_wallet_screen.dart';
 import '../messaging/message_list_screen.dart';
 
@@ -129,6 +130,12 @@ class _StudentShellState extends ConsumerState<StudentShell> {
         label: 'Messages',
         screen: CoachMarkTarget(key: RoleTutorialKeys.studentMessagesTabKey, child: const MessageListScreen()),
         coachMarkKey: RoleTutorialKeys.studentMessagesTabKey,
+      ),
+      NavTab(
+        icon: Icons.notifications_outlined,
+        label: 'Alerts',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.studentNotificationsTabKey, child: const NotificationCenterScreen()),
+        coachMarkKey: RoleTutorialKeys.studentNotificationsTabKey,
       ),
     ];
 
