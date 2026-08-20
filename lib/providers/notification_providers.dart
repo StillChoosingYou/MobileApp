@@ -389,7 +389,7 @@ class InAppNotificationsController extends StateNotifier<AsyncValue<List<InAppNo
     try {
       // In a real app, load from Hive/SharedPreferences
       // For now, return empty list
-      state = AsyncValue.data(const <InAppNotification>[]);
+      state = const AsyncValue.data([]);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -424,8 +424,8 @@ class InAppNotificationsController extends StateNotifier<AsyncValue<List<InAppNo
   }
 
   Future<void> clearAll() async {
-    state = AsyncValue.data(const <InAppNotification>[]);
-    await _persist(const <InAppNotification>[]);
+    state = const AsyncValue.data([]);
+    await _persist(const []);
   }
 
   Future<void> _persist(List<InAppNotification> notifications) async {
