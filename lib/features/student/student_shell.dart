@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
@@ -10,8 +11,10 @@ import '../../providers/feature_providers.dart';
 import 'digital_id_screen.dart';
 import 'schedule_grades_screen.dart';
 import 'services_screen.dart';
+import 'student_attendance_screen.dart';
 import 'student_home_screen.dart';
 import 'tuition_wallet_screen.dart';
+import '../messaging/message_list_screen.dart';
 
 class StudentShell extends ConsumerStatefulWidget {
   const StudentShell({super.key});
@@ -92,6 +95,12 @@ class _StudentShellState extends ConsumerState<StudentShell> {
         coachMarkKey: RoleTutorialKeys.studentScheduleTabKey,
       ),
       NavTab(
+        icon: Icons.calendar_month_outlined,
+        label: 'Calendar',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.studentCalendarTabKey, child: const CalendarScreen()),
+        coachMarkKey: RoleTutorialKeys.studentCalendarTabKey,
+      ),
+      NavTab(
         icon: Icons.account_balance_wallet_outlined,
         label: 'Tuition',
         screen: CoachMarkTarget(key: RoleTutorialKeys.studentTuitionTabKey, child: const TuitionWalletScreen()),
@@ -108,6 +117,18 @@ class _StudentShellState extends ConsumerState<StudentShell> {
         label: 'Digital ID',
         screen: CoachMarkTarget(key: RoleTutorialKeys.studentDigitalIdKey, child: const DigitalIdScreen()),
         coachMarkKey: RoleTutorialKeys.studentDigitalIdKey,
+      ),
+      NavTab(
+        icon: Icons.how_to_reg_outlined,
+        label: 'Attendance',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.studentAttendanceTabKey, child: const StudentAttendanceScreen()),
+        coachMarkKey: RoleTutorialKeys.studentAttendanceTabKey,
+      ),
+      NavTab(
+        icon: Icons.chat_outlined,
+        label: 'Messages',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.studentMessagesTabKey, child: const MessageListScreen()),
+        coachMarkKey: RoleTutorialKeys.studentMessagesTabKey,
       ),
     ];
 

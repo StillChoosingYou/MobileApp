@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
 import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
+import '../../features/messaging/message_list_screen.dart';
 import 'enrollment_approval_screen.dart';
 import 'student_records_screen.dart';
 
@@ -86,6 +88,18 @@ class _RegistrarShellState extends ConsumerState<RegistrarShell> {
         label: 'Enrollment',
         screen: CoachMarkTarget(key: RoleTutorialKeys.registrarReportsTabKey, child: const EnrollmentApprovalScreen()),
         coachMarkKey: RoleTutorialKeys.registrarReportsTabKey,
+      ),
+      NavTab(
+        icon: Icons.calendar_month_outlined,
+        label: 'Calendar',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.registrarCalendarTabKey, child: const CalendarScreen()),
+        coachMarkKey: RoleTutorialKeys.registrarCalendarTabKey,
+      ),
+      NavTab(
+        icon: Icons.chat_outlined,
+        label: 'Messages',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.registrarMessagesTabKey, child: const MessageListScreen()),
+        coachMarkKey: RoleTutorialKeys.registrarMessagesTabKey,
       ),
     ];
 

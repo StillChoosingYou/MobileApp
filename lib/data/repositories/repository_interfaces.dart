@@ -2,9 +2,11 @@ import '../../core/error/result.dart';
 import '../../models/academic_models.dart';
 import '../../models/advanced_models.dart';
 import '../../models/app_user.dart';
+import '../../models/attendance_models.dart';
 import '../../models/audit_log.dart';
 import '../../models/campus_models.dart';
 import '../../models/financial_models.dart';
+import '../../models/messaging_models.dart';
 
 abstract class AuthRepository {
   Future<Result<AppUser>> login({
@@ -220,4 +222,163 @@ abstract class DeanRepository {
   Future<Map<String, num>> getCollegeOverview();
   Future<List<GraduationEvaluation>> getGraduationEvaluations(String term);
   Future<GraduationEvaluation> evaluateGraduation(String studentId);
+}
+
+// ---------------------------------------------------------------------------
+// Notification Repository
+// ---------------------------------------------------------------------------
+
+abstract class NotificationRepository {
+  /// Save an FCM token for a user (multi-device support).
+  Future<void> saveFcmToken(String userId, String token);
+
+  /// Delete a specific FCM token for a user.
+  Future<void> deleteFcmToken(String userId, String token);
+
+  /// Delete all FCM tokens for a user (on logout).
+  Future<void> deleteAllFcmTokens(String userId);
+
+  /// Get all FCM tokens for a user.
+  Future<List<String>> getUserTokens(String userId);
+
+  /// Send a push notification to multiple tokens.
+  /// Returns success status.
+  Future<Result<bool>> sendPushNotification({
+    required List<String> tokens,
+    required String title,
+    required String body,
+    Map<String, String>? data,
+  });
+
+  /// Subscribe user to a topic (e.g., "announcements", "grade_updates").
+  Future<void> subscribeToTopic(String userId, String topic);
+
+  /// Unsubscribe user from a topic.
+  Future<void> unsubscribeFromTopic(String userId, String topic);
+}
+
+// ---------------------------------------------------------------------------
+// Messaging Repository
+// ---------------------------------------------------------------------------
+
+abstract class MessageRepository {
+  /// Watch conversations for a user (real-time stream).
+  Stream<List<Conversation>> watchConversations(String userId);
+
+  /// Watch messages in a conversation (real-time stream).
+  Stream<List<Message>> watchMessages(String conversationId);
+
+  /// Get or create a 1:1 or group conversation.
+  Future<Result<Conversation>> getOrCreateConversation(
+    List<String> participantIds, {
+    String? groupName,
+    String? groupAvatarUrl,
+  });
+
+  /// Send a message in a conversation.
+  Future<Result<Message>> sendMessage(
+    String conversationId,
+    String senderId,
+    String content, {
+    MessageType type = MessageType.text,
+    Map<String, String>? metadata,
+  });
+
+  /// Mark messages as read for a user in a conversation.
+  Future<void> markAsRead(String conversationId, String userId);
+
+  /// Create a group chat.
+  Future<Result<bool>> createGroupChat(
+    String creatorId,
+    List<String> participantIds,
+    String groupName, {
+    String? groupAvatarUrl,
+  });
+
+  /// Get potential chat partners (classmates, faculty in same sections).
+  Future<List<AppUser>> getPotentialChatPartners(String userId);
+
+  /// Delete a conversation (for current user only).
+  Future<Result<bool>> deleteConversation(String conversationId, String userId);
+}
+
+// ---------------------------------------------------------------------------
+// Calendar Repository
+// ---------------------------------------------------------------------------
+
+abstract class CalendarRepository {
+  /// Get events within a date range.
+  Future<List<CalendarEvent>> getEvents({DateTime? from, DateTime? to});
+
+  /// Watch events (real-time stream).
+  Stream<List<CalendarEvent>> watchEvents({DateTime? from, DateTime? to});
+
+  /// Create a new event (admin/registrar/faculty).
+  Future<Result<CalendarEvent>> createEvent(CalendarEvent event);
+
+  /// Update an existing event.
+  Future<Result<CalendarEvent>> updateEvent(CalendarEvent event);
+
+  /// Delete an event.
+  Future<Result<bool>> deleteEvent(String eventId);
+
+  /// Add a reminder for a user for an event.
+  Future<Result<bool>> addReminder(String eventId, String userId, Duration before);
+
+  /// Remove a reminder.
+  Future<Result<bool>> removeReminder(String eventId, String userId);
+
+  /// Get user's reminders for an event.
+  Future<List<Duration>> getUserReminders(String eventId, String userId);
+}
+
+// ---------------------------------------------------------------------------
+// Attendance Repository
+// ---------------------------------------------------------------------------
+
+abstract class AttendanceRepository {
+  // Faculty methods
+  /// Start an attendance session for a section (generates rotating QR).
+  Future<Result<AttendanceSession>> startSession(
+    String sectionId, {
+    Duration duration = const Duration(minutes: 15),
+    int rotationIntervalSeconds = 30,
+  });
+
+  /// End an active attendance session.
+  Future<Result<bool>> endSession(String sectionId);
+
+  /// Get the active session for a section.
+  Future<AttendanceSession?> getActiveSession(String sectionId);
+
+  /// Watch active session (real-time, includes rotating QR).
+  Stream<AttendanceSession?> watchActiveSession(String sectionId);
+
+  /// Get attendance records for a session.
+  Future<List<AttendanceRecord>> getSessionRecords(String sessionId);
+
+  // Student methods
+  /// Submit attendance by scanning QR payload.
+  Future<Result<AttendanceRecord>> submitAttendance(
+    String studentId,
+    String qrPayload,
+  );
+
+  /// Get student's attendance history.
+  Future<List<AttendanceRecord>> getStudentAttendance(
+    String studentId, {
+    String? sectionId,
+    DateTime? from,
+    DateTime? to,
+  });
+
+  // Analytics (Faculty/Admin)
+  /// Get attendance summary per student for a section.
+  Future<List<AttendanceSummary>> getSectionAttendanceSummary(String sectionId);
+
+  /// Get students at risk (attendance below threshold).
+  Future<List<AppUser>> getAtRiskStudents(
+    String sectionId, {
+    double threshold = 0.75,
+  });
 }

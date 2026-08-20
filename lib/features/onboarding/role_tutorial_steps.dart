@@ -19,51 +19,70 @@ class RoleTutorialKeys {
   static final GlobalKey studentHomeTabKey = GlobalKey();
   static final GlobalKey studentGradesTabKey = GlobalKey();
   static final GlobalKey studentScheduleTabKey = GlobalKey();
+  static final GlobalKey studentCalendarTabKey = GlobalKey();
   static final GlobalKey studentTuitionTabKey = GlobalKey();
   static final GlobalKey studentServicesTabKey = GlobalKey();
   static final GlobalKey studentDigitalIdKey = GlobalKey();
+  static final GlobalKey studentAttendanceTabKey = GlobalKey();
+  static final GlobalKey studentMessagesTabKey = GlobalKey();
 
   // Teacher keys
   static final GlobalKey teacherClassesTabKey = GlobalKey();
   static final GlobalKey teacherAttendanceTabKey = GlobalKey();
   static final GlobalKey teacherGradesTabKey = GlobalKey();
   static final GlobalKey teacherScheduleTabKey = GlobalKey();
+  static final GlobalKey teacherCalendarTabKey = GlobalKey();
+  static final GlobalKey teacherMessagesTabKey = GlobalKey();
 
   // Registrar keys
   static final GlobalKey registrarEnrollmentTabKey = GlobalKey();
   static final GlobalKey registrarRecordsTabKey = GlobalKey();
   static final GlobalKey registrarReportsTabKey = GlobalKey();
+  static final GlobalKey registrarCalendarTabKey = GlobalKey();
+  static final GlobalKey registrarMessagesTabKey = GlobalKey();
 
   // Accounting keys
   static final GlobalKey accountingLedgerTabKey = GlobalKey();
   static final GlobalKey accountingReportsTabKey = GlobalKey();
   static final GlobalKey accountingReconciliationTabKey = GlobalKey();
+  static final GlobalKey accountingCalendarTabKey = GlobalKey();
+  static final GlobalKey accountingMessagesTabKey = GlobalKey();
 
   // Cashier keys
   static final GlobalKey cashierPaymentEntryKey = GlobalKey();
   static final GlobalKey cashierReceiptsTabKey = GlobalKey();
   static final GlobalKey cashierSummaryTabKey = GlobalKey();
+  static final GlobalKey cashierCalendarTabKey = GlobalKey();
+  static final GlobalKey cashierMessagesTabKey = GlobalKey();
 
   // Guidance keys
   static final GlobalKey guidanceAppointmentsTabKey = GlobalKey();
   static final GlobalKey guidanceClearanceTabKey = GlobalKey();
   static final GlobalKey guidanceCasesTabKey = GlobalKey();
+  static final GlobalKey guidanceCalendarTabKey = GlobalKey();
+  static final GlobalKey guidanceMessagesTabKey = GlobalKey();
 
   // Dept Head keys
   static final GlobalKey deptHeadFacultyLoadKey = GlobalKey();
   static final GlobalKey deptHeadReportsKey = GlobalKey();
   static final GlobalKey deptHeadApprovalsKey = GlobalKey();
+  static final GlobalKey deptHeadCalendarTabKey = GlobalKey();
+  static final GlobalKey deptHeadMessagesTabKey = GlobalKey();
 
   // Dean keys
   static final GlobalKey deanOverviewKey = GlobalKey();
   static final GlobalKey deanProgramsKey = GlobalKey();
   static final GlobalKey deanFacultyKey = GlobalKey();
+  static final GlobalKey deanCalendarTabKey = GlobalKey();
+  static final GlobalKey deanMessagesTabKey = GlobalKey();
 
   // Admin keys
   static final GlobalKey adminUsersKey = GlobalKey();
   static final GlobalKey adminSettingsKey = GlobalKey();
   static final GlobalKey adminAuditKey = GlobalKey();
   static final GlobalKey adminHealthKey = GlobalKey();
+  static final GlobalKey adminCalendarTabKey = GlobalKey();
+  static final GlobalKey adminMessagesTabKey = GlobalKey();
 }
 
 /// Centralized definition of role-specific guided tour steps.
@@ -122,6 +141,13 @@ class RoleTutorialSteps {
       alignment: Alignment.bottomCenter,
     ),
     CoachMarkStep(
+      targetKey: RoleTutorialKeys.studentCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, exam schedules, and campus events. Filter by category.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
       targetKey: RoleTutorialKeys.studentTuitionTabKey,
       title: 'Tuition & Payments',
       description: 'Check balance, view payment history, and pay online via GCash or bank.',
@@ -139,6 +165,18 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.studentDigitalIdKey,
       title: 'Digital Campus ID',
       description: 'Your QR-based ID for gate entry, library, and events. Works offline!',
+      alignment: Alignment.topCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.studentAttendanceTabKey,
+      title: 'Attendance',
+      description: 'Scan your instructor\'s session QR to mark yourself present — no paper sheets.',
+      alignment: Alignment.topCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.studentMessagesTabKey,
+      title: 'Messages',
+      description: 'Chat with classmates and faculty. Start a group chat for your section.',
       alignment: Alignment.topCenter,
     ),
   ];
@@ -173,6 +211,20 @@ class RoleTutorialSteps {
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.teacherCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, exam schedules, and campus events. Filter by category.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.teacherMessagesTabKey,
+      title: 'Messages',
+      description: 'Message your students and advisees, or start a section group chat.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
   ];
 
   /// Registrar: Enrollment Approval, Student Records, Reports tabs
@@ -195,6 +247,20 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.registrarReportsTabKey,
       title: 'Reports & Analytics',
       description: 'Generate enrollment stats, demographic reports, and compliance docs.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.registrarCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Manage academic calendar, exam schedules, and campus-wide events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.registrarMessagesTabKey,
+      title: 'Messages',
+      description: 'Coordinate with faculty, students, and other offices from one inbox.',
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
@@ -223,6 +289,20 @@ class RoleTutorialSteps {
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.accountingCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, payment deadlines, and campus events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.accountingMessagesTabKey,
+      title: 'Messages',
+      description: 'Coordinate payment plans and scholarships with students and Cashier.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
   ];
 
   /// Cashier: Payment Entry, Receipts, Daily Summary tabs
@@ -245,6 +325,20 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.cashierSummaryTabKey,
       title: 'Daily Summary',
       description: 'End-of-day totals by payment method. Print or export for audit.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.cashierCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'View academic calendar, payment deadlines, and campus events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.cashierMessagesTabKey,
+      title: 'Messages',
+      description: 'Reach students about balances and receipts, or loop in Accounting.',
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
@@ -273,6 +367,20 @@ class RoleTutorialSteps {
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.guidanceCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, counseling schedules, and campus events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.guidanceMessagesTabKey,
+      title: 'Messages',
+      description: 'Reach students for counseling follow-ups and coordinate with faculty.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
   ];
 
   /// Dept Head: Faculty Load, Department Reports, Approvals tabs
@@ -298,6 +406,20 @@ class RoleTutorialSteps {
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.deptHeadCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, exam schedules, and department events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.deptHeadMessagesTabKey,
+      title: 'Messages',
+      description: 'Message faculty in your department or escalate to the Dean.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
   ];
 
   /// Dean: College Overview, Program Management, Faculty tabs
@@ -320,6 +442,20 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.deanFacultyKey,
       title: 'Faculty Overview',
       description: 'Tenure status, research output, teaching evaluations summary.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.deanCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Academic calendar, college events, and campus-wide announcements.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.deanMessagesTabKey,
+      title: 'Messages',
+      description: 'Broadcast to department heads or message faculty and staff directly.',
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),
@@ -352,6 +488,20 @@ class RoleTutorialSteps {
       targetKey: RoleTutorialKeys.adminHealthKey,
       title: 'System Health',
       description: 'Monitor API latency, database performance, and error rates.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.adminCalendarTabKey,
+      title: 'Calendar & Events',
+      description: 'Manage academic calendar, exam schedules, and campus-wide events.',
+      shape: CoachMarkShape.roundedRect,
+      alignment: Alignment.bottomCenter,
+    ),
+    CoachMarkStep(
+      targetKey: RoleTutorialKeys.adminMessagesTabKey,
+      title: 'Messages',
+      description: 'Reach any user in the system to coordinate rollouts and incidents.',
       shape: CoachMarkShape.roundedRect,
       alignment: Alignment.bottomCenter,
     ),

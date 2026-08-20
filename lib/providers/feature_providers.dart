@@ -6,10 +6,13 @@ import '../core/error/result.dart';
 import '../core/network/api_client.dart';
 import '../data/local/hive_service.dart';
 import '../models/academic_models.dart';
+import '../models/advanced_models.dart';
 import '../models/app_user.dart';
+import '../models/attendance_models.dart';
 import '../models/audit_log.dart';
 import '../models/campus_models.dart';
 import '../models/financial_models.dart';
+import '../models/messaging_models.dart';
 import 'repository_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -249,3 +252,65 @@ final visitorLogsProvider = FutureProvider<List<VisitorLog>>(
 final lostFoundItemsProvider = FutureProvider<List<LostFoundItem>>(
   (ref) => ref.watch(campusServicesRepositoryProvider).getLostFoundItems(),
 );
+
+// ---------------------------------------------------------------------------
+// Messaging
+// ---------------------------------------------------------------------------
+
+final conversationsProvider = StreamProvider.family<List<Conversation>, String>(
+  (ref, userId) => ref.watch(messageRepositoryProvider).watchConversations(userId),
+);
+
+final messagesProvider = StreamProvider.family<List<Message>, String>(
+  (ref, conversationId) => ref.watch(messageRepositoryProvider).watchMessages(conversationId),
+);
+
+final potentialChatPartnersProvider = FutureProvider.family<List<AppUser>, String>(
+  (ref, userId) => ref.watch(messageRepositoryProvider).getPotentialChatPartners(userId),
+);
+
+// ---------------------------------------------------------------------------
+// Calendar
+// ---------------------------------------------------------------------------
+
+final calendarEventsProvider = FutureProvider.family<List<CalendarEvent>, ({
+  DateTime? from,
+  DateTime? to,
+})>((ref, params) => ref.watch(calendarRepositoryProvider).getEvents(from: params.from, to: params.to));
+
+final calendarEventsStreamProvider = StreamProvider.family<List<CalendarEvent>, ({
+  DateTime? from,
+  DateTime? to,
+})>((ref, params) => ref.watch(calendarRepositoryProvider).watchEvents(from: params.from, to: params.to));
+
+// ---------------------------------------------------------------------------
+// Attendance
+// ---------------------------------------------------------------------------
+
+final activeAttendanceSessionProvider = StreamProvider.family<AttendanceSession?, String>(
+  (ref, sectionId) => ref.watch(attendanceRepositoryProvider).watchActiveSession(sectionId),
+);
+
+final studentAttendanceProvider = FutureProvider.family<List<AttendanceRecord>, ({
+  String studentId,
+  String? sectionId,
+  DateTime? from,
+  DateTime? to,
+})>((ref, params) => ref.watch(attendanceRepositoryProvider).getStudentAttendance(
+      params.studentId,
+      sectionId: params.sectionId,
+      from: params.from,
+      to: params.to,
+    ));
+
+final sectionAttendanceSummaryProvider = FutureProvider.family<List<AttendanceSummary>, String>(
+  (ref, sectionId) => ref.watch(attendanceRepositoryProvider).getSectionAttendanceSummary(sectionId),
+);
+
+final atRiskStudentsProvider = FutureProvider.family<List<AppUser>, ({
+  String sectionId,
+  double threshold,
+})>((ref, params) => ref.watch(attendanceRepositoryProvider).getAtRiskStudents(
+      params.sectionId,
+      threshold: params.threshold,
+    ));

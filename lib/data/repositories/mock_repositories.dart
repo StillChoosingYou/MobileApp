@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import '../../core/error/result.dart';
 import '../../core/utils/assistant_rules.dart';
 import '../../models/academic_models.dart';
 import '../../models/advanced_models.dart';
 import '../../models/app_user.dart';
+import '../../models/attendance_models.dart';
 import '../../models/audit_log.dart';
 import '../../models/campus_models.dart';
 import '../../models/financial_models.dart';
+import '../../models/messaging_models.dart';
 import 'mock_seed_data.dart';
 import 'repository_interfaces.dart';
 
@@ -595,11 +599,12 @@ class MockFacultyRepository implements FacultyRepository {
       return AttendanceSummary(
         studentId: student.id,
         studentName: student.name,
+        studentNumber: student.loginId,
         totalSessions: 20,
-        present: 18,
-        absent: 1,
-        late: 1,
-        excused: 0,
+        presentCount: 18,
+        absentCount: 1,
+        lateCount: 1,
+        excusedCount: 0,
       );
     }).toList();
   }
@@ -739,6 +744,528 @@ class MockAdminRepository implements AdminRepository {
     if (idx == -1) return Result.error('Announcement not found.');
     _seed.announcements.removeAt(idx);
     return Result.ok(true);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// New: Notification Repository (Mock)
+// ---------------------------------------------------------------------------
+
+class MockNotificationRepository implements NotificationRepository {
+  final Map<String, List<String>> _userTokens = {};
+
+  @override
+  Future<void> saveFcmToken(String userId, String token) async {
+    await _delay();
+    _userTokens.putIfAbsent(userId, () => []);
+    if (!_userTokens[userId]!.contains(token)) {
+      _userTokens[userId]!.add(token);
+    }
+  }
+
+  @override
+  Future<void> deleteFcmToken(String userId, String token) async {
+    await _delay();
+    _userTokens[userId]?.remove(token);
+  }
+
+  @override
+  Future<void> deleteAllFcmTokens(String userId) async {
+    await _delay();
+    _userTokens.remove(userId);
+  }
+
+  @override
+  Future<List<String>> getUserTokens(String userId) async {
+    await _delay();
+    return List<String>.from(_userTokens[userId] ?? const []);
+  }
+
+  @override
+  Future<Result<bool>> sendPushNotification({
+    required List<String> tokens,
+    required String title,
+    required String body,
+    Map<String, String>? data,
+  }) async {
+    await _delay();
+    debugPrint('Mock push sent to ${tokens.length} tokens: $title');
+    return Result.ok(true);
+  }
+
+  @override
+  Future<void> subscribeToTopic(String userId, String topic) async {
+    await _delay();
+    debugPrint('Mock: User $userId subscribed to $topic');
+  }
+
+  @override
+  Future<void> unsubscribeFromTopic(String userId, String topic) async {
+    await _delay();
+    debugPrint('Mock: User $userId unsubscribed from $topic');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// New: Message Repository (Mock)
+// ---------------------------------------------------------------------------
+
+class MockMessageRepository implements MessageRepository {
+  final _seed = MockSeedData.instance;
+  final List<Conversation> _conversations = [];
+  final Map<String, List<Message>> _messages = {};
+
+  @override
+  Stream<List<Conversation>> watchConversations(String userId) async* {
+    yield _getConversationsForUser(userId);
+    await Future.delayed(const Duration(seconds: 1));
+    // In a real implementation, this would be a real stream controller
+    // For mock, we just yield once
+  }
+
+  @override
+  Stream<List<Message>> watchMessages(String conversationId) async* {
+    yield List<Message>.from(_messages[conversationId] ?? const []);
+    await Future.delayed(const Duration(seconds: 1));
+  }
+
+  List<Conversation> _getConversationsForUser(String userId) {
+    return _conversations
+        .where((c) => c.participantIds.contains(userId) && !c.isArchived)
+        .toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+  }
+
+  @override
+  Future<Result<Conversation>> getOrCreateConversation(
+    List<String> participantIds, {
+    String? groupName,
+    String? groupAvatarUrl,
+  }) async {
+    await _delay();
+
+    // Check if 1:1 conversation already exists
+    if (groupName != null && groupName.isNotEmpty && participantIds.length == 2) {
+      for (final conv in _conversations) {
+        if (!conv.isGroup &&
+            conv.participantIds.toSet() == participantIds.toSet()) {
+          return Result.ok(conv);
+        }
+      }
+    }
+
+    // Create new conversation
+    final conv = Conversation(
+      id: 'conv_${DateTime.now().microsecondsSinceEpoch}',
+      participantIds: participantIds,
+      groupName: groupName,
+      groupAvatarUrl: groupAvatarUrl,
+      lastMessage: null,
+      updatedAt: DateTime.now(),
+      unreadCounts: {for (final id in participantIds) id: 0},
+    );
+    _conversations.add(conv);
+    return Result.ok(conv);
+  }
+
+  @override
+  Future<Result<Message>> sendMessage(
+    String conversationId,
+    String senderId,
+    String content, {
+    MessageType type = MessageType.text,
+    Map<String, String>? metadata,
+  }) async {
+    await _delay();
+
+    final sender = _seed.users.firstWhere(
+      (u) => u.id == senderId,
+      orElse: () => AppUser(
+        id: senderId,
+        loginId: senderId,
+        role: UserRole.student,
+        name: 'Unknown',
+        email: '',
+      ),
+    );
+
+    final message = Message(
+      id: 'msg_${DateTime.now().microsecondsSinceEpoch}',
+      conversationId: conversationId,
+      senderId: senderId,
+      senderName: sender.name,
+      senderAvatarUrl: sender.photoUrl,
+      type: type,
+      content: content,
+      metadata: metadata,
+      sentAt: DateTime.now(),
+      isRead: false,
+      readBy: [senderId],
+    );
+
+    _messages.putIfAbsent(conversationId, () => []).add(message);
+
+    // Update conversation last message and unread counts
+    final convIdx = _conversations.indexWhere((c) => c.id == conversationId);
+    if (convIdx != -1) {
+      final conv = _conversations[convIdx];
+      final newUnreadCounts = Map<String, int>.from(conv.unreadCounts);
+      for (final participant in conv.participantIds) {
+        if (participant != senderId) {
+          newUnreadCounts[participant] = (newUnreadCounts[participant] ?? 0) + 1;
+        }
+      }
+      _conversations[convIdx] = conv.copyWith(
+        lastMessage: message,
+        updatedAt: DateTime.now(),
+        unreadCounts: newUnreadCounts,
+      );
+    }
+
+    return Result.ok(message);
+  }
+
+  @override
+  Future<void> markAsRead(String conversationId, String userId) async {
+    await _delay();
+    final messages = _messages[conversationId];
+    if (messages != null) {
+      for (final msg in messages) {
+        if (!msg.readBy.contains(userId)) {
+          final idx = messages.indexOf(msg);
+          messages[idx] = msg.copyWith(readBy: [...msg.readBy, userId]);
+        }
+      }
+    }
+
+    final convIdx = _conversations.indexWhere((c) => c.id == conversationId);
+    if (convIdx != -1) {
+      final conv = _conversations[convIdx];
+      final newUnreadCounts = Map<String, int>.from(conv.unreadCounts);
+      newUnreadCounts[userId] = 0;
+      _conversations[convIdx] = conv.copyWith(unreadCounts: newUnreadCounts);
+    }
+  }
+
+  @override
+  Future<Result<bool>> createGroupChat(
+    String creatorId,
+    List<String> participantIds,
+    String groupName, {
+    String? groupAvatarUrl,
+  }) async {
+    await _delay();
+    final allParticipants = [creatorId, ...participantIds].toSet().toList();
+    final conv = Conversation(
+      id: 'conv_${DateTime.now().microsecondsSinceEpoch}',
+      participantIds: allParticipants,
+      groupName: groupName,
+      groupAvatarUrl: groupAvatarUrl,
+      lastMessage: null,
+      updatedAt: DateTime.now(),
+      unreadCounts: {for (final id in allParticipants) id: 0},
+    );
+    _conversations.add(conv);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<List<AppUser>> getPotentialChatPartners(String userId) async {
+    await _delay();
+    // Return all other users as potential chat partners
+    return _seed.users.where((u) => u.id != userId).toList();
+  }
+
+  @override
+  Future<Result<bool>> deleteConversation(String conversationId, String userId) async {
+    await _delay();
+    final convIdx = _conversations.indexWhere((c) => c.id == conversationId);
+    if (convIdx == -1) return Result.error('Conversation not found.');
+    final conv = _conversations[convIdx];
+    if (!conv.participantIds.contains(userId)) {
+      return Result.error('Not a participant in this conversation.');
+    }
+    // Mark as archived for this user only (soft delete)
+    // In a real app, you'd have a separate archived list per user
+    return Result.ok(true);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// New: Calendar Repository (Mock)
+// ---------------------------------------------------------------------------
+
+class MockCalendarRepository implements CalendarRepository {
+  final _seed = MockSeedData.instance;
+  final Map<String, List<Duration>> _userReminders = {};
+
+  @override
+  Future<List<CalendarEvent>> getEvents({DateTime? from, DateTime? to}) async {
+    await _delay();
+    var events = List<CalendarEvent>.from(_seed.calendarEvents);
+    if (from != null) {
+      events = events.where((e) => (e.endDate ?? e.date).isAfter(from)).toList();
+    }
+    if (to != null) {
+      events = events.where((e) => e.date.isBefore(to)).toList();
+    }
+    events.sort((a, b) => a.date.compareTo(b.date));
+    return events;
+  }
+
+  @override
+  Stream<List<CalendarEvent>> watchEvents({DateTime? from, DateTime? to}) async* {
+    yield await getEvents(from: from, to: to);
+    await Future.delayed(const Duration(seconds: 1));
+  }
+
+  @override
+  Future<Result<CalendarEvent>> createEvent(CalendarEvent event) async {
+    await _delay();
+    _seed.calendarEvents.add(event);
+    return Result.ok(event);
+  }
+
+  @override
+  Future<Result<CalendarEvent>> updateEvent(CalendarEvent event) async {
+    await _delay();
+    final idx = _seed.calendarEvents.indexWhere((e) => e.id == event.id);
+    if (idx == -1) return Result.error('Event not found.');
+    _seed.calendarEvents[idx] = event;
+    return Result.ok(event);
+  }
+
+  @override
+  Future<Result<bool>> deleteEvent(String eventId) async {
+    await _delay();
+    final idx = _seed.calendarEvents.indexWhere((e) => e.id == eventId);
+    if (idx == -1) return Result.error('Event not found.');
+    _seed.calendarEvents.removeAt(idx);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> addReminder(String eventId, String userId, Duration before) async {
+    await _delay();
+    _userReminders.putIfAbsent(eventId, () => []);
+    if (!_userReminders[eventId]!.contains(before)) {
+      _userReminders[eventId]!.add(before);
+    }
+    return Result.ok(true);
+  }
+
+  @override
+  Future<Result<bool>> removeReminder(String eventId, String userId) async {
+    await _delay();
+    _userReminders.remove(eventId);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<List<Duration>> getUserReminders(String eventId, String userId) async {
+    await _delay();
+    return List<Duration>.from(_userReminders[eventId] ?? const []);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// New: Attendance Repository (Mock)
+// ---------------------------------------------------------------------------
+
+class MockAttendanceRepository implements AttendanceRepository {
+  final _seed = MockSeedData.instance;
+  final Map<String, AttendanceSession> _activeSessions = {};
+  final List<AttendanceRecord> _records = [];
+
+  @override
+  Future<Result<AttendanceSession>> startSession(
+    String sectionId, {
+    Duration duration = const Duration(minutes: 15),
+    int rotationIntervalSeconds = 30,
+  }) async {
+    await _delay();
+    final section = _seed.sections.firstWhere(
+      (s) => s.id == sectionId,
+      orElse: () => throw Exception('Section not found'),
+    );
+
+    final now = DateTime.now();
+    final session = AttendanceSession(
+      id: 'sess_${DateTime.now().microsecondsSinceEpoch}',
+      sectionId: sectionId,
+      sectionName: section.subjectCode,
+      subjectCode: section.subjectCode,
+      startedAt: now,
+      expiresAt: now.add(duration),
+      qrPayload: 'PGPC_ATTENDANCE|$sectionId|${now.millisecondsSinceEpoch}',
+      rotationIntervalSeconds: rotationIntervalSeconds,
+    );
+    _activeSessions[sectionId] = session;
+    return Result.ok(session);
+  }
+
+  @override
+  Future<Result<bool>> endSession(String sectionId) async {
+    await _delay();
+    _activeSessions.remove(sectionId);
+    return Result.ok(true);
+  }
+
+  @override
+  Future<AttendanceSession?> getActiveSession(String sectionId) async {
+    await _delay();
+    final session = _activeSessions[sectionId];
+    if (session != null && session.isSessionActive) {
+      return session;
+    }
+    return null;
+  }
+
+  @override
+  Stream<AttendanceSession?> watchActiveSession(String sectionId) async* {
+    // For mock, we yield once with the current session
+    final session = await getActiveSession(sectionId);
+    yield session;
+    // In real implementation, this would be a StreamController
+    await Future.delayed(const Duration(seconds: 1));
+  }
+
+  @override
+  Future<List<AttendanceRecord>> getSessionRecords(String sessionId) async {
+    await _delay();
+    return _records.where((r) => r.sessionId == sessionId).toList();
+  }
+
+  @override
+  Future<Result<AttendanceRecord>> submitAttendance(
+    String studentId,
+    String qrPayload,
+  ) async {
+    await _delay();
+
+    final payload = QrPayload.decode(qrPayload);
+    if (payload == null) {
+      return Result.error('Invalid QR code.');
+    }
+
+    final session = _activeSessions[payload.sectionId];
+    if (session == null || !session.isSessionActive) {
+      return Result.error('No active attendance session.');
+    }
+
+    // Check if QR is expired (rotation)
+    if (payload.isExpired(session.rotationIntervalSeconds)) {
+      return Result.error('QR code has expired. Please scan the new code.');
+    }
+
+    // Check if already recorded
+    final alreadyRecorded = _records.any(
+      (r) => r.sessionId == session.id && r.studentId == studentId,
+    );
+    if (alreadyRecorded) {
+      return Result.error('You have already marked attendance for this session.');
+    }
+
+    // Verify student is enrolled in this section
+    final isEnrolled = _seed.enrollments.any(
+      (e) => e.studentId == studentId && e.sectionIds.contains(payload.sectionId),
+    );
+    if (!isEnrolled) {
+      return Result.error('You are not enrolled in this section.');
+    }
+
+    final student = _seed.users.firstWhere(
+      (u) => u.id == studentId,
+      orElse: () => AppUser(
+        id: studentId,
+        loginId: studentId,
+        role: UserRole.student,
+        name: 'Unknown',
+        email: '',
+      ),
+    );
+
+    final record = AttendanceRecord(
+      id: 'att_${DateTime.now().microsecondsSinceEpoch}',
+      sessionId: session.id,
+      sectionId: payload.sectionId,
+      studentId: studentId,
+      studentName: student.name,
+      status: AttendanceStatus.present,
+      recordedAt: DateTime.now(),
+      method: AttendanceMethod.qrScan,
+    );
+    _records.add(record);
+
+    return Result.ok(record);
+  }
+
+  @override
+  Future<List<AttendanceRecord>> getStudentAttendance(
+    String studentId, {
+    String? sectionId,
+    DateTime? from,
+    DateTime? to,
+  }) async {
+    await _delay();
+    var records = _records.where((r) => r.studentId == studentId).toList();
+    if (sectionId != null) {
+      records = records.where((r) => r.sectionId == sectionId).toList();
+    }
+    if (from != null) {
+      records = records.where((r) => r.recordedAt.isAfter(from)).toList();
+    }
+    if (to != null) {
+      records = records.where((r) => r.recordedAt.isBefore(to)).toList();
+    }
+    records.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
+    return records;
+  }
+
+  @override
+  Future<List<AttendanceSummary>> getSectionAttendanceSummary(String sectionId) async {
+    await _delay();
+    final roster = _seed.users.where((u) => u.role == UserRole.student).take(20).toList();
+    return roster.map((student) {
+      final studentRecords = _records.where((r) => r.studentId == student.id && r.sectionId == sectionId).toList();
+      final present = studentRecords.where((r) => r.status == AttendanceStatus.present).length;
+      final late = studentRecords.where((r) => r.status == AttendanceStatus.late).length;
+      final excused = studentRecords.where((r) => r.status == AttendanceStatus.excused).length;
+      final absent = studentRecords.where((r) => r.status == AttendanceStatus.absent).length;
+      final total = present + late + excused + absent;
+      return AttendanceSummary(
+        studentId: student.id,
+        studentName: student.name,
+        studentNumber: student.loginId,
+        totalSessions: total > 0 ? total : 20,
+        presentCount: present > 0 ? present : (total > 0 ? 0 : 18),
+        absentCount: absent > 0 ? absent : (total > 0 ? 0 : 1),
+        lateCount: late > 0 ? late : (total > 0 ? 0 : 1),
+        excusedCount: excused > 0 ? excused : 0,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<List<AppUser>> getAtRiskStudents(
+    String sectionId, {
+    double threshold = 0.75,
+  }) async {
+    await _delay();
+    final summaries = await getSectionAttendanceSummary(sectionId);
+    final atRisk = summaries.where((s) => s.attendanceRate < threshold * 100).toList();
+    return atRisk.map((s) {
+      return _seed.users.firstWhere(
+        (u) => u.id == s.studentId,
+        orElse: () => AppUser(
+          id: s.studentId,
+          loginId: s.studentId,
+          role: UserRole.student,
+          name: s.studentName,
+          email: '',
+        ),
+      );
+    }).toList();
   }
 }
 

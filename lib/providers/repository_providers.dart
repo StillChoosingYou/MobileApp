@@ -79,3 +79,51 @@ final adminRepositoryProvider = Provider<AdminRepository>((ref) {
 final campusServicesRepositoryProvider = Provider<CampusServicesRepository>((ref) {
   return MockCampusServicesRepository();
 });
+
+// ---------------------------------------------------------------------------
+// New Repository Providers (Notifications, Messaging, Calendar, Attendance)
+// ---------------------------------------------------------------------------
+
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+  switch (AppConfig.backendMode) {
+    case BackendMode.mock:
+      return MockNotificationRepository();
+    case BackendMode.restApi:
+      return MockNotificationRepository(); // TODO: Implement ApiNotificationRepository
+    case BackendMode.firebase:
+      throw UnimplementedError('No Firebase Notification implementation yet.');
+  }
+});
+
+final messageRepositoryProvider = Provider<MessageRepository>((ref) {
+  switch (AppConfig.backendMode) {
+    case BackendMode.mock:
+      return MockMessageRepository();
+    case BackendMode.restApi:
+      return MockMessageRepository(); // TODO: Implement ApiMessageRepository
+    case BackendMode.firebase:
+      throw UnimplementedError('No Firebase Message implementation yet.');
+  }
+});
+
+final calendarRepositoryProvider = Provider<CalendarRepository>((ref) {
+  switch (AppConfig.backendMode) {
+    case BackendMode.mock:
+      return MockCalendarRepository();
+    case BackendMode.restApi:
+      return MockCalendarRepository(); // TODO: Implement ApiCalendarRepository
+    case BackendMode.firebase:
+      throw UnimplementedError('No Firebase Calendar implementation yet.');
+  }
+});
+
+final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
+  switch (AppConfig.backendMode) {
+    case BackendMode.mock:
+      return MockAttendanceRepository();
+    case BackendMode.restApi:
+      return MockAttendanceRepository(); // TODO: Implement ApiAttendanceRepository
+    case BackendMode.firebase:
+      throw UnimplementedError('No Firebase Attendance implementation yet.');
+  }
+});

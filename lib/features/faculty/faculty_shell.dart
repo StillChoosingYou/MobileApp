@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
@@ -9,6 +10,7 @@ import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
 import 'class_attendance_screen.dart';
 import 'grade_encoding_screen.dart';
+import '../messaging/message_list_screen.dart';
 
 class FacultyShell extends ConsumerStatefulWidget {
   const FacultyShell({super.key});
@@ -84,6 +86,18 @@ class _FacultyShellState extends ConsumerState<FacultyShell> {
         label: 'Schedule',
         screen: CoachMarkTarget(key: RoleTutorialKeys.teacherScheduleTabKey, child: const ClassAttendanceScreen()),
         coachMarkKey: RoleTutorialKeys.teacherScheduleTabKey,
+      ),
+      NavTab(
+        icon: Icons.calendar_month_outlined,
+        label: 'Calendar',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.teacherCalendarTabKey, child: const CalendarScreen()),
+        coachMarkKey: RoleTutorialKeys.teacherCalendarTabKey,
+      ),
+      NavTab(
+        icon: Icons.chat_outlined,
+        label: 'Messages',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.teacherMessagesTabKey, child: const MessageListScreen()),
+        coachMarkKey: RoleTutorialKeys.teacherMessagesTabKey,
       ),
     ];
 

@@ -5,6 +5,8 @@ import '../../core/utils/responsive.dart';
 import '../../core/widgets/role_nav_shell.dart';
 import '../../core/widgets/shared_widgets.dart';
 import '../../core/utils/date_utils.dart';
+import '../../features/calendar/calendar_screen.dart';
+import '../../features/messaging/message_list_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
@@ -103,6 +105,18 @@ class _GenericRoleDashboardState extends ConsumerState<GenericRoleDashboard> {
           const _MenuEntry(icon: Icons.card_giftcard_outlined, label: 'Scholarships & Discounts'),
           const _MenuEntry(icon: Icons.science_outlined, label: 'Laboratory Fees'),
           const _MenuEntry(icon: Icons.calendar_view_month_outlined, label: 'Installment Plans'),
+          _MenuEntry(
+            icon: Icons.calendar_month_outlined,
+            label: 'Calendar',
+            builder: (_) => const CalendarScreen(),
+            coachMarkKey: RoleTutorialKeys.accountingCalendarTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.chat_outlined,
+            label: 'Messages',
+            builder: (_) => const MessageListScreen(),
+            coachMarkKey: RoleTutorialKeys.accountingMessagesTabKey,
+          ),
         ];
       case UserRole.guidance:
         return [
@@ -122,6 +136,18 @@ class _GenericRoleDashboardState extends ConsumerState<GenericRoleDashboard> {
             label: 'Counseling Records',
             coachMarkKey: RoleTutorialKeys.guidanceCasesTabKey,
           ),
+          _MenuEntry(
+            icon: Icons.calendar_month_outlined,
+            label: 'Calendar',
+            builder: (_) => const CalendarScreen(),
+            coachMarkKey: RoleTutorialKeys.guidanceCalendarTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.chat_outlined,
+            label: 'Messages',
+            builder: (_) => const MessageListScreen(),
+            coachMarkKey: RoleTutorialKeys.guidanceMessagesTabKey,
+          ),
         ];
       case UserRole.deptHead:
         return [
@@ -140,6 +166,18 @@ class _GenericRoleDashboardState extends ConsumerState<GenericRoleDashboard> {
             label: 'Approvals Queue',
             coachMarkKey: RoleTutorialKeys.deptHeadApprovalsKey,
           ),
+          _MenuEntry(
+            icon: Icons.calendar_month_outlined,
+            label: 'Calendar',
+            builder: (_) => const CalendarScreen(),
+            coachMarkKey: RoleTutorialKeys.deptHeadCalendarTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.chat_outlined,
+            label: 'Messages',
+            builder: (_) => const MessageListScreen(),
+            coachMarkKey: RoleTutorialKeys.deptHeadMessagesTabKey,
+          ),
         ];
       case UserRole.dean:
         return [
@@ -157,6 +195,18 @@ class _GenericRoleDashboardState extends ConsumerState<GenericRoleDashboard> {
             icon: Icons.verified_outlined,
             label: 'Faculty Overview',
             coachMarkKey: RoleTutorialKeys.deanFacultyKey,
+          ),
+          _MenuEntry(
+            icon: Icons.calendar_month_outlined,
+            label: 'Calendar',
+            builder: (_) => const CalendarScreen(),
+            coachMarkKey: RoleTutorialKeys.deanCalendarTabKey,
+          ),
+          _MenuEntry(
+            icon: Icons.chat_outlined,
+            label: 'Messages',
+            builder: (_) => const MessageListScreen(),
+            coachMarkKey: RoleTutorialKeys.deanMessagesTabKey,
           ),
         ];
       default:

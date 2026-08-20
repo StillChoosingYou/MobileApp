@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
 import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
+import '../../features/messaging/message_list_screen.dart';
 import 'analytics_dashboard_screen.dart';
 import 'user_management_screen.dart';
 
@@ -90,6 +92,18 @@ class _AdminShellState extends ConsumerState<AdminShell> {
         label: 'Health',
         screen: CoachMarkTarget(key: RoleTutorialKeys.adminHealthKey, child: const UserManagementScreen()),
         coachMarkKey: RoleTutorialKeys.adminHealthKey,
+      ),
+      NavTab(
+        icon: Icons.calendar_month_outlined,
+        label: 'Calendar',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.adminCalendarTabKey, child: const CalendarScreen()),
+        coachMarkKey: RoleTutorialKeys.adminCalendarTabKey,
+      ),
+      NavTab(
+        icon: Icons.chat_outlined,
+        label: 'Messages',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.adminMessagesTabKey, child: const MessageListScreen()),
+        coachMarkKey: RoleTutorialKeys.adminMessagesTabKey,
       ),
     ];
 

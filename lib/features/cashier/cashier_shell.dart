@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/role_nav_shell.dart';
+import '../../features/calendar/calendar_screen.dart';
 import '../../features/onboarding/coach_mark_overlay.dart';
 import '../../features/onboarding/role_tutorial_steps.dart';
 import '../../features/onboarding/tutorial_providers.dart';
 import '../../models/app_user.dart';
 import '../../providers/feature_providers.dart';
+import '../../features/messaging/message_list_screen.dart';
 import 'payment_entry_screen.dart';
 import 'receipt_transaction_screens.dart';
 
@@ -84,6 +86,18 @@ class _CashierShellState extends ConsumerState<CashierShell> {
         label: 'Summary',
         screen: CoachMarkTarget(key: RoleTutorialKeys.cashierSummaryTabKey, child: const TransactionHistoryScreen()),
         coachMarkKey: RoleTutorialKeys.cashierSummaryTabKey,
+      ),
+      NavTab(
+        icon: Icons.calendar_month_outlined,
+        label: 'Calendar',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.cashierCalendarTabKey, child: const CalendarScreen()),
+        coachMarkKey: RoleTutorialKeys.cashierCalendarTabKey,
+      ),
+      NavTab(
+        icon: Icons.chat_outlined,
+        label: 'Messages',
+        screen: CoachMarkTarget(key: RoleTutorialKeys.cashierMessagesTabKey, child: const MessageListScreen()),
+        coachMarkKey: RoleTutorialKeys.cashierMessagesTabKey,
       ),
     ];
 

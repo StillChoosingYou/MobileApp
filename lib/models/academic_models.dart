@@ -179,24 +179,6 @@ class Grade {
   String get display => isIncomplete ? 'INC' : (numericGrade?.toStringAsFixed(2) ?? '—');
 }
 
-enum AttendanceStatus { present, absent, late, excused }
-
-class AttendanceRecord {
-  const AttendanceRecord({
-    required this.id,
-    required this.studentId,
-    required this.sectionId,
-    required this.date,
-    required this.status,
-  });
-
-  final String id;
-  final String studentId;
-  final String sectionId;
-  final DateTime date;
-  final AttendanceStatus status;
-}
-
 /// Academic-program details for a Student — kept separate from [AppUser]
 /// since Faculty/Registrar/etc. don't have a program or year level.
 class StudentProfile {

@@ -17,31 +17,18 @@ dependencies:
   # Routing
   go_router: ^13.0.0
 
-  # Firebase — commented out for now. The firebase_auth/firebase_storage
-  # native plugin code has broken BOTH the Windows desktop build (C++
-  # compile error inside firebase_auth_plugin.cpp — a deprecated-method
-  # warning treated as an error, plus a std::variant conversion error
-  # against this Flutter SDK's encodable_value.h) and the Chrome/Web build
-  # (a similar interop-generation error inside firebase_storage_web) — on
-  # this project's current Flutter SDK version. Since AppConfig.backendMode
-  # defaults to mock (and restApi once you switch to it), these packages
-  # aren't actually used at runtime yet anyway.
-  #
-  # To turn Firebase back on: uncomment the 6 lines below, move
-  # docs/firebase_repositories_example.dart.txt back to
-  # lib/data/repositories/firebase_repositories_example.dart (drop the
-  # .txt extension), then follow "Turning on real Firebase" in the README.
-  # Try `flutter pub get` right after uncommenting, before writing any new
-  # code against it — if these still don't compile on your SDK, that's a
-  # version-pinning problem to solve on its own, separate from anything
-  # else in this project.
-  # firebase_core: ^2.24.0
-  # firebase_auth: ^4.15.0
-  # cloud_firestore: ^4.13.0
-  # firebase_storage: ^11.5.0
-  # firebase_messaging: ^14.7.0
-  # firebase_analytics: ^10.7.0
-  # firebase_crashlytics: ^3.4.0
+  # Firebase — firebase_core/firebase_messaging enabled for push notifications.
+  # firebase_auth/firebase_storage/firebase_firestore remain commented out due
+  # to Windows/Web compilation issues on current Flutter SDK (see below).
+  # When those are fixed, uncomment the remaining lines and follow
+  # "Turning on real Firebase" in the README.
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.0
+  # firebase_auth: ^5.3.0
+  # cloud_firestore: ^5.4.0
+  # firebase_storage: ^12.3.0
+  # firebase_analytics: ^11.3.0
+  # firebase_crashlytics: ^4.1.0
 
   # Local / offline storage
   hive: ^2.2.0
@@ -64,6 +51,10 @@ dependencies:
   # Connectivity awareness: online/offline status drives the offline-fallback
   # cache in the REST repositories and the global "you're offline" banner.
   connectivity_plus: ^6.0.0
+
+  # Notifications
+  flutter_local_notifications: ^17.1.0
+  timezone: ^0.9.2
 
   # UI / data
   google_fonts: ^6.1.0

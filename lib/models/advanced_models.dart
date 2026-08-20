@@ -4,6 +4,8 @@
 /// user settings.
 library;
 
+import 'package:flutter/material.dart';
+
 // ---------------------------------------------------------------------------
 // Faculty Evaluation (Student → Faculty)
 // ---------------------------------------------------------------------------
@@ -312,7 +314,6 @@ class CurriculumChecklist {
 
 // ---------------------------------------------------------------------------
 // Department Performance
-// ---------------------------------------------------------------------------
 
 class DepartmentPerformance {
   const DepartmentPerformance({
@@ -370,7 +371,7 @@ class GraduationEvaluation {
 
 enum CalendarCategory { academic, exam, holiday, activity, deadline }
 
-extension CalendarCategoryLabel on CalendarCategory {
+extension CalendarCategoryX on CalendarCategory {
   String get label {
     switch (this) {
       case CalendarCategory.academic:
@@ -383,6 +384,36 @@ extension CalendarCategoryLabel on CalendarCategory {
         return 'Activity';
       case CalendarCategory.deadline:
         return 'Deadline';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case CalendarCategory.academic:
+        return Icons.school_outlined;
+      case CalendarCategory.exam:
+        return Icons.assignment_outlined;
+      case CalendarCategory.holiday:
+        return Icons.celebration_outlined;
+      case CalendarCategory.activity:
+        return Icons.sports_esports_outlined;
+      case CalendarCategory.deadline:
+        return Icons.schedule_outlined;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case CalendarCategory.academic:
+        return Colors.blue;
+      case CalendarCategory.exam:
+        return Colors.red;
+      case CalendarCategory.holiday:
+        return Colors.green;
+      case CalendarCategory.activity:
+        return Colors.orange;
+      case CalendarCategory.deadline:
+        return Colors.purple;
     }
   }
 }
@@ -447,33 +478,6 @@ class UserSettings {
         darkMode: darkMode ?? this.darkMode,
         language: language ?? this.language,
       );
-}
-
-// ---------------------------------------------------------------------------
-// Attendance Summary (for Faculty Analytics)
-// ---------------------------------------------------------------------------
-
-class AttendanceSummary {
-  const AttendanceSummary({
-    required this.studentId,
-    required this.studentName,
-    required this.totalSessions,
-    required this.present,
-    required this.absent,
-    required this.late,
-    required this.excused,
-  });
-
-  final String studentId;
-  final String studentName;
-  final int totalSessions;
-  final int present;
-  final int absent;
-  final int late;
-  final int excused;
-
-  double get attendanceRate =>
-      totalSessions > 0 ? (present + late) / totalSessions * 100 : 0;
 }
 
 // ---------------------------------------------------------------------------

@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../core/widgets/shared_widgets.dart';
+import '../../models/attendance_models.dart';
 import '../../models/academic_models.dart';
 import '../../providers/feature_providers.dart';
 import '../../providers/repository_providers.dart';
 import '../common/qr_scanner_screen.dart';
+import 'attendance_analytics_screen.dart';
 
 class ClassAttendanceScreen extends ConsumerWidget {
   const ClassAttendanceScreen({super.key});
@@ -42,7 +44,19 @@ class ClassAttendanceScreen extends ConsumerWidget {
               child: ListTile(
                 title: Text('${s.subjectCode} — ${s.sectionLabel}'),
                 subtitle: Text('${s.dayPattern} ${s.startTime}–${s.endTime} • ${s.room}'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.analytics_outlined),
+                      tooltip: 'Attendance analytics',
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => AttendanceAnalyticsScreen(section: s)),
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 16),
+                  ],
+                ),
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => AttendanceSessionScreen(section: s)),
                 ),
@@ -180,10 +194,13 @@ class _AttendanceSessionScreenState extends ConsumerState<AttendanceSessionScree
                         final records = students
                             .map((s) => AttendanceRecord(
                                   id: 'att_${s.id}_${DateTime.now().millisecondsSinceEpoch}',
-                                  studentId: s.id,
+                                  sessionId: 'manual_${widget.section.id}_${DateTime.now().millisecondsSinceEpoch}',
                                   sectionId: widget.section.id,
-                                  date: DateTime.now(),
+                                  studentId: s.id,
+                                  studentName: s.name,
                                   status: _statuses[s.id] ?? AttendanceStatus.present,
+                                  recordedAt: DateTime.now(),
+                                  method: AttendanceMethod.manual,
                                 ))
                             .toList();
                         await ref.read(facultyRepositoryProvider).submitAttendance(records);
