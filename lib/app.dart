@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'core/config/app_config.dart';
 import 'core/notifications/notification_handlers.dart';
 import 'core/routing/app_router.dart';
+import 'core/routing/route_names.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/offline_banner.dart';
+import 'features/auth/login_screen.dart';
+import 'features/auth/role_select_screen.dart';
 import 'features/onboarding/app_onboarding_carousel.dart';
 import 'features/onboarding/tutorial_providers.dart';
+import 'models/app_user.dart';
 import 'providers/feature_providers.dart';
 import 'providers/notification_providers.dart'
     hide initializeLocalNotifications;
@@ -33,6 +38,27 @@ class PgpcCampusApp extends ConsumerWidget {
   }
 }
 
+/// A minimal router for the app-level onboarding flow.
+/// Shows the carousel first, then navigates to role select.
+final _onboardingRouter = GoRouter(
+  initialLocation: '/onboarding',
+  routes: [
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const AppOnboardingCarousel(),
+    ),
+    GoRoute(
+      path: Routes.roleSelect,
+      builder: (context, state) => const RoleSelectScreen(),
+    ),
+    // Allow navigating to login from role select
+    GoRoute(
+      path: Routes.login,
+      builder: (context, state) => LoginScreen(role: state.extra as UserRole),
+    ),
+  ],
+);
+
 class _OnboardingApp extends ConsumerWidget {
   const _OnboardingApp({required this.themeMode});
 
@@ -40,13 +66,13 @@ class _OnboardingApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      home: const AppOnboardingCarousel(),
+      routerConfig: _onboardingRouter,
     );
   }
 }
