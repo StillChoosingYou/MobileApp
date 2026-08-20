@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,8 +8,105 @@ import '../../core/routing/route_names.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive.dart';
 import '../../core/widgets/shared_widgets.dart';
-import '../../data/local/tutorial_state.dart';
 import '../../models/app_user.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Announcement data model & mock data
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AnnouncementCategory {
+  general,
+  finance,
+  academics,
+  facilities,
+  studentLife,
+}
+
+class _AnnouncementData {
+  const _AnnouncementData({
+    required this.title,
+    required this.category,
+    required this.description,
+    required this.date,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  final String title;
+  final AnnouncementCategory category;
+  final String description;
+  final String date;
+  final IconData icon;
+  final Color iconColor;
+}
+
+const _categoryLabels = {
+  AnnouncementCategory.general: 'GENERAL',
+  AnnouncementCategory.finance: 'FINANCE',
+  AnnouncementCategory.academics: 'ACADEMICS',
+  AnnouncementCategory.facilities: 'FACILITIES',
+  AnnouncementCategory.studentLife: 'STUDENT LIFE',
+};
+
+const _categoryColors = {
+  AnnouncementCategory.general: Color(0xFF1565C0),
+  AnnouncementCategory.finance: Color(0xFF2E7D32),
+  AnnouncementCategory.academics: Color(0xFFE65100),
+  AnnouncementCategory.facilities: Color(0xFF00838F),
+  AnnouncementCategory.studentLife: Color(0xFFC62828),
+};
+
+const _mockAnnouncements = [
+  _AnnouncementData(
+    title: 'Enrollment for A.Y. 2026–2027, 1st Semester',
+    category: AnnouncementCategory.general,
+    description:
+        'Online enrollment is now open. Make sure to enroll on or before May 30, 2026 to avoid late fees.',
+    date: 'May 14, 2026',
+    icon: Icons.school_outlined,
+    iconColor: Color(0xFF1565C0),
+  ),
+  _AnnouncementData(
+    title: 'Payment Deadline: Tuition Fee – 1st Installment',
+    category: AnnouncementCategory.finance,
+    description:
+        'The deadline for the 1st installment payment is on May 16, 2026. Please settle your fees on time.',
+    date: 'May 14, 2026',
+    icon: Icons.account_balance_wallet_outlined,
+    iconColor: Color(0xFF2E7D32),
+  ),
+  _AnnouncementData(
+    title: 'Midterm Examinations',
+    category: AnnouncementCategory.academics,
+    description:
+        'Midterm exams will be conducted from May 20–23, 2026. Please review your schedule.',
+    date: 'May 13, 2026',
+    icon: Icons.menu_book_outlined,
+    iconColor: Color(0xFFE65100),
+  ),
+  _AnnouncementData(
+    title: 'Library Hours Update',
+    category: AnnouncementCategory.facilities,
+    description:
+        'The library will be open from 7:00 AM to 7:00 PM starting May 15, 2026.',
+    date: 'May 12, 2026',
+    icon: Icons.local_library_outlined,
+    iconColor: Color(0xFF00838F),
+  ),
+  _AnnouncementData(
+    title: 'Intramurals 2026',
+    category: AnnouncementCategory.studentLife,
+    description:
+        'Join us this June! More details and sign-up forms will be announced soon.',
+    date: 'May 10, 2026',
+    icon: Icons.emoji_events_outlined,
+    iconColor: Color(0xFFC62828),
+  ),
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main screen
+// ─────────────────────────────────────────────────────────────────────────────
 
 class RoleSelectScreen extends StatefulWidget {
   const RoleSelectScreen({super.key});
@@ -18,6 +116,987 @@ class RoleSelectScreen extends StatefulWidget {
 }
 
 class _RoleSelectScreenState extends State<RoleSelectScreen> {
+  bool _showPromo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPromoState();
+  }
+
+  Future<void> _loadPromoState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _showPromo = !(prefs.getBool('promo_dismissed') ?? false);
+    });
+  }
+
+  Future<void> _dismissPromo() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('promo_dismissed', true);
+    setState(() => _showPromo = false);
+  }
+
+  void _showLoginRoleSheet() {
+    showModalBottomSheet<UserRole>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => const _RolePickerSheet(),
+    ).then((role) {
+      if (role != null && mounted) {
+        context.push(Routes.login, extra: role);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isWide = Responsive.isTabletOrWider(context);
+
+    return Scaffold(
+      body: Column(
+        children: [
+          // ── Promo Banner ──
+          if (_showPromo)
+            _EnhancedPromoBanner(onDismiss: _dismissPromo),
+
+          // ── Scrollable content ──
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // ── Header ──
+                  _LandingHeader(onLogin: _showLoginRoleSheet),
+
+                  // ── Body ──
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1120),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isWide ? 40 : 20,
+                          vertical: isWide ? 32 : 20,
+                        ),
+                        child: isWide
+                            ? _WideLayout(onLogin: _showLoginRoleSheet)
+                            : _NarrowLayout(onLogin: _showLoginRoleSheet),
+                      ),
+                    ),
+                  ),
+
+                  // ── Footer ──
+                  const _LandingFooter(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wide (tablet/desktop) two-column layout
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _WideLayout extends StatelessWidget {
+  const _WideLayout({required this.onLogin});
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Left column: hero
+        Expanded(
+          flex: 4,
+          child: _WelcomeHero(onLogin: onLogin),
+        ),
+        const SizedBox(width: 48),
+        // Right column: announcements
+        const Expanded(
+          flex: 6,
+          child: _AnnouncementsSection(),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Narrow (mobile) stacked layout
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _NarrowLayout extends StatelessWidget {
+  const _NarrowLayout({required this.onLogin});
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _WelcomeHero(onLogin: onLogin),
+        const SizedBox(height: 32),
+        const _AnnouncementsSection(),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enhanced Promo Banner
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _EnhancedPromoBanner extends StatelessWidget {
+  const _EnhancedPromoBanner({required this.onDismiss});
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final isWide = Responsive.isTabletOrWider(context);
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: isWide ? 24 : 14,
+        vertical: 10,
+      ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF0D1B4A), Color(0xFF162D6E)],
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // NEW badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.goldAccentDark,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'NEW!',
+                style: TextStyle(
+                  color: Color(0xFF102A6D),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Main text
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: 'Download the PGPC Campus App for mobile access  ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if (isWide)
+                      const TextSpan(
+                        text: 'Stay Connected. Anytime, Anywhere.',
+                        style: TextStyle(
+                          color: AppColors.goldAccentDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                  ],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (isWide) ...[
+              const SizedBox(width: 16),
+              // QR / Store badges area
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white38),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'pgpc.edu.ph/app',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const _StoreBadge(label: 'Google Play', icon: Icons.android),
+                  const SizedBox(width: 6),
+                  const _StoreBadge(label: 'App Store', icon: Icons.apple),
+                ],
+              ),
+            ],
+            const SizedBox(width: 8),
+            // Close
+            InkWell(
+              onTap: onDismiss,
+              borderRadius: BorderRadius.circular(20),
+              child: const Padding(
+                padding: EdgeInsets.all(6),
+                child: Icon(Icons.close, color: Colors.white70, size: 18),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StoreBadge extends StatelessWidget {
+  const _StoreBadge({required this.label, required this.icon});
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white12,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.white24),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: 14),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Landing Header
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _LandingHeader extends StatelessWidget {
+  const _LandingHeader({required this.onLogin});
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final isWide = Responsive.isTabletOrWider(context);
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: isWide ? 40 : 20,
+        vertical: 14,
+      ),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(
+          bottom: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.3)),
+        ),
+
+      ),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1120),
+          child: Row(
+            children: [
+              // Logo + name
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  'assets/images/pgpc_logo.png',
+                  width: 44,
+                  height: 44,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'PGPC Campus',
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                    Text(
+                      AppConfig.collegeFullName,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              // Login button
+              OutlinedButton.icon(
+                onPressed: onLogin,
+                icon: const Icon(Icons.person_outline, size: 18),
+                label: const Text('Log In'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: scheme.primary,
+                  side: BorderSide(color: scheme.primary),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Welcome Hero (left column)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _WelcomeHero extends StatelessWidget {
+  const _WelcomeHero({required this.onLogin});
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final isWide = Responsive.isTabletOrWider(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Heading
+        Text(
+          'Welcome to PGPC Campus',
+          style: (isWide ? textTheme.headlineMedium : textTheme.headlineSmall)
+              ?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurface),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Your all-in-one platform for school updates,\nannouncements, and important information.',
+          style: textTheme.bodyMedium?.copyWith(
+            color: scheme.onSurfaceVariant,
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // School illustration
+        Center(
+          child: SizedBox(
+            width: isWide ? 300 : 260,
+            height: isWide ? 220 : 190,
+            child: const _CampusIllustration(),
+          ),
+        ),
+        const SizedBox(height: 28),
+
+        // Stay informed CTA
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.notifications_active_outlined,
+                  color: scheme.primary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Stay informed',
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Log in to access your classes, grades, schedule, and more personalized features.',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: onLogin,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: scheme.primary,
+                          side: BorderSide(color: scheme.primary, width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Log In to Continue',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: scheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(Icons.arrow_forward, size: 18, color: scheme.primary),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Campus Illustration (CustomPainter)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _CampusIllustration extends StatelessWidget {
+  const _CampusIllustration();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return CustomPaint(
+      painter: _CampusPainter(isDark: isDark),
+      size: const Size(300, 220),
+    );
+  }
+}
+
+class _CampusPainter extends CustomPainter {
+  _CampusPainter({required this.isDark});
+  final bool isDark;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // Sky / background
+    final skyPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: isDark
+            ? [const Color(0xFF0D1B3E), const Color(0xFF162850)]
+            : [const Color(0xFFE8F0FE), const Color(0xFFD4E4FC)],
+      ).createShader(Rect.fromLTWH(0, 0, w, h));
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, w, h), const Radius.circular(16)),
+      skyPaint,
+    );
+
+    // Ground
+    final groundPaint = Paint()
+      ..color = isDark ? const Color(0xFF1A3A2E) : const Color(0xFFC8DCC0);
+    canvas.drawRect(Rect.fromLTWH(0, h * 0.72, w, h * 0.28), groundPaint);
+
+    // Ground path
+    final pathPaint = Paint()
+      ..color = isDark ? const Color(0xFF3A3A3A) : const Color(0xFFD4C9A8);
+    final path = Path()
+      ..moveTo(w * 0.35, h * 0.72)
+      ..lineTo(w * 0.42, h)
+      ..lineTo(w * 0.58, h)
+      ..lineTo(w * 0.65, h * 0.72)
+      ..close();
+    canvas.drawPath(path, pathPaint);
+
+    // ── Main building ──
+    final buildingColor = isDark ? const Color(0xFF2A4A7A) : const Color(0xFF8FAED4);
+    final buildingDark = isDark ? const Color(0xFF1E3A60) : const Color(0xFF7094BC);
+    final roofColor = isDark ? const Color(0xFF1A3050) : const Color(0xFF5B7EA8);
+    final windowColor = isDark ? const Color(0xFF4A7AB0) : const Color(0xFFF5F0D0);
+    final accentColor = isDark ? const Color(0xFFB8A050) : const Color(0xFFDABD64);
+
+    // Main body
+    final mainLeft = w * 0.22;
+    final mainRight = w * 0.78;
+    final mainTop = h * 0.30;
+    final mainBottom = h * 0.72;
+    canvas.drawRect(
+      Rect.fromLTRB(mainLeft, mainTop, mainRight, mainBottom),
+      Paint()..color = buildingColor,
+    );
+
+    // Roof
+    final roofPath = Path()
+      ..moveTo(mainLeft - 8, mainTop)
+      ..lineTo(w * 0.5, mainTop - 24)
+      ..lineTo(mainRight + 8, mainTop)
+      ..close();
+    canvas.drawPath(roofPath, Paint()..color = roofColor);
+
+    // Roof trim
+    canvas.drawLine(
+      Offset(mainLeft - 8, mainTop),
+      Offset(mainRight + 8, mainTop),
+      Paint()
+        ..color = accentColor
+        ..strokeWidth = 2,
+    );
+
+    // Central tower
+    final towerLeft = w * 0.40;
+    final towerRight = w * 0.60;
+    final towerTop = h * 0.12;
+    canvas.drawRect(
+      Rect.fromLTRB(towerLeft, towerTop, towerRight, mainTop),
+      Paint()..color = buildingDark,
+    );
+
+    // Tower roof (triangular)
+    final towerRoofPath = Path()
+      ..moveTo(towerLeft - 4, towerTop)
+      ..lineTo(w * 0.5, towerTop - 18)
+      ..lineTo(towerRight + 4, towerTop)
+      ..close();
+    canvas.drawPath(towerRoofPath, Paint()..color = roofColor);
+
+    // Tower flag
+    canvas.drawLine(
+      Offset(w * 0.5, towerTop - 18),
+      Offset(w * 0.5, towerTop - 32),
+      Paint()
+        ..color = accentColor
+        ..strokeWidth = 1.5,
+    );
+    // Flag
+    final flagPath = Path()
+      ..moveTo(w * 0.5, towerTop - 32)
+      ..lineTo(w * 0.5 + 12, towerTop - 28)
+      ..lineTo(w * 0.5, towerTop - 24)
+      ..close();
+    canvas.drawPath(flagPath, Paint()..color = accentColor);
+
+    // Tower clock / emblem
+    canvas.drawCircle(
+      Offset(w * 0.5, towerTop + (mainTop - towerTop) * 0.4),
+      10,
+      Paint()..color = windowColor,
+    );
+    canvas.drawCircle(
+      Offset(w * 0.5, towerTop + (mainTop - towerTop) * 0.4),
+      10,
+      Paint()
+        ..color = accentColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
+
+    // Windows on main building — left wing
+    _drawWindowRow(canvas, mainLeft + 10, mainTop + 14, 3, 14, 18, windowColor);
+    _drawWindowRow(canvas, mainLeft + 10, mainTop + 40, 3, 14, 18, windowColor);
+
+    // Windows on main building — right wing
+    _drawWindowRow(canvas, towerRight + 8, mainTop + 14, 3, 14, 18, windowColor);
+    _drawWindowRow(canvas, towerRight + 8, mainTop + 40, 3, 14, 18, windowColor);
+
+    // Door
+    final doorLeft = w * 0.45;
+    final doorRight = w * 0.55;
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTRB(doorLeft, mainBottom - 28, doorRight, mainBottom),
+        topLeft: const Radius.circular(8),
+        topRight: const Radius.circular(8),
+      ),
+      Paint()..color = buildingDark,
+    );
+
+    // Columns
+    for (final x in [mainLeft + 4, mainRight - 6]) {
+      canvas.drawRect(
+        Rect.fromLTRB(x, mainTop, x + 4, mainBottom),
+        Paint()..color = buildingDark.withValues(alpha: 0.5),
+      );
+    }
+
+    // ── Left smaller building ──
+    final lbLeft = w * 0.04;
+    final lbRight = w * 0.20;
+    final lbTop = h * 0.42;
+    canvas.drawRect(
+      Rect.fromLTRB(lbLeft, lbTop, lbRight, mainBottom),
+      Paint()..color = buildingColor.withValues(alpha: 0.7),
+    );
+    // Left building roof
+    canvas.drawRect(
+      Rect.fromLTRB(lbLeft - 2, lbTop - 4, lbRight + 2, lbTop),
+      Paint()..color = roofColor,
+    );
+    _drawWindowRow(canvas, lbLeft + 8, lbTop + 10, 2, 12, 14, windowColor);
+    _drawWindowRow(canvas, lbLeft + 8, lbTop + 30, 2, 12, 14, windowColor);
+
+    // ── Right smaller building ──
+    final rbLeft = w * 0.80;
+    final rbRight = w * 0.96;
+    final rbTop = h * 0.42;
+    canvas.drawRect(
+      Rect.fromLTRB(rbLeft, rbTop, rbRight, mainBottom),
+      Paint()..color = buildingColor.withValues(alpha: 0.7),
+    );
+    canvas.drawRect(
+      Rect.fromLTRB(rbLeft - 2, rbTop - 4, rbRight + 2, rbTop),
+      Paint()..color = roofColor,
+    );
+    _drawWindowRow(canvas, rbLeft + 8, rbTop + 10, 2, 12, 14, windowColor);
+    _drawWindowRow(canvas, rbLeft + 8, rbTop + 30, 2, 12, 14, windowColor);
+
+    // ── Trees ──
+    _drawTree(canvas, w * 0.12, h * 0.68, isDark);
+    _drawTree(canvas, w * 0.88, h * 0.68, isDark);
+    _drawTree(canvas, w * 0.28, h * 0.70, isDark, scale: 0.8);
+    _drawTree(canvas, w * 0.72, h * 0.70, isDark, scale: 0.8);
+
+    // ── Clouds ──
+    if (!isDark) {
+      _drawCloud(canvas, w * 0.10, h * 0.08, 0.8);
+      _drawCloud(canvas, w * 0.75, h * 0.04, 1.0);
+      _drawCloud(canvas, w * 0.45, h * 0.02, 0.6);
+    }
+  }
+
+  void _drawWindowRow(
+    Canvas canvas,
+    double startX,
+    double y,
+    int count,
+    double windowW,
+    double spacing,
+    Color color,
+  ) {
+    for (var i = 0; i < count; i++) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(startX + i * spacing, y, windowW, 12),
+          const Radius.circular(2),
+        ),
+        Paint()..color = color,
+      );
+    }
+  }
+
+  void _drawTree(Canvas canvas, double x, double groundY, bool isDark, {double scale = 1.0}) {
+    // Trunk
+    canvas.drawRect(
+      Rect.fromLTWH(x - 3 * scale, groundY - 12 * scale, 6 * scale, 14 * scale),
+      Paint()..color = isDark ? const Color(0xFF5A4030) : const Color(0xFF8B7355),
+    );
+    // Foliage layers
+    final foliageColor = isDark ? const Color(0xFF2A5A3A) : const Color(0xFF6BA368);
+    final foliageLight = isDark ? const Color(0xFF3A7A4A) : const Color(0xFF88C482);
+    for (var i = 0; i < 3; i++) {
+      final r = (18 - i * 4) * scale;
+      final cy = groundY - 14 * scale - i * 8 * scale;
+      canvas.drawCircle(
+        Offset(x, cy),
+        r,
+        Paint()..color = i == 1 ? foliageLight : foliageColor,
+      );
+    }
+  }
+
+  void _drawCloud(Canvas canvas, double x, double y, double scale) {
+    final paint = Paint()..color = Colors.white.withValues(alpha: 0.6);
+    canvas.drawCircle(Offset(x, y + 6 * scale), 10 * scale, paint);
+    canvas.drawCircle(Offset(x + 12 * scale, y), 14 * scale, paint);
+    canvas.drawCircle(Offset(x + 28 * scale, y + 4 * scale), 12 * scale, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Announcements Section (right column)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AnnouncementsSection extends StatelessWidget {
+  const _AnnouncementsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section header
+        Row(
+          children: [
+            Icon(Icons.campaign_outlined, color: scheme.primary, size: 26),
+            const SizedBox(width: 10),
+            Text(
+              'Announcements',
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: scheme.primary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Stay updated with the latest important announcements.',
+          style: textTheme.bodySmall?.copyWith(
+            color: scheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 20),
+        // Announcement cards
+        ...List.generate(_mockAnnouncements.length, (index) {
+          return FadeSlideIn(
+            index: index,
+            child: _AnnouncementCard(data: _mockAnnouncements[index]),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Individual Announcement Card
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AnnouncementCard extends StatefulWidget {
+  const _AnnouncementCard({required this.data});
+  final _AnnouncementData data;
+
+  @override
+  State<_AnnouncementCard> createState() => _AnnouncementCardState();
+}
+
+class _AnnouncementCardState extends State<_AnnouncementCard> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final catColor = _categoryColors[widget.data.category] ?? scheme.primary;
+    final catLabel = _categoryLabels[widget.data.category] ?? '';
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: _hovered
+              ? scheme.surfaceContainerLow
+              : scheme.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: _hovered
+                ? scheme.outlineVariant
+                : scheme.outlineVariant.withValues(alpha: 0.3),
+          ),
+          boxShadow: _hovered
+              ? [
+                  BoxShadow(
+                    color: scheme.shadow.withValues(alpha: 0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Icon
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: catColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(widget.data.icon, color: catColor, size: 22),
+            ),
+            const SizedBox(width: 14),
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title row + date
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: [
+                            Text(
+                              widget.data.title,
+                              style: textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            // Category badge
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: catColor.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                catLabel,
+                                style: TextStyle(
+                                  color: catColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        widget.data.date,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    widget.data.description,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Landing Footer
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _LandingFooter extends StatelessWidget {
+  const _LandingFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.3)),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          '© 2026 PGPC Campus. All rights reserved.',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Role Picker Bottom Sheet (for Log In flow)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _RolePickerSheet extends StatelessWidget {
+  const _RolePickerSheet();
+
   static const _roleIcons = {
     UserRole.student: Icons.school,
     UserRole.teacher: Icons.co_present,
@@ -42,726 +1121,125 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
     UserRole.admin: 'System settings, users & audit logs',
   };
 
-  // Distinct brand-harmonious colors per role (derived from navy/gold palette)
   static const _roleColors = {
-    UserRole.student: Color(0xFF102A6D),       // Navy
-    UserRole.teacher: Color(0xFF1B3A8C),       // Navy + blue
-    UserRole.registrar: Color(0xFF2646A8),     // Royal blue
-    UserRole.accounting: Color(0xFFB8860B),    // Gold accent
-    UserRole.cashier: Color(0xFFDABD64),       // Gold seed
-    UserRole.guidance: Color(0xFF0D4A6B),      // Teal-navy
-    UserRole.deptHead: Color(0xFF1A5C8A),      // Blue-navy
-    UserRole.dean: Color(0xFF0A3D62),          // Deep navy
-    UserRole.admin: Color(0xFF1F3A5F),         // Dark navy
+    UserRole.student: Color(0xFF102A6D),
+    UserRole.teacher: Color(0xFF1B3A8C),
+    UserRole.registrar: Color(0xFF2646A8),
+    UserRole.accounting: Color(0xFFB8860B),
+    UserRole.cashier: Color(0xFFDABD64),
+    UserRole.guidance: Color(0xFF0D4A6B),
+    UserRole.deptHead: Color(0xFF1A5C8A),
+    UserRole.dean: Color(0xFF0A3D62),
+    UserRole.admin: Color(0xFF1F3A5F),
   };
-
-  // Role groupings for mobile layout
-  static const _roleGroups = [
-    _RoleGroup(
-      title: 'Academic',
-      roles: [UserRole.student, UserRole.teacher, UserRole.registrar],
-    ),
-    _RoleGroup(
-      title: 'Finance & Administration',
-      roles: [UserRole.accounting, UserRole.cashier, UserRole.admin],
-    ),
-    _RoleGroup(
-      title: 'Academic Leadership',
-      roles: [UserRole.guidance, UserRole.deptHead, UserRole.dean],
-    ),
-  ];
-
-  late final PageController _pageController;
-  int _currentPage = 0;
-  bool _showPromo = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(viewportFraction: 0.82);
-    _loadPromoState();
-  }
-
-  Future<void> _loadPromoState() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _showPromo = !(prefs.getBool('promo_dismissed') ?? false);
-    });
-  }
-
-  Future<void> _dismissPromo() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('promo_dismissed', true);
-    setState(() => _showPromo = false);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final compactHeight = Responsive.isCompactHeight(context);
-    final landscape = Responsive.isLandscape(context);
-    final isWide = Responsive.isTabletOrWider(context);
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: Responsive.contentMaxWidth(context).clamp(0, 960)),
-            child: landscape && compactHeight
-                ? _CompactLandscapeRoleSelect(
-                    scheme: scheme,
-                    textTheme: textTheme,
-                    roleIcons: _roleIcons,
-                    roleDescriptions: _roleDescriptions,
-                    roleColors: _roleColors,
-                  )
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      final showGrid = isWide && !landscape;
-                      return SingleChildScrollView(
-                        padding: Responsive.formPadding(context),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (_showPromo && !compactHeight) _DismissiblePromoTicker(onDismiss: _dismissPromo),
-
-                            // ── Header ──
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(24, compactHeight ? 12 : 20, 24, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(14),
-                                        child: Image.asset(
-                                          'assets/images/pgpc_logo.png',
-                                          width: compactHeight ? 44 : 52,
-                                          height: compactHeight ? 44 : 52,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 14),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('PGPC Campus', style: textTheme.titleLarge),
-                                            Text(
-                                              AppConfig.collegeFullName,
-                                              style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                                              maxLines: compactHeight ? 1 : 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: compactHeight ? 16 : 28),
-                                  Text(
-                                    'Welcome back',
-                                    style: compactHeight ? textTheme.titleLarge : textTheme.headlineMedium,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'Select your role to continue — ${AppConfig.currentTermLabel}',
-                                    style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: compactHeight ? 8 : 16),
-
-                            // ── Role Cards ──
-                            if (showGrid)
-                              _RoleGrid(
-                                roles: UserRole.values,
-                                roleIcons: _roleIcons,
-                                roleDescriptions: _roleDescriptions,
-                                roleColors: _roleColors,
-                                compact: compactHeight,
-                                onTap: (role) => context.push(Routes.login, extra: role),
-                              )
-                            else
-                              _RoleCarousel(
-                                roleGroups: _roleGroups,
-                                roleIcons: _roleIcons,
-                                roleDescriptions: _roleDescriptions,
-                                roleColors: _roleColors,
-                                compact: compactHeight,
-                                pageController: _pageController,
-                                currentPage: _currentPage,
-                                onPageChanged: (index) => setState(() => _currentPage = index),
-                                onTap: (role) => context.push(Routes.login, extra: role),
-                              ),
-
-                            SizedBox(height: compactHeight ? 8 : 16),
-
-                            // ── Help / tutorial replay ──
-                            _TutorialHelpRow(onReplayIntro: _replayAppIntro),
-
-                            SizedBox(height: compactHeight ? 8 : 16),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-          ),
-        ),
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
       ),
-    );
-  }
-
-  Future<void> _replayAppIntro() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Replay app intro?'),
-        content: const Text(
-          'This shows the welcome carousel again now. '
-          'You can also replay a role\'s guided tour after signing in.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Replay now'),
-          ),
-        ],
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
-    );
-    if (confirmed == true && mounted) {
-      await TutorialStateService.resetAppIntro();
-      if (mounted) {
-        context.go(Routes.intro);
-      }
-    }
-  }
-}
-
-/// Side-by-side layout for landscape phones
-class _CompactLandscapeRoleSelect extends StatelessWidget {
-  const _CompactLandscapeRoleSelect({
-    required this.scheme,
-    required this.textTheme,
-    required this.roleIcons,
-    required this.roleDescriptions,
-    required this.roleColors,
-  });
-
-  final ColorScheme scheme;
-  final TextTheme textTheme;
-  final Map<UserRole, IconData> roleIcons;
-  final Map<UserRole, String> roleDescriptions;
-  final Map<UserRole, Color> roleColors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle
+          const SizedBox(height: 12),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/images/pgpc_logo.png',
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text('PGPC Campus', style: textTheme.titleMedium),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text('Welcome back', style: textTheme.titleLarge),
-                const SizedBox(height: 4),
+                Icon(Icons.login, color: scheme.primary, size: 22),
+                const SizedBox(width: 10),
                 Text(
-                  'Select your role — ${AppConfig.currentTermLabel}',
-                  style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                  'Select your role to log in',
+                  style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
           ),
-        ),
-        Expanded(
-          flex: 6,
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(8, 12, 16, 12),
-            itemCount: UserRole.values.length,
-            itemBuilder: (context, index) {
-              final role = UserRole.values[index];
-              return FadeSlideIn(
-                index: index,
-                child: _RoleCard(
-                  role: role,
-                  icon: roleIcons[role]!,
-                  description: roleDescriptions[role] ?? '',
-                  color: roleColors[role]!,
-                  compact: true,
-                  onTap: () => context.push(Routes.login, extra: role),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Dismissible promo banner with local storage persistence
-class _DismissiblePromoTicker extends StatefulWidget {
-  const _DismissiblePromoTicker({required this.onDismiss});
-
-  final VoidCallback onDismiss;
-
-  @override
-  State<_DismissiblePromoTicker> createState() => _DismissiblePromoTickerState();
-}
-
-class _DismissiblePromoTickerState extends State<_DismissiblePromoTicker> with SingleTickerProviderStateMixin {
-  static const _promos = [
-    '📢 Enrollment for A.Y. 2026–2027, 2nd Semester opens soon!',
-    '🎓 Foundation Week — Aug 18-22 | Sportsfest & Talent Night',
-    '💳 Pay tuition via GCash, bank transfer, or at the Cashier window',
-    '📱 Download the PGPC Campus App for mobile access',
-    '🏆 PGPC ranked Top 10 Polytechnic Colleges in CALABARZON',
-  ];
-
-  late final AnimationController _controller;
-  int _currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          setState(() => _currentIndex = (_currentIndex + 1) % _promos.length);
-          _controller.forward(from: 0);
-        }
-      });
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.royalBlueSeed,
-            AppColors.royalBlueSeed.withValues(alpha: 0.85),
-          ],
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.goldAccentDark,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: const Text(
-              'NEW',
-              style: TextStyle(
-                color: Color(0xFF102A6D),
-                fontSize: 10,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
-              ),
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              AppConfig.currentTermLabel,
+              style: textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0.0, 0.6),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: Text(
-                _promos[_currentIndex],
-                key: ValueKey<int>(_currentIndex),
-                style: TextStyle(
-                  color: scheme.surface,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.close, color: scheme.surface, size: 20),
-            onPressed: widget.onDismiss,
-            tooltip: 'Dismiss',
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Grid layout for tablet/desktop
-class _RoleGrid extends StatelessWidget {
-  const _RoleGrid({
-    required this.roles,
-    required this.roleIcons,
-    required this.roleDescriptions,
-    required this.roleColors,
-    required this.compact,
-    required this.onTap,
-  });
-
-  final List<UserRole> roles;
-  final Map<UserRole, IconData> roleIcons;
-  final Map<UserRole, String> roleDescriptions;
-  final Map<UserRole, Color> roleColors;
-  final bool compact;
-  final void Function(UserRole) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final crossAxisCount = Responsive.gridCrossAxisCount(context);
-    final aspectRatio = Responsive.gridChildAspectRatio(context);
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: aspectRatio,
-      ),
-      itemCount: roles.length,
-      itemBuilder: (context, index) {
-        final role = roles[index];
-        return FadeSlideIn(
-          index: index,
-          child: _RoleCard(
-            role: role,
-            icon: roleIcons[role]!,
-            description: roleDescriptions[role] ?? '',
-            color: roleColors[role]!,
-            compact: compact,
-            onTap: () => onTap(role),
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// Carousel with grouped sections for mobile
-class _RoleCarousel extends StatelessWidget {
-  const _RoleCarousel({
-    required this.roleGroups,
-    required this.roleIcons,
-    required this.roleDescriptions,
-    required this.roleColors,
-    required this.compact,
-    required this.pageController,
-    required this.currentPage,
-    required this.onPageChanged,
-    required this.onTap,
-  });
-
-  final List<_RoleGroup> roleGroups;
-  final Map<UserRole, IconData> roleIcons;
-  final Map<UserRole, String> roleDescriptions;
-  final Map<UserRole, Color> roleColors;
-  final bool compact;
-  final PageController pageController;
-  final int currentPage;
-  final void Function(int) onPageChanged;
-  final void Function(UserRole) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    // Flatten all roles for page indexing
-    final allRoles = roleGroups.expand((g) => g.roles).toList();
-
-    return Column(
-      children: [
-        SizedBox(
-          height: compact ? 200 : 260,
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: onPageChanged,
-            itemCount: allRoles.length,
-            itemBuilder: (context, index) {
-              final role = allRoles[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: FadeSlideIn(
-                  index: index,
-                  child: _RoleCard(
-                    role: role,
-                    icon: roleIcons[role]!,
-                    description: roleDescriptions[role] ?? '',
-                    color: roleColors[role]!,
-                    compact: compact,
-                    onTap: () => onTap(role),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        // Page indicator dots
-        Padding(
-          padding: EdgeInsets.only(top: compact ? 8 : 12, bottom: compact ? 12 : 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              allRoles.length,
-              (index) => AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: currentPage == index ? 24 : 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: currentPage == index
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Grouped role section for mobile carousel
-class _RoleGroup {
-  const _RoleGroup({required this.title, required this.roles});
-
-  final String title;
-  final List<UserRole> roles;
-}
-
-/// Enhanced role card with distinct color, full pressable area, and hover/press states
-class _RoleCard extends StatefulWidget {
-  const _RoleCard({
-    required this.role,
-    required this.icon,
-    required this.description,
-    required this.color,
-    required this.onTap,
-    this.compact = false,
-  });
-
-  final UserRole role;
-  final IconData icon;
-  final String description;
-  final Color color;
-  final VoidCallback onTap;
-  final bool compact;
-
-  @override
-  State<_RoleCard> createState() => _RoleCardState();
-}
-
-class _RoleCardState extends State<_RoleCard> {
-  bool _hovered = false;
-  bool _pressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final isDark = scheme.brightness == Brightness.dark;
-    final iconSize = widget.compact ? 44.0 : 56.0;
-    final borderRadius = widget.compact ? 16.0 : 20.0;
-    final padding = widget.compact
-        ? const EdgeInsets.symmetric(horizontal: 16, vertical: 16)
-        : const EdgeInsets.symmetric(horizontal: 24, vertical: 24);
-
-    // Derive container color from role color
-    final containerColor = isDark
-        ? widget.color.withValues(alpha: 0.18)
-        : widget.color.withValues(alpha: 0.10);
-    final borderColor = isDark
-        ? widget.color.withValues(alpha: 0.35)
-        : widget.color.withValues(alpha: 0.25);
-    final iconBgColor = isDark
-        ? widget.color.withValues(alpha: 0.25)
-        : widget.color.withValues(alpha: 0.15);
-    final iconColor = widget.color;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedScale(
-        scale: _pressed ? 0.98 : (_hovered ? 1.01 : 1.0),
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-        child: GestureDetector(
-          onTapDown: (_) => setState(() => _pressed = true),
-          onTapUp: (_) => setState(() => _pressed = false),
-          onTapCancel: () => setState(() => _pressed = false),
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            decoration: BoxDecoration(
-              color: containerColor,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: Border.all(color: borderColor, width: _hovered ? 2 : 1),
-              boxShadow: _hovered
-                  ? [
-                      BoxShadow(
-                        color: widget.color.withValues(alpha: isDark ? 0.25 : 0.15),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
+          const SizedBox(height: 16),
+          const Divider(height: 1),
+          // Role list
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 8 + bottomPadding),
+              itemCount: UserRole.values.length,
+              itemBuilder: (context, index) {
+                final role = UserRole.values[index];
+                final color = _roleColors[role] ?? scheme.primary;
+                final isDark = scheme.brightness == Brightness.dark;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: ListTile(
+                    onTap: () => Navigator.pop(context, role),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    tileColor: isDark
+                        ? color.withValues(alpha: 0.12)
+                        : color.withValues(alpha: 0.06),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? color.withValues(alpha: 0.2)
+                            : color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ]
-                  : null,
-            ),
-            padding: padding,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: iconSize,
-                  height: iconSize,
-                  decoration: BoxDecoration(
-                    color: iconBgColor,
-                    borderRadius: BorderRadius.circular(widget.compact ? 12 : 16),
-                  ),
-                  child: Icon(widget.icon, color: iconColor, size: widget.compact ? 22 : 28),
-                ),
-                SizedBox(height: widget.compact ? 10 : 14),
-                Text(
-                  widget.role.label,
-                  style: widget.compact
-                      ? Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: scheme.onSurface,
-                          )
-                      : Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: scheme.onSurface,
-                          ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  widget.description,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      child: Icon(
+                        _roleIcons[role],
+                        color: color,
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(
+                      role.label,
+                      style: textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _roleDescriptions[role] ?? '',
+                      style: textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
-                  maxLines: widget.compact ? 1 : 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A compact row of tutorial/help affordances shown beneath the role cards:
-/// replay the app intro, and open the guided tour selector.
-class _TutorialHelpRow extends StatelessWidget {
-  const _TutorialHelpRow({required this.onReplayIntro});
-
-  final VoidCallback onReplayIntro;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onReplayIntro,
-              icon: const Icon(Icons.replay_outlined, size: 18),
-              label: const Text('Replay intro'),
-              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (dialogContext) => AlertDialog(
-                    title: const Text('How to replay a guided tour'),
-                    content: const Text(
-                      'After you sign in, open the role you want and the guided '
-                      'tour replays automatically if you haven\'t finished it.\n\n'
-                      'To replay any tour on demand: sign in, then return here '
-                      'and the tour will start again on your next visit to that role.',
                     ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(dialogContext),
-                        child: const Text('Got it'),
-                      ),
-                    ],
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
                 );
               },
-              icon: const Icon(Icons.help_outline, size: 18),
-              label: const Text('Tutorial help'),
-              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
             ),
           ),
         ],
