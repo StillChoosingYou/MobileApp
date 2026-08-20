@@ -23,12 +23,30 @@ class PgpcCampusApp extends ConsumerWidget {
     return appIntroSeen.when(
       data: (seen) {
         if (!seen) {
-          return const AppOnboardingCarousel();
+          return _OnboardingApp(themeMode: themeMode);
         }
         return _AppWithRouter(themeMode: themeMode);
       },
       loading: () => const _LoadingScaffold(),
       error: (_, __) => _AppWithRouter(themeMode: themeMode),
+    );
+  }
+}
+
+class _OnboardingApp extends ConsumerWidget {
+  const _OnboardingApp({required this.themeMode});
+
+  final ThemeMode themeMode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      title: AppConfig.appName,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
+      home: const AppOnboardingCarousel(),
     );
   }
 }
