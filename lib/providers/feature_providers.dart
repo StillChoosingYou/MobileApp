@@ -158,6 +158,10 @@ final announcementsProvider = FutureProvider<List<Announcement>>(
   (ref) => ref.watch(studentRepositoryProvider).getAnnouncements(),
 );
 
+final promotionalAnnouncementsProvider = FutureProvider<List<PromotionalAnnouncement>>(
+  (ref) => ref.watch(studentRepositoryProvider).getPromotionalAnnouncements(),
+);
+
 final studentNotificationsProvider = FutureProvider.family<List<NotificationItem>, String>(
   (ref, studentId) => ref.watch(studentRepositoryProvider).getNotifications(studentId),
 );

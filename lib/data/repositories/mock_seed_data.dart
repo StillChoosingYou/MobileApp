@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../models/app_user.dart';
 import '../../models/academic_models.dart';
 import '../../models/financial_models.dart';
@@ -494,6 +495,69 @@ class MockSeedData {
           'Access the evaluation form through Student Tools.',
       category: 'Academics',
       postedAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+  ];
+
+  final List<PromotionalAnnouncement> promotionalAnnouncements = [
+    PromotionalAnnouncement(
+      id: 'promo_001',
+      title: '🎓 PGPC Mobile App Now Available!',
+      body: 'Download the official PGPC Campus App for instant access to grades, schedule, tuition, and announcements. Stay connected anywhere!',
+      category: 'Promotion',
+      postedAt: DateTime.now().subtract(const Duration(days: 1)),
+      backgroundColor: const Color(0xFF102A6D),
+      textColor: Colors.white,
+      actionLabel: 'Download Now',
+      actionUrl: 'https://pgpc.edu.ph/app',
+      iconCodePoint: Icons.download_rounded.codePoint,
+      priority: 10,
+      startDate: DateTime.now().subtract(const Duration(days: 30)),
+      endDate: DateTime.now().add(const Duration(days: 60)),
+    ),
+    PromotionalAnnouncement(
+      id: 'promo_002',
+      title: '🏆 Foundation Week 2026 - Register Now!',
+      body: 'Join the sportsfest, talent night, and academic competitions. Open to all students. Limited slots available!',
+      category: 'Events',
+      postedAt: DateTime.now().subtract(const Duration(days: 5)),
+      backgroundColor: const Color(0xFFC62828),
+      textColor: Colors.white,
+      actionLabel: 'View Events',
+      actionUrl: '/events/foundation-week',
+      iconCodePoint: Icons.emoji_events_rounded.codePoint,
+      priority: 8,
+      startDate: DateTime.now().subtract(const Duration(days: 14)),
+      endDate: DateTime.now().add(const Duration(days: 21)),
+    ),
+    PromotionalAnnouncement(
+      id: 'promo_003',
+      title: '💳 Pay Tuition Online - GCash & Maya Accepted',
+      body: 'No more long queues! Pay your tuition fees securely through the app using GCash, Maya, or bank transfer. Fast and convenient.',
+      category: 'Finance',
+      postedAt: DateTime.now().subtract(const Duration(days: 3)),
+      backgroundColor: const Color(0xFF2E7D32),
+      textColor: Colors.white,
+      actionLabel: 'Pay Now',
+      actionUrl: '/tuition/pay',
+      iconCodePoint: Icons.account_balance_wallet_rounded.codePoint,
+      priority: 7,
+      startDate: DateTime.now().subtract(const Duration(days: 60)),
+      endDate: DateTime.now().add(const Duration(days: 30)),
+    ),
+    PromotionalAnnouncement(
+      id: 'promo_004',
+      title: '📚 Library Extended Hours - Open Until 8PM',
+      body: 'The campus library now extends its hours until 8:00 PM on weekdays. Perfect for late-night study sessions and research work.',
+      category: 'Facilities',
+      postedAt: DateTime.now().subtract(const Duration(days: 2)),
+      backgroundColor: const Color(0xFF00838F),
+      textColor: Colors.white,
+      actionLabel: 'Learn More',
+      actionUrl: '/facilities/library',
+      iconCodePoint: Icons.local_library_rounded.codePoint,
+      priority: 5,
+      startDate: DateTime.now().subtract(const Duration(days: 10)),
+      endDate: DateTime.now().add(const Duration(days: 30)),
     ),
   ];
 

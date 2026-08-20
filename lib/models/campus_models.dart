@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Announcement {
 
   factory Announcement.fromJson(Map<String, dynamic> json) => Announcement(
@@ -20,6 +22,101 @@ class Announcement {
   final String body;
   final String category;
   final DateTime postedAt;
+}
+
+/// A promotional announcement specifically for the top ticker banner.
+/// Includes promotional-specific fields like background color, action button,
+/// and display priority.
+class PromotionalAnnouncement {
+
+  factory PromotionalAnnouncement.fromJson(Map<String, dynamic> json) => PromotionalAnnouncement(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        body: json['body'] as String,
+        category: json['category'] as String,
+        postedAt: DateTime.parse(json['postedAt'] as String),
+        backgroundColor: json['backgroundColor'] != null
+            ? Color(json['backgroundColor'] as int)
+            : null,
+        textColor: json['textColor'] != null
+            ? Color(json['textColor'] as int)
+            : null,
+        actionLabel: json['actionLabel'] as String?,
+        actionUrl: json['actionUrl'] as String?,
+        iconCodePoint: json['iconCodePoint'] as int?,
+        iconFontFamily: json['iconFontFamily'] as String? ?? 'MaterialIcons',
+        priority: json['priority'] as int? ?? 0,
+        isActive: json['isActive'] as bool? ?? true,
+        startDate: json['startDate'] != null
+            ? DateTime.parse(json['startDate'] as String)
+            : null,
+        endDate: json['endDate'] != null
+            ? DateTime.parse(json['endDate'] as String)
+            : null,
+      );
+
+  const PromotionalAnnouncement({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.category,
+    required this.postedAt,
+    this.backgroundColor,
+    this.textColor,
+    this.actionLabel,
+    this.actionUrl,
+    this.iconCodePoint,
+    this.iconFontFamily,
+    this.priority = 0,
+    this.isActive = true,
+    this.startDate,
+    this.endDate,
+  });
+
+  final String id;
+  final String title;
+  final String body;
+  final String category;
+  final DateTime postedAt;
+
+  // Promotional-specific fields
+  final Color? backgroundColor;
+  final Color? textColor;
+  final String? actionLabel;
+  final String? actionUrl;
+  final int? iconCodePoint;
+  final String? iconFontFamily;
+  final int priority;
+  final bool isActive;
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  /// Whether this announcement should be displayed right now
+  bool get isCurrentlyActive {
+    if (!isActive) return false;
+    final now = DateTime.now();
+    if (startDate != null && now.isBefore(startDate!)) return false;
+    if (endDate != null && now.isAfter(endDate!)) return false;
+    return true;
+  }
+
+  /// Get the icon widget if available
+  Icon? get icon {
+    if (iconCodePoint == null || iconFontFamily == null) return null;
+    return Icon(
+      IconData(iconCodePoint!, fontFamily: iconFontFamily),
+      size: 16,
+    );
+  }
+
+  /// Convert to a regular Announcement for compatibility
+  Announcement toAnnouncement() => Announcement(
+        id: id,
+        title: title,
+        body: body,
+        category: category,
+        postedAt: postedAt,
+      );
 }
 
 class NotificationItem {

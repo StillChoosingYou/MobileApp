@@ -200,6 +200,25 @@ class MockStudentRepository implements StudentRepository {
   }
 
   @override
+  Future<List<PromotionalAnnouncement>> getPromotionalAnnouncements() async {
+    await _delay();
+    final list = List<PromotionalAnnouncement>.from(_seed.promotionalAnnouncements);
+    // Filter active ones and sort by priority (highest first) then by date
+    final now = DateTime.now();
+    final activeList = list.where((a) {
+      if (!a.isActive) return false;
+      if (a.startDate != null && now.isBefore(a.startDate!)) return false;
+      if (a.endDate != null && now.isAfter(a.endDate!)) return false;
+      return true;
+    }).toList();
+    activeList.sort((a, b) {
+      if (b.priority != a.priority) return b.priority.compareTo(a.priority);
+      return b.postedAt.compareTo(a.postedAt);
+    });
+    return activeList;
+  }
+
+  @override
   Future<List<NotificationItem>> getNotifications(String studentId) async {
     await _delay();
     final list = List<NotificationItem>.from(_seed.notifications[studentId] ?? const []);

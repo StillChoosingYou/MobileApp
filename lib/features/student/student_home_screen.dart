@@ -9,6 +9,7 @@ import '../../models/academic_models.dart';
 import '../../models/campus_models.dart';
 import '../../providers/feature_providers.dart';
 import 'ai_assistant_screen.dart';
+import 'widgets/promotional_ticker.dart';
 
 class StudentHomeScreen extends ConsumerWidget {
   const StudentHomeScreen({super.key});
@@ -25,11 +26,14 @@ class StudentHomeScreen extends ConsumerWidget {
         ref.invalidate(studentLedgerProvider(user.id));
         ref.invalidate(studentEnrollmentProvider(user.id));
         ref.invalidate(announcementsProvider);
+        ref.invalidate(promotionalAnnouncementsProvider);
         ref.invalidate(studentNotificationsProvider(user.id));
       },
       child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
+          // Top Promotional Announcement Ticker
+          const PromotionalTicker(),
           Padding(
             padding: Responsive.pagePadding(context).copyWith(top: 20, bottom: 8),
             child: Row(

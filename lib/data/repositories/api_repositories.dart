@@ -90,6 +90,7 @@ class ApiStudentRepository implements StudentRepository {
   static const _paymentsKey = 'student_payments:';
   static const _enrollmentKey = 'student_enrollment:';
   static const _announcementsKey = 'announcements';
+  static const _promotionalAnnouncementsKey = 'promotional_announcements';
   static const _notificationsKey = 'student_notifications:';
   static const _calendarKey = 'calendar_events';
   static const _checklistKey = 'curriculum_checklist:';
@@ -200,6 +201,23 @@ class ApiStudentRepository implements StudentRepository {
       final cached = OfflineCache.instance.get(_announcementsKey);
       if (cached == null) rethrow;
       return (cached as List).map((e) => Announcement.fromJson(e as Map<String, dynamic>)).toList();
+    }
+  }
+
+  @override
+  Future<List<PromotionalAnnouncement>> getPromotionalAnnouncements() async {
+    try {
+      final json = await ApiClient.get('/promotional-announcements');
+      OfflineCache.instance.save(_promotionalAnnouncementsKey, json);
+      return (json as List)
+          .map((e) => PromotionalAnnouncement.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on ApiException {
+      final cached = OfflineCache.instance.get(_promotionalAnnouncementsKey);
+      if (cached == null) rethrow;
+      return (cached as List)
+          .map((e) => PromotionalAnnouncement.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
   }
 

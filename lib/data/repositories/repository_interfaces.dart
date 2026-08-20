@@ -32,6 +32,7 @@ abstract class StudentRepository {
   Future<List<Payment>> getPaymentHistory(String studentId);
   Future<Enrollment?> getEnrollment(String studentId, String term);
   Future<List<Announcement>> getAnnouncements();
+  Future<List<PromotionalAnnouncement>> getPromotionalAnnouncements();
   Future<List<NotificationItem>> getNotifications(String studentId);
 
   /// Simple keyword-matched FAQ engine backing the AI Assistant screen.
