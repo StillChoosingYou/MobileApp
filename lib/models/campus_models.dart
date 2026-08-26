@@ -91,6 +91,21 @@ class PromotionalAnnouncement {
   final DateTime? startDate;
   final DateTime? endDate;
 
+  /// Maps known MaterialIcons code points to their IconData constants.
+  /// Only these icons are supported because IconData requires compile-time constants.
+  static const Map<int, IconData> _materialIconMap = {
+    0xe0c9: Icons.info,         // info
+    0xe145: Icons.warning,      // warning
+    0xe5cd: Icons.check_circle, // check_circle
+    0xe14c: Icons.error,        // error
+    0xe88e: Icons.school,       // school
+    0xe85d: Icons.person,       // person
+    0xe0c8: Icons.announcement, // announcement
+    0xe8b8: Icons.campaign,     // campaign
+    0xe251: Icons.event,        // event
+    0xe8ef: Icons.notifications, // notifications
+  };
+
   /// Whether this announcement should be displayed right now
   bool get isCurrentlyActive {
     if (!isActive) return false;
@@ -100,13 +115,17 @@ class PromotionalAnnouncement {
     return true;
   }
 
-  /// Get the icon widget if available
+  /// Get the icon widget if available.
+  /// Note: Only supports MaterialIcons (the default) with known code points,
+  /// because IconData requires compile-time constant arguments.
   Icon? get icon {
-    if (iconCodePoint == null || iconFontFamily == null) return null;
-    return Icon(
-      IconData(iconCodePoint!, fontFamily: iconFontFamily),
-      size: 16,
-    );
+    if (iconCodePoint == null) return null;
+    if (iconFontFamily != null && iconFontFamily != 'MaterialIcons') return null;
+
+    final iconData = _materialIconMap[iconCodePoint!];
+    if (iconData == null) return null;
+
+    return Icon(iconData, size: 16);
   }
 
   /// Convert to a regular Announcement for compatibility
