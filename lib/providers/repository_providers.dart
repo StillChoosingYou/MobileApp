@@ -89,7 +89,10 @@ final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
     case BackendMode.mock:
       return MockNotificationRepository();
     case BackendMode.restApi:
-      return MockNotificationRepository(); // TODO: Implement ApiNotificationRepository
+      throw UnimplementedError(
+        'ApiNotificationRepository not implemented yet. '
+        'Add the class to lib/data/repositories/api_repositories.dart and return it here.',
+      );
     case BackendMode.firebase:
       throw UnimplementedError('No Firebase Notification implementation yet.');
   }
@@ -100,7 +103,10 @@ final messageRepositoryProvider = Provider<MessageRepository>((ref) {
     case BackendMode.mock:
       return MockMessageRepository();
     case BackendMode.restApi:
-      return MockMessageRepository(); // TODO: Implement ApiMessageRepository
+      throw UnimplementedError(
+        'ApiMessageRepository not implemented yet. '
+        'Add the class to lib/data/repositories/api_repositories.dart and return it here.',
+      );
     case BackendMode.firebase:
       throw UnimplementedError('No Firebase Message implementation yet.');
   }
@@ -111,7 +117,10 @@ final calendarRepositoryProvider = Provider<CalendarRepository>((ref) {
     case BackendMode.mock:
       return MockCalendarRepository();
     case BackendMode.restApi:
-      return MockCalendarRepository(); // TODO: Implement ApiCalendarRepository
+      throw UnimplementedError(
+        'ApiCalendarRepository not implemented yet. '
+        'Add the class to lib/data/repositories/api_repositories.dart and return it here.',
+      );
     case BackendMode.firebase:
       throw UnimplementedError('No Firebase Calendar implementation yet.');
   }
@@ -122,7 +131,10 @@ final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
     case BackendMode.mock:
       return MockAttendanceRepository();
     case BackendMode.restApi:
-      return MockAttendanceRepository(); // TODO: Implement ApiAttendanceRepository
+      throw UnimplementedError(
+        'ApiAttendanceRepository not implemented yet. '
+        'Add the class to lib/data/repositories/api_repositories.dart and return it here.',
+      );
     case BackendMode.firebase:
       throw UnimplementedError('No Firebase Attendance implementation yet.');
   }
