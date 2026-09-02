@@ -1,0 +1,77 @@
+TOP LARGEST FILES
+============================================================
+  80.00 GB  C:\\Users\User\AppData\Local\Google\Play Games\userdata_fvc0ybz4.5fq\avd\userdata.img
+  13.00 GB  C:\\pagefile.sys
+   6.29 GB  C:\\hiberfil.sys
+   4.67 GB  C:\\$Recycle.Bin\S-1-5-21-1655704907-3675982135-1068780182-1001\$RXPI9MK.zip
+   4.11 GB  C:\\Users\User\AppData\Local\Android\Sdk\system-images\android-36\google_apis\x86_64\system.img
+   3.98 GB  C:\\Users\User\AppData\Local\Google\Chrome\User Data\OptGuideOnDeviceModel\2025.8.8.1141\weights.bin
+   3.33 GB  C:\\Users\User\AppData\Local\Android\Sdk\system-images\android-35\google_apis\x86_64\system.img
+   3.23 GB  C:\\Users\User\Downloads\_Getintopc.com_Adobe_Photoshop_2023_v24.2.0.315.rar
+   2.78 GB  C:\\Users\User\AppData\Local\Android\Sdk\system-images\android-37.0\google_apis_playstore_ps16k\x86_64\system.img
+   2.50 GB  C:\\Users\User\.android\avd\Pixel_9.avd\snapshots\default_boot\ram.img
+   2.35 GB  C:\\Program Files\Google\Play Games\current\emulator\avd\aggregate.img
+   2.02 GB  C:\\$Recycle.Bin\S-1-5-21-1655704907-3675982135-1068780182-1001\$RXY4YQ9
+   1.58 GB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\extracted\firebase_cpp_sdk_windows\libs\windows\VS2019\MT\x64\Debug\firebase_firestore.lib
+   1.55 GB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\extracted\firebase_cpp_sdk_windows\libs\windows\VS2019\MD\x64\Debug\firebase_firestore.lib
+   1.42 GB  C:\\Users\User\.android\avd\Pixel_9.avd\userdata-qemu.img.qcow2
+   1.38 GB  C:\\Users\User\Documents\Unity Projects\Global Dominion The Rise of Nations\.git\objects\pack\pack-854ec62f497325641f5155621622a13d97a60d98.pack
+   1.29 GB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\extracted\firebase_cpp_sdk_windows\libs\windows\VS2019\MT\x86\Debug\firebase_firestore.lib
+   1.28 GB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\extracted\firebase_cpp_sdk_windows\libs\windows\VS2019\MD\x86\Debug\firebase_firestore.lib
+ 976.88 MB  C:\\Users\User\.rembg\models\bria-rmbg\bria-rmbg.onnx
+ 857.76 MB  C:\\Program Files (x86)\Google\GoogleUpdater\crx_cache\d16d153fc19f1621702a9607f823b55c0cff73207bf3ca6d6ab44f4fbfec600e
+ 857.26 MB  C:\\Users\User\AppData\Local\CapCut\User Data\Cache\bytebench\CC_win_2_swencode.yuv
+ 801.95 MB  C:\\Users\User\Downloads\GTAV_Legacy_--_fitgirl-repacks.site_--_._Archive_full_3256.zip
+ 788.60 MB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\firebase_cpp_sdk_windows_11.10.0.zip
+ 768.68 MB  C:\\Users\User\OneDrive\Desktop\MobileAppDev\build\windows\x64\firebase_cpp_sdk_windows_12.7.0.zip
+ 759.95 MB  C:\\Users\User\Downloads\GTAV_Legacy_--_fitgirl-repacks.site_--_._Archive_free_548749.zip
+ 751.82 MB  C:\\ProgramData\Microsoft\VisualStudio\Packages\AndroidNDK_R23C,version=23.3,chip=x64\android-ndk-r23c-windows.zip
+ 743.73 MB  C:\\Users\User\AppData\Local\Microsoft\vscode-cpptools\1971048bd7cf2e48969164b2041d8aa3\.BROWSE.VC.DB
+ 606.74 MB  C:\\Users\User\edb_pem_server.exe-20260128082639
+ 591.61 MB  C:\\Users\User\Downloads\Download - 2026-06-07T220039.500.mp4
+ 571.92 MB  C:\\Users\User\AppData\Local\Packages\Clipchamp.Clipchamp_yxz26nhyzhsrt\LocalState\EBWebView\Default\IndexedDB\https_app.clipchamp.com_0.indexeddb.blob\3\00\19
+ 560.48 MB  C:\\Users\User\AppData\Roaming\Cursor\User\globalStorage\state.vscdb
+ 549.56 MB  C:\\Users\User\AppData\Roaming\Qoder\CachedExtensionVSIXs\oracle.mysql-shell-for-vs-code-2026.5.0
+ 524.99 MB  C:\\Users\User\AppData\Local\BraveSoftware\Brave-Browser\Application\152.1.94.117\Installer\chrome.7z
+ 520.27 MB  C:\\Program Files\VirtualDJ\virtualdj.exe
+ 492.48 MB  C:\\Program Files (x86)\Google\GoogleUpdater\crx_cache\1a6219232568894611802b247931ae2b5e0e80dd0eead0de864bff52f53d8327
+ 483.97 MB  C:\\Windows\Panther\setupact.log
+ 469.69 MB  C:\\Program Files\Unity\Hub\Editor\6000.5.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Development\Symbols\armv9\libunity.dbg.so
+ 467.73 MB  C:\\Program Files\Unity\Hub\Editor\6000.5.0f1\Editor\Data\Resources\PackageManager\Editor\com.unity.burst-1.8.29.tgz
+ 467.73 MB  C:\\Program Files\Unity\Hub\Editor\6000.3.18f1\Editor\Data\Resources\PackageManager\Editor\com.unity.burst-1.8.29.tgz
+ 465.96 MB  C:\\Program Files\Unity\Hub\Editor\6000.5.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Development\Symbols\arm64-v8a\libunity.dbg.so
+ 452.18 MB  C:\\Windows\Installer\1b301c85.msi
+ 444.30 MB  C:\\Program Files\Unity\Hub\Editor\6000.3.18f1\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Development\Symbols\armv9\libunity.dbg.so
+ 440.83 MB  C:\\Program Files\Unity\Hub\Editor\6000.3.18f1\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Development\Symbols\arm64-v8a\libunity.dbg.so
+ 431.62 MB  C:\\Program Files\Unity\Hub\Editor\6000.5.0f1\Editor\Data\PlaybackEngines\WebGLSupport\BuildTools\Emscripten\binaryen\lib\binaryen.lib
+ 396.44 MB  C:\\Users\User\AppData\Roaming\Cursor\snapshots\codebases\74fda7d7-7f66-4cb5-9226-b9d30b29991f\staging\pack-3697cae695b81e41f409e9547d56351787022e1a.pack
+ 396.44 MB  C:\\Users\User\AppData\Roaming\Cursor\snapshots\codebases\74fda7d7-7f66-4cb5-9226-b9d30b29991f\staging\pack-299a4d55e629c6906d5608dd72239a47ff8e524c.pack
+ 396.38 MB  C:\\Users\User\AppData\Roaming\Cursor\snapshots\codebases\74fda7d7-7f66-4cb5-9226-b9d30b29991f\staging\pack-af500649b428ddcec6a6cee948e08aba5409dba9.pack
+ 395.25 MB  C:\\Program Files\Unity\Hub\Editor\6000.3.18f1\Editor\Data\PlaybackEngines\AndroidPlayer\Variations\il2cpp\Development\Symbols\x86_64\libunity.dbg.so
+ 391.23 MB  C:\\Users\User\OneDrive\Desktop\Global Dominion\flutter\.git\objects\pack\pack-873fb83388c8ea6c4f91a1100fff366b2c16e90b.pack
+ 382.39 MB  C:\\Users\User\AppData\Local\Roblox\rbx-storage.db
+
+TOP LARGEST FOLDERS
+============================================================
+ 264.11 GB  C:\\Users
+ 106.85 GB  C:\\Program Files (x86)
+  65.20 GB  C:\\Program Files
+  41.78 GB  C:\\Windows
+  10.89 GB  C:\\ProgramData
+  10.34 GB  C:\\$Recycle.Bin
+ 348.91 MB  C:\\XboxGames
+ 218.46 MB  C:\\OEM
+ 133.21 MB  C:\\wamp
+ 184.00 KB  C:\\tmp
+   16.00 B  C:\\common_attachment
+    0.00 B  C:\\inetpub
+    0.00 B  C:\\Temp
+    0.00 B  C:\\System Volume Information
+    0.00 B  C:\\Recovery
+    0.00 B  C:\\Python313
+    0.00 B  C:\\PerfLogs
+    0.00 B  C:\\OneDriveTemp
+    0.00 B  C:\\Netmarble
+    0.00 B  C:\\LDPlayer
+    0.00 B  C:\\Documents and Settings
+    0.00 B  C:\\$AV_AVG

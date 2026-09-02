@@ -4,7 +4,7 @@ import os
 # SETTINGS
 # ==============================
 # Change this to the drive or folder you want to scan
-SCAN_PATH = r"C:\Users\User"      # Example: "D:\\" or "C:\\Users\\YourName"
+SCAN_PATH = r"C:\\"      # Example: "D:\\" or "C:\\Users\\YourName"
 
 TOP_FILES = 50
 TOP_FOLDERS = 30
