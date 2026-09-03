@@ -518,11 +518,12 @@ class _WelcomeHero extends StatelessWidget {
         ),
         const SizedBox(height: 28),
 
-        // School illustration
-        Center(
+        // School photo
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
           child: SizedBox(
-            width: isWide ? 300 : 260,
-            height: isWide ? 220 : 190,
+            width: double.infinity,
+            height: isWide ? 260 : 220,
             child: const _CampusIllustration(),
           ),
         ),
@@ -612,7 +613,7 @@ class _WelcomeHero extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Campus Illustration (CustomPainter)
+// Campus Photo (replaces the old CustomPainter illustration)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _CampusIllustration extends StatelessWidget {
@@ -620,258 +621,18 @@ class _CampusIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return CustomPaint(
-      painter: _CampusPainter(isDark: isDark),
-      size: const Size(300, 220),
-    );
-  }
-}
-
-class _CampusPainter extends CustomPainter {
-  _CampusPainter({required this.isDark});
-  final bool isDark;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    // Sky / background
-    final skyPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: isDark
-            ? [const Color(0xFF0D1B3E), const Color(0xFF162850)]
-            : [const Color(0xFFE8F0FE), const Color(0xFFD4E4FC)],
-      ).createShader(Rect.fromLTWH(0, 0, w, h));
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, w, h), const Radius.circular(16)),
-      skyPaint,
-    );
-
-    // Ground
-    final groundPaint = Paint()
-      ..color = isDark ? const Color(0xFF1A3A2E) : const Color(0xFFC8DCC0);
-    canvas.drawRect(Rect.fromLTWH(0, h * 0.72, w, h * 0.28), groundPaint);
-
-    // Ground path
-    final pathPaint = Paint()
-      ..color = isDark ? const Color(0xFF3A3A3A) : const Color(0xFFD4C9A8);
-    final path = Path()
-      ..moveTo(w * 0.35, h * 0.72)
-      ..lineTo(w * 0.42, h)
-      ..lineTo(w * 0.58, h)
-      ..lineTo(w * 0.65, h * 0.72)
-      ..close();
-    canvas.drawPath(path, pathPaint);
-
-    // ── Main building ──
-    final buildingColor = isDark ? const Color(0xFF2A4A7A) : const Color(0xFF8FAED4);
-    final buildingDark = isDark ? const Color(0xFF1E3A60) : const Color(0xFF7094BC);
-    final roofColor = isDark ? const Color(0xFF1A3050) : const Color(0xFF5B7EA8);
-    final windowColor = isDark ? const Color(0xFF4A7AB0) : const Color(0xFFF5F0D0);
-    final accentColor = isDark ? const Color(0xFFB8A050) : const Color(0xFFDABD64);
-
-    // Main body
-    final mainLeft = w * 0.22;
-    final mainRight = w * 0.78;
-    final mainTop = h * 0.30;
-    final mainBottom = h * 0.72;
-    canvas.drawRect(
-      Rect.fromLTRB(mainLeft, mainTop, mainRight, mainBottom),
-      Paint()..color = buildingColor,
-    );
-
-    // Roof
-    final roofPath = Path()
-      ..moveTo(mainLeft - 8, mainTop)
-      ..lineTo(w * 0.5, mainTop - 24)
-      ..lineTo(mainRight + 8, mainTop)
-      ..close();
-    canvas.drawPath(roofPath, Paint()..color = roofColor);
-
-    // Roof trim
-    canvas.drawLine(
-      Offset(mainLeft - 8, mainTop),
-      Offset(mainRight + 8, mainTop),
-      Paint()
-        ..color = accentColor
-        ..strokeWidth = 2,
-    );
-
-    // Central tower
-    final towerLeft = w * 0.40;
-    final towerRight = w * 0.60;
-    final towerTop = h * 0.12;
-    canvas.drawRect(
-      Rect.fromLTRB(towerLeft, towerTop, towerRight, mainTop),
-      Paint()..color = buildingDark,
-    );
-
-    // Tower roof (triangular)
-    final towerRoofPath = Path()
-      ..moveTo(towerLeft - 4, towerTop)
-      ..lineTo(w * 0.5, towerTop - 18)
-      ..lineTo(towerRight + 4, towerTop)
-      ..close();
-    canvas.drawPath(towerRoofPath, Paint()..color = roofColor);
-
-    // Tower flag
-    canvas.drawLine(
-      Offset(w * 0.5, towerTop - 18),
-      Offset(w * 0.5, towerTop - 32),
-      Paint()
-        ..color = accentColor
-        ..strokeWidth = 1.5,
-    );
-    // Flag
-    final flagPath = Path()
-      ..moveTo(w * 0.5, towerTop - 32)
-      ..lineTo(w * 0.5 + 12, towerTop - 28)
-      ..lineTo(w * 0.5, towerTop - 24)
-      ..close();
-    canvas.drawPath(flagPath, Paint()..color = accentColor);
-
-    // Tower clock / emblem
-    canvas.drawCircle(
-      Offset(w * 0.5, towerTop + (mainTop - towerTop) * 0.4),
-      10,
-      Paint()..color = windowColor,
-    );
-    canvas.drawCircle(
-      Offset(w * 0.5, towerTop + (mainTop - towerTop) * 0.4),
-      10,
-      Paint()
-        ..color = accentColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5,
-    );
-
-    // Windows on main building — left wing
-    _drawWindowRow(canvas, mainLeft + 10, mainTop + 14, 3, 14, 18, windowColor);
-    _drawWindowRow(canvas, mainLeft + 10, mainTop + 40, 3, 14, 18, windowColor);
-
-    // Windows on main building — right wing
-    _drawWindowRow(canvas, towerRight + 8, mainTop + 14, 3, 14, 18, windowColor);
-    _drawWindowRow(canvas, towerRight + 8, mainTop + 40, 3, 14, 18, windowColor);
-
-    // Door
-    final doorLeft = w * 0.45;
-    final doorRight = w * 0.55;
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        Rect.fromLTRB(doorLeft, mainBottom - 28, doorRight, mainBottom),
-        topLeft: const Radius.circular(8),
-        topRight: const Radius.circular(8),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.asset(
+        'assets/images/campus_bg.jpg',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
       ),
-      Paint()..color = buildingDark,
     );
-
-    // Columns
-    for (final x in [mainLeft + 4, mainRight - 6]) {
-      canvas.drawRect(
-        Rect.fromLTRB(x, mainTop, x + 4, mainBottom),
-        Paint()..color = buildingDark.withValues(alpha: 0.5),
-      );
-    }
-
-    // ── Left smaller building ──
-    final lbLeft = w * 0.04;
-    final lbRight = w * 0.20;
-    final lbTop = h * 0.42;
-    canvas.drawRect(
-      Rect.fromLTRB(lbLeft, lbTop, lbRight, mainBottom),
-      Paint()..color = buildingColor.withValues(alpha: 0.7),
-    );
-    // Left building roof
-    canvas.drawRect(
-      Rect.fromLTRB(lbLeft - 2, lbTop - 4, lbRight + 2, lbTop),
-      Paint()..color = roofColor,
-    );
-    _drawWindowRow(canvas, lbLeft + 8, lbTop + 10, 2, 12, 14, windowColor);
-    _drawWindowRow(canvas, lbLeft + 8, lbTop + 30, 2, 12, 14, windowColor);
-
-    // ── Right smaller building ──
-    final rbLeft = w * 0.80;
-    final rbRight = w * 0.96;
-    final rbTop = h * 0.42;
-    canvas.drawRect(
-      Rect.fromLTRB(rbLeft, rbTop, rbRight, mainBottom),
-      Paint()..color = buildingColor.withValues(alpha: 0.7),
-    );
-    canvas.drawRect(
-      Rect.fromLTRB(rbLeft - 2, rbTop - 4, rbRight + 2, rbTop),
-      Paint()..color = roofColor,
-    );
-    _drawWindowRow(canvas, rbLeft + 8, rbTop + 10, 2, 12, 14, windowColor);
-    _drawWindowRow(canvas, rbLeft + 8, rbTop + 30, 2, 12, 14, windowColor);
-
-    // ── Trees ──
-    _drawTree(canvas, w * 0.12, h * 0.68, isDark);
-    _drawTree(canvas, w * 0.88, h * 0.68, isDark);
-    _drawTree(canvas, w * 0.28, h * 0.70, isDark, scale: 0.8);
-    _drawTree(canvas, w * 0.72, h * 0.70, isDark, scale: 0.8);
-
-    // ── Clouds ──
-    if (!isDark) {
-      _drawCloud(canvas, w * 0.10, h * 0.08, 0.8);
-      _drawCloud(canvas, w * 0.75, h * 0.04, 1.0);
-      _drawCloud(canvas, w * 0.45, h * 0.02, 0.6);
-    }
   }
-
-  void _drawWindowRow(
-    Canvas canvas,
-    double startX,
-    double y,
-    int count,
-    double windowW,
-    double spacing,
-    Color color,
-  ) {
-    for (var i = 0; i < count; i++) {
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(startX + i * spacing, y, windowW, 12),
-          const Radius.circular(2),
-        ),
-        Paint()..color = color,
-      );
-    }
-  }
-
-  void _drawTree(Canvas canvas, double x, double groundY, bool isDark, {double scale = 1.0}) {
-    // Trunk
-    canvas.drawRect(
-      Rect.fromLTWH(x - 3 * scale, groundY - 12 * scale, 6 * scale, 14 * scale),
-      Paint()..color = isDark ? const Color(0xFF5A4030) : const Color(0xFF8B7355),
-    );
-    // Foliage layers
-    final foliageColor = isDark ? const Color(0xFF2A5A3A) : const Color(0xFF6BA368);
-    final foliageLight = isDark ? const Color(0xFF3A7A4A) : const Color(0xFF88C482);
-    for (var i = 0; i < 3; i++) {
-      final r = (18 - i * 4) * scale;
-      final cy = groundY - 14 * scale - i * 8 * scale;
-      canvas.drawCircle(
-        Offset(x, cy),
-        r,
-        Paint()..color = i == 1 ? foliageLight : foliageColor,
-      );
-    }
-  }
-
-  void _drawCloud(Canvas canvas, double x, double y, double scale) {
-    final paint = Paint()..color = Colors.white.withValues(alpha: 0.6);
-    canvas.drawCircle(Offset(x, y + 6 * scale), 10 * scale, paint);
-    canvas.drawCircle(Offset(x + 12 * scale, y), 14 * scale, paint);
-    canvas.drawCircle(Offset(x + 28 * scale, y + 4 * scale), 12 * scale, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Announcements Section (right column)
