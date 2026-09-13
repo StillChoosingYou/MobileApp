@@ -77,6 +77,13 @@ class MockSeedData {
       loginId: 'P202200033',
     ),
     const AppUser(
+      id: 'P202400230',
+      name: 'Reynald Jake L.(Lalusin) Malabanan',
+      email: 'reynaldjakemalabanan328@gmail.com',
+      role: UserRole.student,
+      loginId: 'P202400230',
+    ),
+    const AppUser(
       id: 'u_fac_001',
       name: 'Prof. Ramon Dela Cruz',
       email: 'r.delacruz@pgpc.edu.ph',
@@ -208,6 +215,12 @@ class MockSeedData {
       program: 'BS Information Technology',
       yearLevel: 4,
       blockSection: 'BSIT-4A',
+    ),
+    StudentProfile(
+      studentId: 'P202400230',
+      program: 'BS Computer Science',
+      yearLevel: 3,
+      blockSection: 'BSCS 3E',
     ),
   ];
 

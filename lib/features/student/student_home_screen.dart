@@ -69,63 +69,136 @@ class StudentHomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Card(
-              elevation: 0,
-              color: Theme.of(context).colorScheme.primaryContainer,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(12),
-                leading: Icon(Icons.smart_toy_outlined, color: Theme.of(context).colorScheme.onPrimaryContainer),
-                title: Text(
-                  'Ask the AI Academic Assistant',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  'Schedules, requirements, enrollment steps, tuition questions',
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const AiAssistantScreen()),
-                ),
-              ),
-            ),
-          ),
-          const SectionHeader(title: 'Announcements'),
-          Consumer(
-            builder: (context, ref, _) {
-              final announcements = ref.watch(announcementsProvider);
-              return announcements.when(
-                data: (list) => list.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: EmptyState(
-                          icon: Icons.campaign_outlined,
-                          title: 'No announcements yet',
-                          message: 'Check back later for updates from the college.',
-                        ),
-                      )
-                    : Column(
-                        children: list.take(4).map((a) => _AnnouncementTile(announcement: a)).toList(),
-                      ),
-                loading: () => const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: LoadingView(),
-                ),
-                error: (e, _) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: ErrorView(message: 'Could not load announcements.'),
-                ),
-              );
-            },
-          ),
+          const _DashboardLowerSection(),
         ],
       ),
+    );
+  }
+}
+
+/// Lower half of the home dashboard: the AI assistant card + announcements.
+/// Splits into two columns on wide layouts (the AI card is a fixed side rail,
+/// announcements take the rest); stacks vertically on narrow ones.
+class _DashboardLowerSection extends ConsumerWidget {
+  const _DashboardLowerSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gutter = Responsive.pagePadding(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 720;
+        if (wide) {
+          // Wide: same gutter once around the whole row; the announcements
+          // column is "flush" because its parent already supplies it.
+          return Padding(
+            padding: gutter,
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: 320, child: _AiAssistantCard()),
+                SizedBox(width: 20),
+                Expanded(child: _AnnouncementsSection(flush: true)),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(padding: gutter, child: const _AiAssistantCard()),
+            const _AnnouncementsSection(),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _AiAssistantCard extends StatelessWidget {
+  const _AiAssistantCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      elevation: 0,
+      color: scheme.primaryContainer,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
+        leading: Icon(Icons.smart_toy_outlined, color: scheme.onPrimaryContainer),
+        title: Text(
+          'Ask the AI Academic Assistant',
+          style: TextStyle(
+            color: scheme.onPrimaryContainer,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          'Schedules, requirements, enrollment steps, tuition questions',
+          style: TextStyle(color: scheme.onPrimaryContainer),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const AiAssistantScreen()),
+        ),
+      ),
+    );
+  }
+}
+
+class _AnnouncementsSection extends ConsumerWidget {
+  const _AnnouncementsSection({this.flush = false});
+
+  /// When true, adds no horizontal gutter — the parent already supplies it
+  /// (the wide two-column layout).
+  final bool flush;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sidePadding = flush ? EdgeInsets.zero : Responsive.pagePadding(context);
+    final announcements = ref.watch(announcementsProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionHeader(
+          title: 'Announcements',
+          padding: flush ? const EdgeInsets.only(top: 20, bottom: 8) : null,
+        ),
+        announcements.when(
+          data: (list) => list.isEmpty
+              ? Padding(
+                  padding: sidePadding,
+                  child: const EmptyState(
+                    icon: Icons.campaign_outlined,
+                    title: 'No announcements yet',
+                    message: 'Check back later for updates from the college.',
+                  ),
+                )
+              : Column(
+                  children: list
+                      .take(4)
+                      .map((a) => _AnnouncementTile(
+                            announcement: a,
+                            padding: flush
+                                ? const EdgeInsets.symmetric(vertical: 4)
+                                : null,
+                          ))
+                      .toList(),
+                ),
+          loading: () => const Padding(
+            padding: EdgeInsets.all(24),
+            child: LoadingView(),
+          ),
+          error: (e, _) => Padding(
+            padding: sidePadding,
+            child: const ErrorView(message: 'Could not load announcements.'),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -194,14 +267,17 @@ class _EnrollmentStatCard extends ConsumerWidget {
 }
 
 class _AnnouncementTile extends StatelessWidget {
-  const _AnnouncementTile({required this.announcement});
+  const _AnnouncementTile({required this.announcement, this.padding});
+
   final Announcement announcement;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+      padding:
+          padding ?? Responsive.pagePadding(context).copyWith(top: 4, bottom: 4),
       child: Card(
         elevation: 0,
         color: scheme.surfaceContainerLow,

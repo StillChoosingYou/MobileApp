@@ -6,21 +6,31 @@ import '../utils/responsive.dart';
 /// A left-aligned heading with an optional trailing action — used at the
 /// top of nearly every list screen.
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({required this.title, super.key, this.subtitle, this.trailing});
+  const SectionHeader({
+    required this.title,
+    super.key,
+    this.subtitle,
+    this.trailing,
+    this.padding,
+  });
 
   final String title;
   final String? subtitle;
   final Widget? trailing;
 
+  /// Overrides the default `Responsive.pagePadding` gutter — used by wide
+  /// layouts where a parent column already supplies the horizontal padding.
+  final EdgeInsets? padding;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final padding = Responsive.pagePadding(context).copyWith(
-      top: Responsive.isCompactHeight(context) ? 12 : 20,
-      bottom: 8,
-    );
+    final insets = padding ?? Responsive.pagePadding(context).copyWith(
+          top: Responsive.isCompactHeight(context) ? 12 : 20,
+          bottom: 8,
+        );
     return Padding(
-      padding: padding,
+      padding: insets,
       child: Row(
         children: [
           Expanded(

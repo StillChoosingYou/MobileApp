@@ -47,18 +47,30 @@ class _TickerViewState extends State<_TickerView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  final double _itemWidth = 400; // Approximate width per item
+  double _itemWidth = 400; // Adapts to the viewport (see build).
   double _totalWidth = 0;
 
   @override
   void initState() {
     super.initState();
-    _totalWidth = _itemWidth * widget.promotions.length;
     _controller = AnimationController(
       duration: Duration(seconds: 8 + widget.promotions.length * 2),
       vsync: this,
     )..repeat();
 
+    _syncAnimation();
+  }
+
+  /// Recomputes the per-item and total widths from the current viewport and
+  /// rewires the animation. Called from [initState] and whenever the width
+  /// changes (window resize / rotation) so pills never overflow a narrow
+  /// screen and stay a comfortable size on very wide ones.
+  void _syncAnimation() {
+    final targetWidth =
+        (MediaQuery.sizeOf(context).width * 0.9).clamp(280.0, 520.0).toDouble();
+    if (targetWidth == _itemWidth) return;
+    _itemWidth = targetWidth;
+    _totalWidth = _itemWidth * widget.promotions.length;
     _animation = Tween<double>(begin: 0, end: _totalWidth).animate(
       CurvedAnimation(parent: _controller, curve: Curves.linear),
     );
@@ -72,6 +84,8 @@ class _TickerViewState extends State<_TickerView>
 
   @override
   Widget build(BuildContext context) {
+    _syncAnimation();
+
     // Default colors if not specified
     const defaultBgColor = Color(0xFF102A6D);
     const defaultTextColor = Colors.white;
