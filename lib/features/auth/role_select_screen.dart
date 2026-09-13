@@ -212,7 +212,7 @@ class _WideLayout extends StatelessWidget {
       children: [
         // Left column: hero
         Expanded(
-          flex: 4,
+          flex: 5,
           child: _WelcomeHero(onLogin: onLogin),
         ),
         const SizedBox(width: 48),
@@ -519,13 +519,10 @@ class _WelcomeHero extends StatelessWidget {
         const SizedBox(height: 28),
 
         // School photo
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: SizedBox(
-            width: double.infinity,
-            height: isWide ? 260 : 220,
-            child: const _CampusIllustration(),
-          ),
+        SizedBox(
+          width: double.infinity,
+          height: isWide ? 300 : 220,
+          child: const _CampusIllustration(),
         ),
         const SizedBox(height: 28),
 
@@ -622,7 +619,7 @@ class _CampusIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(14),
       child: Image.asset(
         'assets/images/campus_bg.jpg',
         fit: BoxFit.cover,
