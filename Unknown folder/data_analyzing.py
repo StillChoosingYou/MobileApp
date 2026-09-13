@@ -8,7 +8,7 @@ SCAN_PATH = r"C:\\"      # Example: "D:\\" or "C:\\Users\\YourName"
 
 TOP_FILES = 50
 TOP_FOLDERS = 30
-
+w
 
 # ==============================
 # Convert Bytes
